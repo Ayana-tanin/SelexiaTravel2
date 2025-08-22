@@ -1,0 +1,25 @@
+# Ignore frontend build files for Railway deployment
+package.json
+package-lock.json
+node_modules/
+vite.config.js
+vite.config.simple.js
+tailwind.config.js
+postcss.config.js
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+
+# Ignore frontend source files
+src/
+public/
+
+# Keep only Django backend files
+!selexia_travel/
+!manage.py
+!requirements.txt
+!runtime.txt
+!Procfile
+!.dockerignore

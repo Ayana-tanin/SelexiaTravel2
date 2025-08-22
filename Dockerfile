@@ -16,7 +16,7 @@ COPY requirements.txt ./
 # Устанавливаем Python зависимости
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Копируем весь Django проект
+# Копируем Django проект (frontend файлы исключены через .dockerignore)
 COPY . .
 
 # Создаем необходимые директории

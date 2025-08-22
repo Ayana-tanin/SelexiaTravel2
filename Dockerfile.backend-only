@@ -1,0 +1,55 @@
+# Используем официальный Python образ только для Django
+FROM python:3.11-slim
+
+# Устанавливаем рабочую директорию
+WORKDIR /app
+
+# Устанавливаем системные зависимости
+RUN apt-get update && apt-get install -y \
+    gcc \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+# Копируем Python requirements
+COPY requirements.txt ./
+
+# Устанавливаем Python зависимости
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Копируем Django проект (исключаем frontend файлы)
+COPY selexia_travel/ ./selexia_travel/
+COPY manage.py ./
+COPY static/ ./static/
+COPY templates/ ./templates/
+COPY locale/ ./locale/
+COPY media/ ./media/
+
+# Создаем необходимые директории
+RUN mkdir -p logs staticfiles
+
+# Собираем статические файлы Django
+RUN python manage.py collectstatic --noinput
+
+# Создаем пользователя для безопасности
+RUN useradd --create-home --shell /bin/bash app && \
+    chown -R app:app /app
+USER app
+
+# Открываем порт (Railway автоматически определит)
+EXPOSE $PORT
+
+# Создаем скрипт запуска для Railway
+RUN echo '#!/bin/bash\n\
+echo "🚂 Railway запуск SelexiaTravel..."\n\
+echo "📦 Проверка зависимостей..."\n\
+python --version\n\
+echo "🗄️ Проверка базы данных..."\n\
+python manage.py check --database default\n\
+echo "🔄 Применение миграций..."\n\
+python manage.py migrate\n\
+echo " Запуск сервера на порту $PORT..."\n\
+exec gunicorn --bind 0.0.0.0:$PORT --workers 3 --timeout 120 selexia_travel.wsgi:application\n\
+' > /app/start.sh && chmod +x /app/start.sh
+
+# Запускаем приложение
+CMD ["/app/start.sh"]
