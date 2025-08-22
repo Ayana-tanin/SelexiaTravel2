@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Контакты - Selexia Travel</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold text-center mb-8">Свяжитесь с нами</h1>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Контактная информация -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-semibold mb-4">Наши контакты</h2>
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <span class="text-blue-600 mr-3">📞</span>
+                            <span>+7 (XXX) XXX-XX-XX</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="text-blue-600 mr-3">✉️</span>
+                            <span>info@selexiatravel.com</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="text-blue-600 mr-3">📍</span>
+                            <span>Адрес офиса</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Форма обратной связи -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-semibold mb-4">Написать нам</h2>
+                    <form method="post" class="space-y-4">
+                        {% csrf_token %}
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Имя</label>
+                            <input type="text" name="name" class="w-full p-3 border rounded-lg" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Email</label>
+                            <input type="email" name="email" class="w-full p-3 border rounded-lg" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Сообщение</label>
+                            <textarea name="message" rows="4" class="w-full p-3 border rounded-lg" required></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700">
+                            Отправить
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="text-center mt-8">
+                <a href="/" class="text-blue-600 hover:underline">← Вернуться на главную</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

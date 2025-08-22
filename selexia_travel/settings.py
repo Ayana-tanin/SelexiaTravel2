@@ -55,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'selexia_travel.urls'
@@ -427,13 +428,14 @@ else:
 # Railway настройки
 RAILWAY_ENVIRONMENT = config('DATABASE_URL', default='').startswith('postgresql://') and 'railway' in config('DATABASE_URL', default='')
 if RAILWAY_ENVIRONMENT:
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'selexiatravel2.railway.internal', 'selexiatravel2.up.railway.app', '*.up.railway.app']
-    CSRF_TRUSTED_ORIGINS = [
-        'https://selexiatravel2.railway.internal',
-        'https://selexiatravel2.up.railway.app',
-        'https://*.up.railway.app',
-        'https://*.rlwy.net'
-    ]
+
+    
+    ALLOWED_HOSTS_ENV = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1')
+    ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS_ENV.split(',')]
+    
+    CSRF_TRUSTED_ORIGINS_ENV = os.getenv('CSRF_TRUSTED_ORIGINS', 'http://localhost:8000')
+    CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in CSRF_TRUSTED_ORIGINS_ENV.split(',')]
+
     print(f"🚂 Railway окружение: АКТИВНО")
     print(f"   ALLOWED_HOSTS: {ALLOWED_HOSTS}")
     print(f"   CSRF_TRUSTED_ORIGINS: {CSRF_TRUSTED_ORIGINS}")
