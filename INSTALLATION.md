@@ -65,9 +65,9 @@ npm install
 ## ⚙️ Настройка проекта
 
 ### 1. Переменные окружения
-Создайте файл `.env` на основе `env_template.txt`:
+Создайте файл `.env` на основе `.env.example`:
 ```bash
-cp env_template.txt .env
+cp .env.example .env
 ```
 
 Отредактируйте `.env` файл:

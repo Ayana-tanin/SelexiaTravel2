@@ -427,8 +427,8 @@ else:
 # Railway настройки
 RAILWAY_ENVIRONMENT = config('DB_ENGINE', default='') == 'railway'
 if RAILWAY_ENVIRONMENT:
-    ALLOWED_HOSTS = ['*', '.up.railway.app', '.rlwy.net']
-    CSRF_TRUSTED_ORIGINS = ['https://*.up.railway.app', 'https://*.rlwy.net']
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'selexiatravel2.railway.internal']
+    CSRF_TRUSTED_ORIGINS = ['https://selexiatravel2.railway.internal', 'https://*.rlwy.net']
     print(f"🚂 Railway окружение: АКТИВНО")
     print(f"   ALLOWED_HOSTS: {ALLOWED_HOSTS}")
     print(f"   CSRF_TRUSTED_ORIGINS: {CSRF_TRUSTED_ORIGINS}")
