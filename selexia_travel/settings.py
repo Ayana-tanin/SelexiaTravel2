@@ -14,6 +14,12 @@ RAILWAY_ENVIRONMENT = (
     ('railway' in config('DATABASE_URL', default='') or 'rlwy.net' in config('DATABASE_URL', default=''))
 ) or config('RAILWAY_ENVIRONMENT', default=False, cast=bool)
 
+# Важная настройка для Railway прокси
+if RAILWAY_ENVIRONMENT:
+    USE_X_FORWARDED_HOST = True
+    USE_X_FORWARDED_PORT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-your-secret-key-here-change-this')
 
@@ -237,12 +243,9 @@ vue_dist_dir = BASE_DIR / 'static' / 'dist'
 if vue_dist_dir.exists():
     STATICFILES_DIRS.append(vue_dist_dir)
 
-# WhiteNoise настройки для Railway
+# Настройки статических файлов для Railway
 if RAILWAY_ENVIRONMENT:
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-    WHITENOISE_USE_FINDERS = True
-    WHITENOISE_AUTOREFRESH = True
-    print("🚂 WhiteNoise настройки для Railway применены")
+    print("🚂 Railway настройки статических файлов применены")
 else:
     print("🏠 Локальные настройки статических файлов")
 
@@ -443,15 +446,9 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 
 # Production security settings
-
-# Определяем, развернуто ли приложение на Railway
-IS_RAILWAY = os.environ.get('RAILWAY_ENVIRONMENT') is not None
-IS_PRODUCTION = not DEBUG
-
-if IS_PRODUCTION:
+if not DEBUG:
     # Railway автоматически обрабатывает HTTPS, поэтому отключаем принудительное перенаправление
-    if IS_RAILWAY:
-        # Настройки специально для Railway
+    if RAILWAY_ENVIRONMENT:
         SECURE_SSL_REDIRECT = False  # ВАЖНО: False для Railway!
         SECURE_HSTS_SECONDS = 0  # Отключаем HSTS на Railway
         SECURE_HSTS_INCLUDE_SUBDOMAINS = False
@@ -526,16 +523,7 @@ if RAILWAY_ENVIRONMENT:
         'http://127.0.0.1:8000'
     ]
     
-    # Настройки безопасности для Railway
-    SECURE_SSL_REDIRECT = True
-    SECURE_HSTS_SECONDS = 31536000
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
-    CSRF_COOKIE_SECURE = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_HTTPONLY = False  # Нужно для JavaScript
-    SESSION_COOKIE_HTTPONLY = True
-    
+    # Настройки безопасности уже настроены выше для Railway
     print(f"   ALLOWED_HOSTS: {ALLOWED_HOSTS}")
     print(f"   CSRF_TRUSTED_ORIGINS: {CSRF_TRUSTED_ORIGINS}")
     print(f"   CORS_ALLOWED_ORIGINS: {CORS_ALLOWED_ORIGINS}")
