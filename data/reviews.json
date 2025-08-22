@@ -1,0 +1,122 @@
+[
+  {
+    "model": "selexia_travel.review",
+    "pk": 10,
+    "fields": {
+      "excursion": 7,
+      "user": 12,
+      "rating": 2,
+      "text": "тестовый отзыв",
+      "is_approved": true,
+      "created_at": "2025-08-22T12:01:06.557Z"
+    }
+  },
+  {
+    "model": "selexia_travel.review",
+    "pk": 9,
+    "fields": {
+      "excursion": 10,
+      "user": 5,
+      "rating": 5,
+      "text": "Отличная экскурсия! Гид был очень знающим и дружелюбным. Рекомендую всем!",
+      "is_approved": true,
+      "created_at": "2025-08-22T08:09:03.223Z"
+    }
+  },
+  {
+    "model": "selexia_travel.review",
+    "pk": 8,
+    "fields": {
+      "excursion": 8,
+      "user": 3,
+      "rating": 3,
+      "text": "dsaefrgthyujkio;lkm;nbjvhgfdvscxadcefrgtyhjkl;/'k.j,h cxgfhiukjouytreqwsswdefrgtyhgfdsaZSDERFGTHJNHGFDSdsaefrgthyujkio;lkm;nbjvhgfdvscxadcefrgtyhjkl;/'k.j,h cxgfhiukjouytreqwsswdefrgtyhgfdsaZSDERFGTHJNHGFDSdsaefrgthyujkio;lkm;nbjvhgfdvscxadcefrgtyhjkl;/'k.j,h cxgfhiukjouytreqwsswdefrgtyhgfdsaZSDERFGTHJNHGFDSdsaefrgthyujkio;lkm;nbjvhgfdvscxadcefrgtyhjkl;/'k.j,h cxgfhiukjouytreqwsswdefrgtyhgfdsaZSDERFGTHJNHGFDSdsaefrgthyujkio;lkm;nbjvhgfdvscxadcefrgtyhjkl;/'k.j,h cxgfhiukjouytreqwsswdefrgtyhgfdsaZSDERFGTHJNHGFDSdsaefrgthyujkio;lkm;nbjvhgfdvscxadcefrgtyhjkl;/'k.j,h cxgfhiukjouytreqwsswdefrgtyhgfdsaZSDERFGTHJNHGFDSdsaefrgthyujkio;lkm;nbjvhgfdvscxadcefrgtyhjkl;/'k.j,h cxgfhiukjouytreqwsswdefrgtyhgfdsaZSDERFGTHJNHGFDSdsaefrgthyujkio;lkm;nbjvhgfdvscxadcefrgtyhjkl;/'k.j,h cxgfhiukjouytreqwsswdefrgtyhgfdsaZSDERFGTHJNHGFDSdsaefrgthyujkio;lkm;nbjvhgfdvscxadcefrgtyhjkl;/'k.j,h cxgfhiukjouytreqwsswdefrgtyhgfdsaZSDERFGTHJNHGFDSdsaefrgthyujkio;lkm;nbjvhgfdvscxadcefrgtyhjkl;/'k.j,h cxgfhiukjouytreqwsswdefrgtyhgfdsaZSDERFGTHJNHGFDSdsaefrgthyujkio;lkm;nbjvhgfdvscxadcefrgtyhjkl;/'k.j,h cxgfhiukjouytreqwsswdefrgtyhgfdsaZSDERFGTHJNHGFDSdsaefrgthyujkio;lkm;nbjvhgfdvscxadcefrgtyhjkl;/'k.j,h cxgfhiukjouytreqwsswdefrgtyhgfdsaZSDERFGTHJNHGFDS",
+      "is_approved": true,
+      "created_at": "2025-08-21T20:56:58.890Z"
+    }
+  },
+  {
+    "model": "selexia_travel.review",
+    "pk": 7,
+    "fields": {
+      "excursion": 7,
+      "user": 5,
+      "rating": 4,
+      "text": "Красивое место, но народу было многовато. Лучше ехать в будни. Обед в ресторане был вкусный.",
+      "is_approved": true,
+      "created_at": "2025-08-20T17:51:56.160Z"
+    }
+  },
+  {
+    "model": "selexia_travel.review",
+    "pk": 6,
+    "fields": {
+      "excursion": 7,
+      "user": 10,
+      "rating": 5,
+      "text": "Каньон Сападере - это просто сказка! Прохладная вода после жаркой Анталии была как спасение. Пещера тоже интересная. Единственный минус - дорога довольно долгая.",
+      "is_approved": true,
+      "created_at": "2025-08-20T17:51:56.139Z"
+    }
+  },
+  {
+    "model": "selexia_travel.review",
+    "pk": 5,
+    "fields": {
+      "excursion": 6,
+      "user": 9,
+      "rating": 5,
+      "text": "Трансфер прошел отлично! Водитель Ахмет приехал вовремя, помог с багажом, машина была чистая и комфортная. Очень рекомендую!",
+      "is_approved": true,
+      "created_at": "2025-08-20T17:51:56.121Z"
+    }
+  },
+  {
+    "model": "selexia_travel.review",
+    "pk": 4,
+    "fields": {
+      "excursion": 5,
+      "user": 8,
+      "rating": 4,
+      "text": "Экскурсия по Риму была познавательной, но в июле действительно очень жарко. Рекомендую брать больше воды и головные уборы. Колизей впечатляет!",
+      "is_approved": true,
+      "created_at": "2025-08-20T17:51:56.105Z"
+    }
+  },
+  {
+    "model": "selexia_travel.review",
+    "pk": 3,
+    "fields": {
+      "excursion": 4,
+      "user": 7,
+      "rating": 5,
+      "text": "Архитектура Гауди просто потрясающая! Экскурсия была очень информативной. Саграда Фамилия - это что-то невероятное. Спасибо за прекрасно организованный день!",
+      "is_approved": true,
+      "created_at": "2025-08-20T17:51:56.082Z"
+    }
+  },
+  {
+    "model": "selexia_travel.review",
+    "pk": 2,
+    "fields": {
+      "excursion": 3,
+      "user": 6,
+      "rating": 4,
+      "text": "Хорошая экскурсия, но много людей в группе. Хотелось бы более камерную атмосферу. В целом довольна, Стамбул произвел неизгладимое впечатление.",
+      "is_approved": true,
+      "created_at": "2025-08-20T17:51:56.069Z"
+    }
+  },
+  {
+    "model": "selexia_travel.review",
+    "pk": 1,
+    "fields": {
+      "excursion": 3,
+      "user": 5,
+      "rating": 5,
+      "text": "Превосходная экскурсия по Стамбулу! Гид Мехмет был невероятно знающим и харизматичным. Особенно понравился Топкапы и рассказы о жизни султанов. Обязательно поеду еще раз!",
+      "is_approved": true,
+      "created_at": "2025-08-20T17:51:56.048Z"
+    }
+  }
+]

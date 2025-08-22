@@ -1,0 +1,184 @@
+[
+  {
+    "model": "selexia_travel.country",
+    "pk": 9,
+    "fields": {
+      "name_ru": "Бали",
+      "name_en": "Bali",
+      "iso_code": "IDN",
+      "slug": "bali",
+      "image": "countries/IMG_20200331_120822.jpg",
+      "is_popular": false,
+      "created_at": "2025-08-19T17:30:58.451Z"
+    }
+  },
+  {
+    "model": "selexia_travel.country",
+    "pk": 6,
+    "fields": {
+      "name_ru": "Греция",
+      "name_en": "Greece",
+      "iso_code": "GRC",
+      "slug": "greece",
+      "image": "",
+      "is_popular": true,
+      "created_at": "2025-08-19T17:30:58.410Z"
+    }
+  },
+  {
+    "model": "selexia_travel.country",
+    "pk": 2,
+    "fields": {
+      "name_ru": "Египет",
+      "name_en": "Egypt",
+      "iso_code": "EGY",
+      "slug": "egypt",
+      "image": "",
+      "is_popular": true,
+      "created_at": "2025-08-19T17:30:58.359Z"
+    }
+  },
+  {
+    "model": "selexia_travel.country",
+    "pk": 4,
+    "fields": {
+      "name_ru": "Испания",
+      "name_en": "Spain",
+      "iso_code": "ESP",
+      "slug": "spain",
+      "image": "",
+      "is_popular": true,
+      "created_at": "2025-08-19T17:30:58.384Z"
+    }
+  },
+  {
+    "model": "selexia_travel.country",
+    "pk": 5,
+    "fields": {
+      "name_ru": "Италия",
+      "name_en": "Italy",
+      "iso_code": "ITA",
+      "slug": "italy",
+      "image": "",
+      "is_popular": true,
+      "created_at": "2025-08-19T17:30:58.399Z"
+    }
+  },
+  {
+    "model": "selexia_travel.country",
+    "pk": 10,
+    "fields": {
+      "name_ru": "Кипр",
+      "name_en": "Cyprus",
+      "iso_code": "CYP",
+      "slug": "cyprus",
+      "image": "",
+      "is_popular": false,
+      "created_at": "2025-08-19T17:30:58.460Z"
+    }
+  },
+  {
+    "model": "selexia_travel.country",
+    "pk": 8,
+    "fields": {
+      "name_ru": "Мальдивы",
+      "name_en": "Maldives",
+      "iso_code": "MDV",
+      "slug": "maldives",
+      "image": "",
+      "is_popular": false,
+      "created_at": "2025-08-19T17:30:58.437Z"
+    }
+  },
+  {
+    "model": "selexia_travel.country",
+    "pk": 7,
+    "fields": {
+      "name_ru": "ОАЭ",
+      "name_en": "UAE",
+      "iso_code": "ARE",
+      "slug": "uae",
+      "image": "",
+      "is_popular": true,
+      "created_at": "2025-08-19T17:30:58.425Z"
+    }
+  },
+  {
+    "model": "selexia_travel.country",
+    "pk": 12,
+    "fields": {
+      "name_ru": "Португалия",
+      "name_en": "Portugal",
+      "iso_code": "PRT",
+      "slug": "portugal",
+      "image": "",
+      "is_popular": false,
+      "created_at": "2025-08-20T17:48:03.348Z"
+    }
+  },
+  {
+    "model": "selexia_travel.country",
+    "pk": 3,
+    "fields": {
+      "name_ru": "Таиланд",
+      "name_en": "Thailand",
+      "iso_code": "THA",
+      "slug": "thailand",
+      "image": "",
+      "is_popular": true,
+      "created_at": "2025-08-19T17:30:58.366Z"
+    }
+  },
+  {
+    "model": "selexia_travel.country",
+    "pk": 1,
+    "fields": {
+      "name_ru": "Турция",
+      "name_en": "Turkey",
+      "iso_code": "TUR",
+      "slug": "turkey",
+      "image": "",
+      "is_popular": true,
+      "created_at": "2025-08-19T17:30:58.348Z"
+    }
+  },
+  {
+    "model": "selexia_travel.country",
+    "pk": 11,
+    "fields": {
+      "name_ru": "Франция",
+      "name_en": "France",
+      "iso_code": "FRA",
+      "slug": "france",
+      "image": "",
+      "is_popular": true,
+      "created_at": "2025-08-20T17:48:03.335Z"
+    }
+  },
+  {
+    "model": "selexia_travel.country",
+    "pk": 13,
+    "fields": {
+      "name_ru": "Хорватия",
+      "name_en": "Croatia",
+      "iso_code": "HRV",
+      "slug": "croatia",
+      "image": "",
+      "is_popular": false,
+      "created_at": "2025-08-20T17:48:03.353Z"
+    }
+  },
+  {
+    "model": "selexia_travel.country",
+    "pk": 14,
+    "fields": {
+      "name_ru": "Черногория",
+      "name_en": "Montenegro",
+      "iso_code": "MNE",
+      "slug": "montenegro",
+      "image": "",
+      "is_popular": false,
+      "created_at": "2025-08-20T17:48:03.360Z"
+    }
+  }
+]

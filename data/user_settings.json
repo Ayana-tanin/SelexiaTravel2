@@ -1,0 +1,62 @@
+[
+  {
+    "model": "selexia_travel.usersettings",
+    "pk": 1,
+    "fields": {
+      "user": 5,
+      "email_notifications": true,
+      "push_notifications": true,
+      "profile_public": false,
+      "show_reviews": true,
+      "preferred_language": "ru",
+      "timezone": "Europe/Moscow",
+      "created_at": "2025-08-22T08:09:02.286Z",
+      "updated_at": "2025-08-22T08:09:02.286Z"
+    }
+  },
+  {
+    "model": "selexia_travel.usersettings",
+    "pk": 2,
+    "fields": {
+      "user": 11,
+      "email_notifications": true,
+      "push_notifications": true,
+      "profile_public": false,
+      "show_reviews": true,
+      "preferred_language": "ru",
+      "timezone": "Europe/Moscow",
+      "created_at": "2025-08-22T08:14:06.585Z",
+      "updated_at": "2025-08-22T08:14:06.585Z"
+    }
+  },
+  {
+    "model": "selexia_travel.usersettings",
+    "pk": 3,
+    "fields": {
+      "user": 1,
+      "email_notifications": true,
+      "push_notifications": true,
+      "profile_public": false,
+      "show_reviews": true,
+      "preferred_language": "ru",
+      "timezone": "Europe/Moscow",
+      "created_at": "2025-08-22T09:49:32.612Z",
+      "updated_at": "2025-08-22T09:49:32.612Z"
+    }
+  },
+  {
+    "model": "selexia_travel.usersettings",
+    "pk": 4,
+    "fields": {
+      "user": 12,
+      "email_notifications": true,
+      "push_notifications": true,
+      "profile_public": false,
+      "show_reviews": true,
+      "preferred_language": "ru",
+      "timezone": "Europe/Moscow",
+      "created_at": "2025-08-22T10:02:16.962Z",
+      "updated_at": "2025-08-22T10:02:16.962Z"
+    }
+  }
+]

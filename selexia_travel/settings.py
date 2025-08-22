@@ -78,31 +78,97 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'selexia_travel.wsgi.application'
 
-# Database
-# Используем PostgreSQL в продакшене, SQLite в разработке
+# Database Configuration
+# Приоритет подключения к PostgreSQL через .env файл
 if config('DATABASE_URL', default=''):
+    # Основной способ подключения через DATABASE_URL
     DATABASES = {
-        'default': dj_database_url.parse(config('DATABASE_URL'))
+        'default': dj_database_url.parse(
+            config('DATABASE_URL'),
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
-elif config('DATABASE_NAME', default=''):
-    # Railway PostgreSQL настройки
+    
+    # Дополнительные настройки для PostgreSQL
+    if 'postgresql' in config('DATABASE_URL'):
+        DATABASES['default']['OPTIONS'] = {
+            'connect_timeout': 10,
+            'sslmode': 'require',
+            'application_name': 'selexia_travel',
+        }
+    
+    print("🔍 Подключение к БД через DATABASE_URL")
+    
+elif (config('DB_ENGINE', default='') == 'postgresql' or 
+      config('DB_ENGINE', default='') == 'postgres' or
+      config('DB_NAME', default='') and config('DB_USER', default='') and config('DB_PASSWORD', default='')):
+    # Подключение через отдельные переменные окружения
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': config('DATABASE_NAME'),
-            'USER': config('DATABASE_USER'),
-            'PASSWORD': config('DATABASE_PASSWORD'),
-            'HOST': config('DATABASE_HOST'),
-            'PORT': config('DATABASE_PORT'),
+            'NAME': config('DB_NAME'),
+            'USER': config('DB_USER'),
+            'PASSWORD': config('DB_PASSWORD'),
+            'HOST': config('DB_HOST', default='localhost'),
+            'PORT': config('DB_PORT', default='5432'),
+            'OPTIONS': {
+                'connect_timeout': 10,
+                'sslmode': config('DB_SSL_MODE', default='prefer'),
+                'application_name': 'selexia_travel',
+            },
+            'CONN_MAX_AGE': 600,
+            'CONN_HEALTH_CHECKS': True,
         }
     }
+    print("🔍 Подключение к PostgreSQL через переменные окружения")
 else:
+    # Fallback на SQLite для разработки
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+    print("🔍 Использование SQLite для разработки")
+
+# Логирование настроек базы данных
+print(f"🔍 Настройки БД:")
+print(f"   DATABASE_URL: {'Установлен' if config('DATABASE_URL', default='') else 'Не установлен'}")
+print(f"   DB_ENGINE: {config('DB_ENGINE', default='Не установлен')}")
+print(f"   DB_NAME: {config('DB_NAME', default='Не установлен')}")
+print(f"   DB_HOST: {config('DB_HOST', default='Не установлен')}")
+print(f"   DB_PORT: {config('DB_PORT', default='Не установлен')}")
+print(f"   Текущий ENGINE: {DATABASES['default']['ENGINE']}")
+
+# Дополнительные настройки PostgreSQL
+if DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql':
+    # Оптимизация для PostgreSQL
+    DATABASES['default']['OPTIONS'] = DATABASES['default'].get('OPTIONS', {})
+    DATABASES['default']['OPTIONS'].update({
+        'connect_timeout': 10,
+        'sslmode': 'require',
+        'application_name': 'selexia_travel',
+    })
+    
+    # Настройки пула соединений
+    DATABASES['default']['CONN_MAX_AGE'] = 600  # 10 минут
+    DATABASES['default']['CONN_HEALTH_CHECKS'] = True
+    
+    print("🔧 PostgreSQL оптимизации применены")
+    print(f"   CONN_MAX_AGE: {DATABASES['default']['CONN_MAX_AGE']} секунд")
+    print(f"   SSL Mode: {DATABASES['default']['OPTIONS'].get('sslmode', 'default')}")
+    print(f"   Connect Timeout: {DATABASES['default']['OPTIONS'].get('connect_timeout', 'default')} секунд")
+    
+    # Дополнительная информация о подключении
+    db_info = DATABASES['default']
+    print(f"🔍 Информация о подключении:")
+    print(f"   Хост: {db_info.get('HOST', 'N/A')}")
+    print(f"   Порт: {db_info.get('PORT', 'N/A')}")
+    print(f"   База данных: {db_info.get('NAME', 'N/A')}")
+    print(f"   Пользователь: {db_info.get('USER', 'N/A')}")
+else:
+    print("🔍 SQLite база данных - PostgreSQL оптимизации не применяются")
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -351,16 +417,23 @@ if not DEBUG:
     SECURE_HSTS_PRELOAD = config('SECURE_HSTS_PRELOAD', default=True, cast=bool)
     CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=True, cast=bool)
     SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=True, cast=bool)
+    print(f"🔒 Продакшен настройки безопасности: АКТИВНЫ")
 else:
     SECURE_SSL_REDIRECT = False
     CSRF_COOKIE_SECURE = False
     SESSION_COOKIE_SECURE = False
+    print(f"🔓 Локальные настройки безопасности")
 
 # Railway настройки
-RAILWAY_ENVIRONMENT = config('DATABASE_ENGINE', default='') == 'railway'
+RAILWAY_ENVIRONMENT = config('DB_ENGINE', default='') == 'railway'
 if RAILWAY_ENVIRONMENT:
     ALLOWED_HOSTS = ['*', '.up.railway.app', '.rlwy.net']
     CSRF_TRUSTED_ORIGINS = ['https://*.up.railway.app', 'https://*.rlwy.net']
+    print(f"🚂 Railway окружение: АКТИВНО")
+    print(f"   ALLOWED_HOSTS: {ALLOWED_HOSTS}")
+    print(f"   CSRF_TRUSTED_ORIGINS: {CSRF_TRUSTED_ORIGINS}")
+else:
+    print(f"🏠 Локальное окружение")
 
 # Logging
 LOGGING = {
@@ -403,3 +476,42 @@ GMAIL_CLIENT_ID = config('GMAIL_CLIENT_ID', default='your-gmail-client-id.apps.g
 GMAIL_CLIENT_SECRET = config('GMAIL_CLIENT_SECRET', default='your-gmail-client-secret')
 GMAIL_CREDENTIALS_FILE = config('GMAIL_CREDENTIALS_FILE', default='credentials.json')
 GMAIL_TOKEN_FILE = config('GMAIL_TOKEN_FILE', default='token.json')
+
+# Проверка критических переменных окружения
+print(f"🔍 Проверка переменных окружения:")
+print(f"   SECRET_KEY: {'Установлен' if config('SECRET_KEY', default='') != 'django-insecure-your-secret-key-here-change-this' else 'НЕ ИЗМЕНЕН'}")
+print(f"   DEBUG: {DEBUG}")
+print(f"   DB_ENGINE: {config('DB_ENGINE', default='Не установлен')}")
+print(f"   EMAIL_HOST: {config('EMAIL_HOST', default='Не установлен')}")
+print(f"   GOOGLE_CLIENT_ID: {'Установлен' if config('GOOGLE_CLIENT_ID', default='') else 'Не установлен'}")
+print(f"   YANDEX_CLIENT_ID: {'Установлен' if config('YANDEX_CLIENT_ID', default='') else 'Не установлен'}")
+print("=" * 60)
+
+# Дополнительные настройки PostgreSQL
+if DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql':
+    # Оптимизация для PostgreSQL
+    DATABASES['default']['OPTIONS'] = DATABASES['default'].get('OPTIONS', {})
+    DATABASES['default']['OPTIONS'].update({
+        'connect_timeout': 10,
+        'sslmode': 'require',
+        'application_name': 'selexia_travel',
+    })
+    
+    # Настройки пула соединений
+    DATABASES['default']['CONN_MAX_AGE'] = 600  # 10 минут
+    DATABASES['default']['CONN_HEALTH_CHECKS'] = True
+    
+    print("🔧 PostgreSQL оптимизации применены")
+    print(f"   CONN_MAX_AGE: {DATABASES['default']['CONN_MAX_AGE']} секунд")
+    print(f"   SSL Mode: {DATABASES['default']['OPTIONS'].get('sslmode', 'default')}")
+    print(f"   Connect Timeout: {DATABASES['default']['OPTIONS'].get('connect_timeout', 'default')} секунд")
+    
+    # Дополнительная информация о подключении
+    db_info = DATABASES['default']
+    print(f"🔍 Информация о подключении:")
+    print(f"   Хост: {db_info.get('HOST', 'N/A')}")
+    print(f"   Порт: {db_info.get('PORT', 'N/A')}")
+    print(f"   База данных: {db_info.get('NAME', 'N/A')}")
+    print(f"   Пользователь: {db_info.get('USER', 'N/A')}")
+else:
+    print("🔍 SQLite база данных - PostgreSQL оптимизации не применяются")

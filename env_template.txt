@@ -38,6 +38,6 @@ APPLE_KEY=your-apple-key
 # Security Settings
 CSRF_COOKIE_SECURE=False
 SESSION_COOKIE_SECURE=False
-
 # Site Settings
 SITE_ID=1
+

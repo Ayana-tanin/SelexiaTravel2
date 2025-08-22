@@ -1,0 +1,287 @@
+[
+  {
+    "model": "selexia_travel.city",
+    "pk": 14,
+    "fields": {
+      "name_ru": "Абу-Даби",
+      "name_en": "Abu Dhabi",
+      "country": 7,
+      "slug": "abu-dhabi",
+      "latitude": null,
+      "longitude": null,
+      "image": "",
+      "is_popular": false,
+      "created_at": "2025-08-19T17:31:26.933Z"
+    }
+  },
+  {
+    "model": "selexia_travel.city",
+    "pk": 1,
+    "fields": {
+      "name_ru": "Анталья",
+      "name_en": "Antalya",
+      "country": 1,
+      "slug": "antalya",
+      "latitude": null,
+      "longitude": null,
+      "image": "",
+      "is_popular": false,
+      "created_at": "2025-08-19T17:31:26.721Z"
+    }
+  },
+  {
+    "model": "selexia_travel.city",
+    "pk": 11,
+    "fields": {
+      "name_ru": "Афины",
+      "name_en": "Athens",
+      "country": 6,
+      "slug": "athens",
+      "latitude": null,
+      "longitude": null,
+      "image": "",
+      "is_popular": false,
+      "created_at": "2025-08-19T17:31:26.894Z"
+    }
+  },
+  {
+    "model": "selexia_travel.city",
+    "pk": 5,
+    "fields": {
+      "name_ru": "Бангкок",
+      "name_en": "Bangkok",
+      "country": 3,
+      "slug": "bangkok",
+      "latitude": null,
+      "longitude": null,
+      "image": "",
+      "is_popular": false,
+      "created_at": "2025-08-19T17:31:26.795Z"
+    }
+  },
+  {
+    "model": "selexia_travel.city",
+    "pk": 7,
+    "fields": {
+      "name_ru": "Барселона",
+      "name_en": "Barcelona",
+      "country": 4,
+      "slug": "barcelona",
+      "latitude": null,
+      "longitude": null,
+      "image": "",
+      "is_popular": false,
+      "created_at": "2025-08-19T17:31:26.830Z"
+    }
+  },
+  {
+    "model": "selexia_travel.city",
+    "pk": 13,
+    "fields": {
+      "name_ru": "Дубай",
+      "name_en": "Dubai",
+      "country": 7,
+      "slug": "dubai",
+      "latitude": null,
+      "longitude": null,
+      "image": "",
+      "is_popular": false,
+      "created_at": "2025-08-19T17:31:26.920Z"
+    }
+  },
+  {
+    "model": "selexia_travel.city",
+    "pk": 18,
+    "fields": {
+      "name_ru": "Дубровник",
+      "name_en": "Dubrovnik",
+      "country": 13,
+      "slug": "dubrovnik",
+      "latitude": null,
+      "longitude": null,
+      "image": "",
+      "is_popular": false,
+      "created_at": "2025-08-20T17:48:03.398Z"
+    }
+  },
+  {
+    "model": "selexia_travel.city",
+    "pk": 19,
+    "fields": {
+      "name_ru": "Котор",
+      "name_en": "Kotor",
+      "country": 14,
+      "slug": "kotor",
+      "latitude": null,
+      "longitude": null,
+      "image": "",
+      "is_popular": false,
+      "created_at": "2025-08-20T17:48:03.407Z"
+    }
+  },
+  {
+    "model": "selexia_travel.city",
+    "pk": 17,
+    "fields": {
+      "name_ru": "Лиссабон",
+      "name_en": "Lisbon",
+      "country": 12,
+      "slug": "lisbon",
+      "latitude": null,
+      "longitude": null,
+      "image": "",
+      "is_popular": false,
+      "created_at": "2025-08-20T17:48:03.391Z"
+    }
+  },
+  {
+    "model": "selexia_travel.city",
+    "pk": 8,
+    "fields": {
+      "name_ru": "Мадрид",
+      "name_en": "Madrid",
+      "country": 4,
+      "slug": "madrid",
+      "latitude": null,
+      "longitude": null,
+      "image": "",
+      "is_popular": false,
+      "created_at": "2025-08-19T17:31:26.846Z"
+    }
+  },
+  {
+    "model": "selexia_travel.city",
+    "pk": 10,
+    "fields": {
+      "name_ru": "Милан",
+      "name_en": "Milan",
+      "country": 5,
+      "slug": "milan",
+      "latitude": null,
+      "longitude": null,
+      "image": "",
+      "is_popular": false,
+      "created_at": "2025-08-19T17:31:26.879Z"
+    }
+  },
+  {
+    "model": "selexia_travel.city",
+    "pk": 16,
+    "fields": {
+      "name_ru": "Париж",
+      "name_en": "Paris",
+      "country": 11,
+      "slug": "paris",
+      "latitude": null,
+      "longitude": null,
+      "image": "",
+      "is_popular": false,
+      "created_at": "2025-08-20T17:48:03.385Z"
+    }
+  },
+  {
+    "model": "selexia_travel.city",
+    "pk": 6,
+    "fields": {
+      "name_ru": "Пхукет",
+      "name_en": "Phuket",
+      "country": 3,
+      "slug": "phuket",
+      "latitude": null,
+      "longitude": null,
+      "image": "",
+      "is_popular": false,
+      "created_at": "2025-08-19T17:31:26.812Z"
+    }
+  },
+  {
+    "model": "selexia_travel.city",
+    "pk": 9,
+    "fields": {
+      "name_ru": "Рим",
+      "name_en": "Rome",
+      "country": 5,
+      "slug": "rome",
+      "latitude": null,
+      "longitude": null,
+      "image": "",
+      "is_popular": false,
+      "created_at": "2025-08-19T17:31:26.863Z"
+    }
+  },
+  {
+    "model": "selexia_travel.city",
+    "pk": 12,
+    "fields": {
+      "name_ru": "Салоники",
+      "name_en": "Thessaloniki",
+      "country": 6,
+      "slug": "thessaloniki",
+      "latitude": null,
+      "longitude": null,
+      "image": "",
+      "is_popular": false,
+      "created_at": "2025-08-19T17:31:26.909Z"
+    }
+  },
+  {
+    "model": "selexia_travel.city",
+    "pk": 2,
+    "fields": {
+      "name_ru": "Стамбул",
+      "name_en": "Istanbul",
+      "country": 1,
+      "slug": "istanbul",
+      "latitude": null,
+      "longitude": null,
+      "image": "",
+      "is_popular": false,
+      "created_at": "2025-08-19T17:31:26.745Z"
+    }
+  },
+  {
+    "model": "selexia_travel.city",
+    "pk": 15,
+    "fields": {
+      "name_ru": "Флоренция",
+      "name_en": "Florence",
+      "country": 5,
+      "slug": "florence",
+      "latitude": null,
+      "longitude": null,
+      "image": "",
+      "is_popular": false,
+      "created_at": "2025-08-20T17:48:03.377Z"
+    }
+  },
+  {
+    "model": "selexia_travel.city",
+    "pk": 3,
+    "fields": {
+      "name_ru": "Хургада",
+      "name_en": "Hurghada",
+      "country": 2,
+      "slug": "hurghada",
+      "latitude": null,
+      "longitude": null,
+      "image": "",
+      "is_popular": false,
+      "created_at": "2025-08-19T17:31:26.761Z"
+    }
+  },
+  {
+    "model": "selexia_travel.city",
+    "pk": 4,
+    "fields": {
+      "name_ru": "Шарм-эль-Шейх",
+      "name_en": "Sharm El Sheikh",
+      "country": 2,
+      "slug": "sharm-el-sheikh",
+      "latitude": null,
+      "longitude": null,
+      "image": "",
+      "is_popular": false,
+      "created_at": "2025-08-19T17:31:26.779Z"
+    }
+  }
+]

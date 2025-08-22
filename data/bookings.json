@@ -1,0 +1,210 @@
+[
+  {
+    "model": "selexia_travel.booking",
+    "pk": 13,
+    "fields": {
+      "excursion": 7,
+      "user": 12,
+      "date": "2025-08-23",
+      "people_count": 2,
+      "total_price": "25.00",
+      "status": "confirmed",
+      "special_requests": "",
+      "contact_phone": "+3456775432й",
+      "contact_email": "tanRan.an@yandex.ru",
+      "created_at": "2025-08-22T11:59:42.747Z"
+    }
+  },
+  {
+    "model": "selexia_travel.booking",
+    "pk": 12,
+    "fields": {
+      "excursion": 7,
+      "user": 12,
+      "date": "2025-08-23",
+      "people_count": 2,
+      "total_price": "25.00",
+      "status": "pending",
+      "special_requests": "",
+      "contact_phone": "+3456775432й",
+      "contact_email": "tanRan.an@yandex.ru",
+      "created_at": "2025-08-22T11:38:01.023Z"
+    }
+  },
+  {
+    "model": "selexia_travel.booking",
+    "pk": 11,
+    "fields": {
+      "excursion": 7,
+      "user": 12,
+      "date": "2025-08-23",
+      "people_count": 2,
+      "total_price": "25.00",
+      "status": "cancelled",
+      "special_requests": "",
+      "contact_phone": "+3456775432й",
+      "contact_email": "tanRan.an@yandex.ru",
+      "created_at": "2025-08-22T11:37:30.876Z"
+    }
+  },
+  {
+    "model": "selexia_travel.booking",
+    "pk": 10,
+    "fields": {
+      "excursion": 11,
+      "user": 5,
+      "date": "2025-09-05",
+      "people_count": 1,
+      "total_price": "75.00",
+      "status": "pending",
+      "special_requests": "",
+      "contact_phone": "+79001234567",
+      "contact_email": "test@example.com",
+      "created_at": "2025-08-22T08:09:03.278Z"
+    }
+  },
+  {
+    "model": "selexia_travel.booking",
+    "pk": 9,
+    "fields": {
+      "excursion": 10,
+      "user": 5,
+      "date": "2025-08-29",
+      "people_count": 2,
+      "total_price": "100.00",
+      "status": "confirmed",
+      "special_requests": "",
+      "contact_phone": "+79001234567",
+      "contact_email": "test@example.com",
+      "created_at": "2025-08-22T08:09:02.337Z"
+    }
+  },
+  {
+    "model": "selexia_travel.booking",
+    "pk": 8,
+    "fields": {
+      "excursion": 7,
+      "user": 11,
+      "date": "2025-08-31",
+      "people_count": 4,
+      "total_price": "100.00",
+      "status": "confirmed",
+      "special_requests": "ewrty",
+      "contact_phone": "+905455730301",
+      "contact_email": "selexiatravelauth@gmail.com",
+      "created_at": "2025-08-21T16:59:54.401Z"
+    }
+  },
+  {
+    "model": "selexia_travel.booking",
+    "pk": 7,
+    "fields": {
+      "excursion": 3,
+      "user": 11,
+      "date": "2025-08-31",
+      "people_count": 3,
+      "total_price": "150.00",
+      "status": "pending",
+      "special_requests": "цук",
+      "contact_phone": "+996551994044",
+      "contact_email": "selexiatravelauth@gmail.com",
+      "created_at": "2025-08-21T16:57:11.183Z"
+    }
+  },
+  {
+    "model": "selexia_travel.booking",
+    "pk": 6,
+    "fields": {
+      "excursion": 3,
+      "user": 11,
+      "date": "2025-08-31",
+      "people_count": 3,
+      "total_price": "150.00",
+      "status": "pending",
+      "special_requests": "цук",
+      "contact_phone": "+996551994044",
+      "contact_email": "selexiatravelauth@gmail.com",
+      "created_at": "2025-08-21T16:54:15.356Z"
+    }
+  },
+  {
+    "model": "selexia_travel.booking",
+    "pk": 5,
+    "fields": {
+      "excursion": 3,
+      "user": 11,
+      "date": "2025-08-27",
+      "people_count": 1,
+      "total_price": "50.00",
+      "status": "pending",
+      "special_requests": "",
+      "contact_phone": "+905455730301",
+      "contact_email": "selexiatravelauth@gmail.com",
+      "created_at": "2025-08-21T16:53:57.089Z"
+    }
+  },
+  {
+    "model": "selexia_travel.booking",
+    "pk": 4,
+    "fields": {
+      "excursion": 3,
+      "user": 11,
+      "date": "2025-08-27",
+      "people_count": 1,
+      "total_price": "50.00",
+      "status": "pending",
+      "special_requests": "",
+      "contact_phone": "+905455730301",
+      "contact_email": "selexiatravelauth@gmail.com",
+      "created_at": "2025-08-21T16:51:49.382Z"
+    }
+  },
+  {
+    "model": "selexia_travel.booking",
+    "pk": 3,
+    "fields": {
+      "excursion": 3,
+      "user": 11,
+      "date": "2025-08-30",
+      "people_count": 2,
+      "total_price": "100.00",
+      "status": "pending",
+      "special_requests": "",
+      "contact_phone": "+996551994044",
+      "contact_email": "selexiatravelauth@gmail.com",
+      "created_at": "2025-08-21T16:45:49.818Z"
+    }
+  },
+  {
+    "model": "selexia_travel.booking",
+    "pk": 2,
+    "fields": {
+      "excursion": 6,
+      "user": 7,
+      "date": "2025-08-25",
+      "people_count": 1,
+      "total_price": "25.00",
+      "status": "confirmed",
+      "special_requests": "",
+      "contact_phone": "+7-987-654-3210",
+      "contact_email": "alexey.petrov@example.com",
+      "created_at": "2025-08-20T17:52:28.681Z"
+    }
+  },
+  {
+    "model": "selexia_travel.booking",
+    "pk": 1,
+    "fields": {
+      "excursion": 3,
+      "user": 6,
+      "date": "2025-08-30",
+      "people_count": 2,
+      "total_price": "100.00",
+      "status": "confirmed",
+      "special_requests": "",
+      "contact_phone": "+7-123-456-7890",
+      "contact_email": "maria.ivanova@example.com",
+      "created_at": "2025-08-20T17:52:28.505Z"
+    }
+  }
+]

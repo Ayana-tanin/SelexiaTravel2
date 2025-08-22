@@ -1,0 +1,182 @@
+[
+  {
+    "model": "selexia_travel.user",
+    "pk": 1,
+    "fields": {
+      "username": null,
+      "email": "admin@gmail.com",
+      "first_name": "",
+      "last_name": "",
+      "is_active": true,
+      "is_staff": true,
+      "is_superuser": true,
+      "date_joined": "2025-08-19T17:29:23.494723+00:00",
+      "last_login": "2025-08-21T08:14:20.743993+00:00"
+    }
+  },
+  {
+    "model": "selexia_travel.user",
+    "pk": 2,
+    "fields": {
+      "username": null,
+      "email": "ayana05j@gmail.com",
+      "first_name": "Аяна",
+      "last_name": "Ж.",
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "date_joined": "2025-08-19T17:33:03.498497+00:00",
+      "last_login": "2025-08-19T17:33:03.600531+00:00"
+    }
+  },
+  {
+    "model": "selexia_travel.user",
+    "pk": 3,
+    "fields": {
+      "username": null,
+      "email": "ayana05123456@gmail.com",
+      "first_name": "Ant",
+      "last_name": "An",
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "date_joined": "2025-08-19T17:34:39.938187+00:00",
+      "last_login": "2025-08-19T17:34:39.985091+00:00"
+    }
+  },
+  {
+    "model": "selexia_travel.user",
+    "pk": 4,
+    "fields": {
+      "username": null,
+      "email": "tanran.an@yandex.ru",
+      "first_name": "Аяна",
+      "last_name": "Жыргалбекова",
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "date_joined": "2025-08-19T17:43:00.459132+00:00",
+      "last_login": "2025-08-19T17:43:00.590145+00:00"
+    }
+  },
+  {
+    "model": "selexia_travel.user",
+    "pk": 5,
+    "fields": {
+      "username": null,
+      "email": "test@example.com",
+      "first_name": "Тест",
+      "last_name": "Пользователь",
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "date_joined": "2025-08-20T17:48:02.803695+00:00",
+      "last_login": null
+    }
+  },
+  {
+    "model": "selexia_travel.user",
+    "pk": 6,
+    "fields": {
+      "username": null,
+      "email": "maria.ivanova@example.com",
+      "first_name": "Мария",
+      "last_name": "Иванова",
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "date_joined": "2025-08-20T17:51:54.349391+00:00",
+      "last_login": null
+    }
+  },
+  {
+    "model": "selexia_travel.user",
+    "pk": 7,
+    "fields": {
+      "username": null,
+      "email": "alexey.petrov@example.com",
+      "first_name": "Алексей",
+      "last_name": "Петров",
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "date_joined": "2025-08-20T17:51:54.838819+00:00",
+      "last_login": null
+    }
+  },
+  {
+    "model": "selexia_travel.user",
+    "pk": 8,
+    "fields": {
+      "username": null,
+      "email": "elena.sidorova@example.com",
+      "first_name": "Елена",
+      "last_name": "Сидорова",
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "date_joined": "2025-08-20T17:51:55.136593+00:00",
+      "last_login": null
+    }
+  },
+  {
+    "model": "selexia_travel.user",
+    "pk": 9,
+    "fields": {
+      "username": null,
+      "email": "dmitry.volkov@example.com",
+      "first_name": "Дмитрий",
+      "last_name": "Волков",
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "date_joined": "2025-08-20T17:51:55.437118+00:00",
+      "last_login": null
+    }
+  },
+  {
+    "model": "selexia_travel.user",
+    "pk": 10,
+    "fields": {
+      "username": null,
+      "email": "anna.kozlova@example.com",
+      "first_name": "Анна",
+      "last_name": "Козлова",
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "date_joined": "2025-08-20T17:51:55.745437+00:00",
+      "last_login": null
+    }
+  },
+  {
+    "model": "selexia_travel.user",
+    "pk": 11,
+    "fields": {
+      "username": null,
+      "email": "selexiatravelauth@gmail.com",
+      "first_name": "Selexiatravelauth",
+      "last_name": "",
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "date_joined": "2025-08-21T13:50:11.361733+00:00",
+      "last_login": "2025-08-21T13:50:11.562582+00:00"
+    }
+  },
+  {
+    "model": "selexia_travel.user",
+    "pk": 12,
+    "fields": {
+      "username": "tanRan.an_1755856490",
+      "email": "tanRan.an@yandex.ru",
+      "first_name": "Тест",
+      "last_name": "цувка",
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "date_joined": "2025-08-22T09:54:50.625479+00:00",
+      "last_login": "2025-08-22T12:58:56.108414+00:00"
+    }
+  }
+]
