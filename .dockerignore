@@ -1,0 +1,55 @@
+# Git
+.git/
+.gitignore
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+selexia_env/
+*.egg-info/
+
+# Node.js (игнорируем полностью)
+node_modules/
+package*.json
+vite.config.js
+tailwind.config.js
+postcss.config.js
+src/
+public/
+
+# Django
+*.log
+logs/
+media/
+staticfiles/
+db.sqlite3
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Docker
+.dockerignore
+docker-compose.yml
+
+# Другие
+*.tmp
+*.temp
+.coverage
+htmlcov/
