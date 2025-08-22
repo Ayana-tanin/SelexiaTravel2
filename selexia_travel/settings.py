@@ -8,6 +8,12 @@ import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Railway настройки - определение окружения в начале файла
+RAILWAY_ENVIRONMENT = (
+    config('DATABASE_URL', default='').startswith('postgresql://') and 
+    ('railway' in config('DATABASE_URL', default='') or 'rlwy.net' in config('DATABASE_URL', default=''))
+) or config('RAILWAY_ENVIRONMENT', default=False, cast=bool)
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-your-secret-key-here-change-this')
 
@@ -55,7 +61,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'selexia_travel.urls'
@@ -81,57 +86,68 @@ WSGI_APPLICATION = 'selexia_travel.wsgi.application'
 
 # Database Configuration
 # Приоритет подключения к PostgreSQL через .env файл
-if config('DATABASE_URL', default=''):
-    # Основной способ подключения через DATABASE_URL
-    DATABASES = {
-        'default': dj_database_url.parse(
-            config('DATABASE_URL'),
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
-    }
-    
-    # Дополнительные настройки для PostgreSQL
-    if 'postgresql' in config('DATABASE_URL'):
-        DATABASES['default']['OPTIONS'] = {
-            'connect_timeout': 10,
-            'sslmode': 'require',
-            'application_name': 'selexia_travel',
+try:
+    if config('DATABASE_URL', default=''):
+        # Основной способ подключения через DATABASE_URL
+        DATABASES = {
+            'default': dj_database_url.parse(
+                config('DATABASE_URL'),
+                conn_max_age=600,
+                conn_health_checks=True,
+            )
         }
-    
-    print("🔍 Подключение к БД через DATABASE_URL")
-    
-elif (config('DB_ENGINE', default='') == 'postgresql' or 
-      config('DB_ENGINE', default='') == 'postgres' or
-      config('DB_NAME', default='') and config('DB_USER', default='') and config('DB_PASSWORD', default='')):
-    # Подключение через отдельные переменные окружения
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': config('DB_NAME'),
-            'USER': config('DB_USER'),
-            'PASSWORD': config('DB_PASSWORD'),
-            'HOST': config('DB_HOST', default='localhost'),
-            'PORT': config('DB_PORT', default='5432'),
-            'OPTIONS': {
+        
+        # Дополнительные настройки для PostgreSQL
+        if 'postgresql' in config('DATABASE_URL'):
+            DATABASES['default']['OPTIONS'] = {
                 'connect_timeout': 10,
-                'sslmode': config('DB_SSL_MODE', default='prefer'),
+                'sslmode': 'require',
                 'application_name': 'selexia_travel',
-            },
-            'CONN_MAX_AGE': 600,
-            'CONN_HEALTH_CHECKS': True,
+            }
+        
+        print("🔍 Подключение к БД через DATABASE_URL")
+        
+    elif (config('DB_ENGINE', default='') == 'postgresql' or 
+          config('DB_ENGINE', default='') == 'postgres' or
+          config('DB_NAME', default='') and config('DB_USER', default='') and config('DB_PASSWORD', default='')):
+        # Подключение через отдельные переменные окружения
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': config('DB_NAME'),
+                'USER': config('DB_USER'),
+                'PASSWORD': config('DB_PASSWORD'),
+                'HOST': config('DB_HOST', default='localhost'),
+                'PORT': config('DB_PORT', default='5432'),
+                'OPTIONS': {
+                    'connect_timeout': 10,
+                    'sslmode': config('DB_SSL_MODE', default='prefer'),
+                    'application_name': 'selexia_travel',
+                },
+                'CONN_MAX_AGE': 600,
+                'CONN_HEALTH_CHECKS': True,
+            }
         }
-    }
-    print("🔍 Подключение к PostgreSQL через переменные окружения")
-else:
-    # Fallback на SQLite для разработки
+        print("🔍 Подключение к PostgreSQL через переменные окружения")
+    else:
+        # Fallback на SQLite для разработки
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+        }
+        print("🔍 Использование SQLite для разработки")
+        
+except Exception as e:
+    print(f"❌ Ошибка настройки базы данных: {e}")
+    print("🔄 Используем SQLite как fallback")
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-    print("🔍 Использование SQLite для разработки")
 
 # Логирование настроек базы данных
 print(f"🔍 Настройки БД:")
@@ -143,33 +159,36 @@ print(f"   DB_PORT: {config('DB_PORT', default='Не установлен')}")
 print(f"   Текущий ENGINE: {DATABASES['default']['ENGINE']}")
 
 # Дополнительные настройки PostgreSQL
-if DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql':
-    # Оптимизация для PostgreSQL
-    DATABASES['default']['OPTIONS'] = DATABASES['default'].get('OPTIONS', {})
-    DATABASES['default']['OPTIONS'].update({
-        'connect_timeout': 10,
-        'sslmode': 'require',
-        'application_name': 'selexia_travel',
-    })
-    
-    # Настройки пула соединений
-    DATABASES['default']['CONN_MAX_AGE'] = 600  # 10 минут
-    DATABASES['default']['CONN_HEALTH_CHECKS'] = True
-    
-    print("🔧 PostgreSQL оптимизации применены")
-    print(f"   CONN_MAX_AGE: {DATABASES['default']['CONN_MAX_AGE']} секунд")
-    print(f"   SSL Mode: {DATABASES['default']['OPTIONS'].get('sslmode', 'default')}")
-    print(f"   Connect Timeout: {DATABASES['default']['OPTIONS'].get('connect_timeout', 'default')} секунд")
-    
-    # Дополнительная информация о подключении
-    db_info = DATABASES['default']
-    print(f"🔍 Информация о подключении:")
-    print(f"   Хост: {db_info.get('HOST', 'N/A')}")
-    print(f"   Порт: {db_info.get('PORT', 'N/A')}")
-    print(f"   База данных: {db_info.get('NAME', 'N/A')}")
-    print(f"   Пользователь: {db_info.get('USER', 'N/A')}")
-else:
-    print("🔍 SQLite база данных - PostgreSQL оптимизации не применяются")
+try:
+    if DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql':
+        # Оптимизация для PostgreSQL
+        DATABASES['default']['OPTIONS'] = DATABASES['default'].get('OPTIONS', {})
+        DATABASES['default']['OPTIONS'].update({
+            'connect_timeout': 10,
+            'sslmode': 'require',
+            'application_name': 'selexia_travel',
+        })
+        
+        # Настройки пула соединений
+        DATABASES['default']['CONN_MAX_AGE'] = 600  # 10 минут
+        DATABASES['default']['CONN_HEALTH_CHECKS'] = True
+        
+        print("🔧 PostgreSQL оптимизации применены")
+        print(f"   CONN_MAX_AGE: {DATABASES['default']['CONN_MAX_AGE']} секунд")
+        print(f"   SSL Mode: {DATABASES['default']['OPTIONS'].get('sslmode', 'default')}")
+        print(f"   Connect Timeout: {DATABASES['default']['OPTIONS'].get('connect_timeout', 'default')} секунд")
+        
+        # Дополнительная информация о подключении
+        db_info = DATABASES['default']
+        print(f"🔍 Информация о подключении:")
+        print(f"   Хост: {db_info.get('HOST', 'N/A')}")
+        print(f"   Порт: {db_info.get('PORT', 'N/A')}")
+        print(f"   База данных: {db_info.get('NAME', 'N/A')}")
+        print(f"   Пользователь: {db_info.get('USER', 'N/A')}")
+    else:
+        print("🔍 SQLite база данных - PostgreSQL оптимизации не применяются")
+except Exception as e:
+    print(f"⚠️ Ошибка при применении PostgreSQL оптимизаций: {e}")
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -211,8 +230,21 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
-    BASE_DIR / 'static/dist',  # Vue.js сборка
 ]
+
+# Добавляем Vue.js директорию только если она существует
+vue_dist_dir = BASE_DIR / 'static' / 'dist'
+if vue_dist_dir.exists():
+    STATICFILES_DIRS.append(vue_dist_dir)
+
+# WhiteNoise настройки для Railway
+if RAILWAY_ENVIRONMENT:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    WHITENOISE_USE_FINDERS = True
+    WHITENOISE_AUTOREFRESH = True
+    print("🚂 WhiteNoise настройки для Railway применены")
+else:
+    print("🏠 Локальные настройки статических файлов")
 
 # Media files
 MEDIA_URL = '/media/'
@@ -426,11 +458,6 @@ else:
     print(f"🔓 Локальные настройки безопасности")
 
 # Railway настройки - улучшенное определение окружения
-RAILWAY_ENVIRONMENT = (
-    config('DATABASE_URL', default='').startswith('postgresql://') and 
-    ('railway' in config('DATABASE_URL', default='') or 'rlwy.net' in config('DATABASE_URL', default=''))
-) or config('RAILWAY_ENVIRONMENT', default=False, cast=bool)
-
 if RAILWAY_ENVIRONMENT:
     print("🚂 Railway окружение: АКТИВНО")
     
@@ -489,14 +516,12 @@ LOGGING = {
             'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
             'style': '{',
         },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
     },
     'handlers': {
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': 'logs/django.log',
-            'formatter': 'verbose',
-        },
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
@@ -509,12 +534,37 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['console', 'file'],
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'gunicorn': {
+            'handlers': ['console'],
             'level': 'INFO',
             'propagate': False,
         },
     },
 }
+
+# Создаем директорию для логов только если она не существует и мы не на Railway
+if not RAILWAY_ENVIRONMENT:
+    try:
+        logs_dir = BASE_DIR / 'logs'
+        logs_dir.mkdir(exist_ok=True)
+        
+        # Добавляем файловый handler только для локальной разработки
+        LOGGING['handlers']['file'] = {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': str(logs_dir / 'django.log'),
+            'formatter': 'verbose',
+        }
+        LOGGING['loggers']['django']['handlers'].append('file')
+        print("📁 Локальное логирование в файл настроено")
+    except Exception as e:
+        print(f"⚠️ Не удалось настроить файловое логирование: {e}")
+else:
+    print("🚂 Railway окружение - только консольное логирование")
 
 # Gmail API настройки
 GMAIL_CLIENT_ID = config('GMAIL_CLIENT_ID', default='your-gmail-client-id.apps.googleusercontent.com')

@@ -1,1 +1,1 @@
-web: gunicorn selexia_travel.wsgi
+web: python railway_start.py

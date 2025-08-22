@@ -24,7 +24,6 @@ dj-database-url==2.1.0
 
 # WSGI сервер для Railway
 gunicorn==21.2.0
-
 # Интеграция с AmoCRM
 amocrm-api
 
