@@ -443,19 +443,57 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 
 # Production security settings
-if not DEBUG:
-    SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=True, cast=bool)
-    SECURE_HSTS_SECONDS = config('SECURE_HSTS_SECONDS', default=31536000, cast=int)
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = config('SECURE_HSTS_INCLUDE_SUBDOMAINS', default=True, cast=bool)
-    SECURE_HSTS_PRELOAD = config('SECURE_HSTS_PRELOAD', default=True, cast=bool)
-    CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=True, cast=bool)
-    SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=True, cast=bool)
-    print(f"🔒 Продакшен настройки безопасности: АКТИВНЫ")
+
+# Определяем, развернуто ли приложение на Railway
+IS_RAILWAY = os.environ.get('RAILWAY_ENVIRONMENT') is not None
+IS_PRODUCTION = not DEBUG
+
+if IS_PRODUCTION:
+    # Railway автоматически обрабатывает HTTPS, поэтому отключаем принудительное перенаправление
+    if IS_RAILWAY:
+        # Настройки специально для Railway
+        SECURE_SSL_REDIRECT = False  # ВАЖНО: False для Railway!
+        SECURE_HSTS_SECONDS = 0  # Отключаем HSTS на Railway
+        SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+        SECURE_HSTS_PRELOAD = False
+        
+        # Настройка для правильной работы с Railway прокси
+        SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+        
+        # Cookie настройки - можно оставить безопасными
+        CSRF_COOKIE_SECURE = True
+        SESSION_COOKIE_SECURE = True
+        
+        print(f"🚂 Railway продакшен настройки: АКТИВНЫ (SSL отключен)")
+        
+    else:
+        # Настройки для других продакшен серверов (не Railway)
+        SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=True, cast=bool)
+        SECURE_HSTS_SECONDS = config('SECURE_HSTS_SECONDS', default=31536000, cast=int)
+        SECURE_HSTS_INCLUDE_SUBDOMAINS = config('SECURE_HSTS_INCLUDE_SUBDOMAINS', default=True, cast=bool)
+        SECURE_HSTS_PRELOAD = config('SECURE_HSTS_PRELOAD', default=True, cast=bool)
+        CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=True, cast=bool)
+        SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=True, cast=bool)
+        
+        print(f"🔒 Обычный продакшен настройки безопасности: АКТИВНЫ")
+        
+    # Общие продакшен настройки безопасности
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
+    SESSION_COOKIE_HTTPONLY = True
+    
 else:
+    # Локальная разработка
     SECURE_SSL_REDIRECT = False
+    SECURE_HSTS_SECONDS = 0
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+    SECURE_HSTS_PRELOAD = False
     CSRF_COOKIE_SECURE = False
     SESSION_COOKIE_SECURE = False
+    
     print(f"🔓 Локальные настройки безопасности")
+
 
 # Railway настройки - улучшенное определение окружения
 if RAILWAY_ENVIRONMENT:
