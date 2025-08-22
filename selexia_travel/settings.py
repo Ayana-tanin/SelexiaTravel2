@@ -425,27 +425,60 @@ else:
     SESSION_COOKIE_SECURE = False
     print(f"🔓 Локальные настройки безопасности")
 
-# Railway настройки
-RAILWAY_ENVIRONMENT = config('DATABASE_URL', default='').startswith('postgresql://') and 'railway' in config('DATABASE_URL', default='')
+# Railway настройки - улучшенное определение окружения
+RAILWAY_ENVIRONMENT = (
+    config('DATABASE_URL', default='').startswith('postgresql://') and 
+    ('railway' in config('DATABASE_URL', default='') or 'rlwy.net' in config('DATABASE_URL', default=''))
+) or config('RAILWAY_ENVIRONMENT', default=False, cast=bool)
+
 if RAILWAY_ENVIRONMENT:
-
+    print("🚂 Railway окружение: АКТИВНО")
     
-    ALLOWED_HOSTS_ENV = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1')
-    ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS_ENV.split(',')]
+    # Обновляем ALLOWED_HOSTS для Railway
+    ALLOWED_HOSTS = [
+        'selexiatravel2.up.railway.app',
+        '*.up.railway.app',
+        '*.rlwy.net',
+        'localhost',
+        '127.0.0.1'
+    ]
     
-    CSRF_TRUSTED_ORIGINS_ENV = os.getenv('CSRF_TRUSTED_ORIGINS', 'http://localhost:8000')
-    CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in CSRF_TRUSTED_ORIGINS_ENV.split(',')]
-
-    print(f"🚂 Railway окружение: АКТИВНО")
+    # Обновляем CSRF_TRUSTED_ORIGINS для Railway
+    CSRF_TRUSTED_ORIGINS = [
+        'https://selexiatravel2.up.railway.app',
+        'https://*.up.railway.app',
+        'https://*.rlwy.net'
+    ]
+    
+    # Обновляем CORS настройки для Railway
+    CORS_ALLOWED_ORIGINS = [
+        'https://selexiatravel2.up.railway.app',
+        'https://*.up.railway.app',
+        'https://*.rlwy.net',
+        'http://localhost:3002',
+        'http://127.0.0.1:3002',
+        'http://localhost:8000',
+        'http://127.0.0.1:8000'
+    ]
+    
+    # Настройки безопасности для Railway
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_HTTPONLY = False  # Нужно для JavaScript
+    SESSION_COOKIE_HTTPONLY = True
+    
     print(f"   ALLOWED_HOSTS: {ALLOWED_HOSTS}")
     print(f"   CSRF_TRUSTED_ORIGINS: {CSRF_TRUSTED_ORIGINS}")
+    print(f"   CORS_ALLOWED_ORIGINS: {CORS_ALLOWED_ORIGINS}")
 else:
-    # Локальные настройки
-    ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
-    CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='http://localhost:8000,http://127.0.0.1:8000', cast=Csv())
-    print(f"🏠 Локальное окружение")
+    print("🏠 Локальное окружение")
     print(f"   ALLOWED_HOSTS: {ALLOWED_HOSTS}")
     print(f"   CSRF_TRUSTED_ORIGINS: {CSRF_TRUSTED_ORIGINS}")
+    print(f"   CORS_ALLOWED_ORIGINS: {CORS_ALLOWED_ORIGINS}")
 
 # Logging
 LOGGING = {
@@ -530,24 +563,4 @@ else:
 
 # Дополнительные настройки безопасности для Railway
 if RAILWAY_ENVIRONMENT:
-    # Настройки безопасности для Railway
-    SECURE_SSL_REDIRECT = True
-    SECURE_HSTS_SECONDS = 31536000
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
-    CSRF_COOKIE_SECURE = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_HTTPONLY = False  # Нужно для JavaScript
-    SESSION_COOKIE_HTTPONLY = True
-    
-    # Настройки CORS для Railway
-    CORS_ALLOWED_ORIGINS = [
-        "https://selexiatravel2.up.railway.app",
-        "https://*.up.railway.app",
-        "https://*.rlwy.net"
-    ]
-    
-    CORS_ALLOW_CREDENTIALS = True
-    
     print("🔒 Railway настройки безопасности применены")
-    print(f"   CORS_ALLOWED_ORIGINS: {CORS_ALLOWED_ORIGINS}")
