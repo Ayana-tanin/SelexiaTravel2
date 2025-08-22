@@ -425,15 +425,25 @@ else:
     print(f"🔓 Локальные настройки безопасности")
 
 # Railway настройки
-RAILWAY_ENVIRONMENT = config('DB_ENGINE', default='') == 'railway'
+RAILWAY_ENVIRONMENT = config('DATABASE_URL', default='').startswith('postgresql://') and 'railway' in config('DATABASE_URL', default='')
 if RAILWAY_ENVIRONMENT:
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'selexiatravel2.railway.internal']
-    CSRF_TRUSTED_ORIGINS = ['https://selexiatravel2.railway.internal', 'https://*.rlwy.net']
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'selexiatravel2.railway.internal', 'selexiatravel2.up.railway.app', '*.up.railway.app']
+    CSRF_TRUSTED_ORIGINS = [
+        'https://selexiatravel2.railway.internal',
+        'https://selexiatravel2.up.railway.app',
+        'https://*.up.railway.app',
+        'https://*.rlwy.net'
+    ]
     print(f"🚂 Railway окружение: АКТИВНО")
     print(f"   ALLOWED_HOSTS: {ALLOWED_HOSTS}")
     print(f"   CSRF_TRUSTED_ORIGINS: {CSRF_TRUSTED_ORIGINS}")
 else:
+    # Локальные настройки
+    ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
+    CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='http://localhost:8000,http://127.0.0.1:8000', cast=Csv())
     print(f"🏠 Локальное окружение")
+    print(f"   ALLOWED_HOSTS: {ALLOWED_HOSTS}")
+    print(f"   CSRF_TRUSTED_ORIGINS: {CSRF_TRUSTED_ORIGINS}")
 
 # Logging
 LOGGING = {
@@ -515,3 +525,27 @@ if DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql':
     print(f"   Пользователь: {db_info.get('USER', 'N/A')}")
 else:
     print("🔍 SQLite база данных - PostgreSQL оптимизации не применяются")
+
+# Дополнительные настройки безопасности для Railway
+if RAILWAY_ENVIRONMENT:
+    # Настройки безопасности для Railway
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_HTTPONLY = False  # Нужно для JavaScript
+    SESSION_COOKIE_HTTPONLY = True
+    
+    # Настройки CORS для Railway
+    CORS_ALLOWED_ORIGINS = [
+        "https://selexiatravel2.up.railway.app",
+        "https://*.up.railway.app",
+        "https://*.rlwy.net"
+    ]
+    
+    CORS_ALLOW_CREDENTIALS = True
+    
+    print("🔒 Railway настройки безопасности применены")
+    print(f"   CORS_ALLOWED_ORIGINS: {CORS_ALLOWED_ORIGINS}")
