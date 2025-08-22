@@ -1,0 +1,1303 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Личный кабинет - SELEXIA Travel{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-layout {
+        display: flex;
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .sidebar {
+        width: 320px;
+        flex-shrink: 0;
+    }
+
+    .profile-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e5e7eb;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .profile-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        overflow: hidden;
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        flex-shrink: 0;
+        font-size: 1.5rem;
+        color: white;
+    }
+
+    .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .profile-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .profile-info h1 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: #1f2937;
+        margin-bottom: 0.25rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .profile-info p {
+        color: #6b7280;
+        font-size: 0.875rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 1rem;
+        background: #f8fafc;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .stat-number {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #1f2937;
+        display: block;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .nav-menu {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .nav-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: left;
+        width: 100%;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #374151;
+        text-decoration: none;
+    }
+
+    .nav-item:hover {
+        background-color: #f3f4f6;
+        text-decoration: none;
+    }
+
+    .nav-item.active {
+        background-color: #eff6ff;
+        color: #2563eb;
+        border-left: 4px solid #2563eb;
+    }
+
+    .nav-item-icon {
+        margin-right: 0.75rem;
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+    }
+
+    .nav-item.active .nav-item-icon {
+        color: #2563eb;
+    }
+
+    .logout-btn {
+        background: #ef4444;
+        color: white;
+        border: none;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: left;
+        width: 100%;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        font-family: inherit;
+    }
+
+    .logout-btn:hover {
+        background-color: #dc2626;
+        text-decoration: none;
+        color: white;
+    }
+
+    .main-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .content-section {
+        display: none;
+    }
+
+    .content-section.active {
+        display: block;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #1f2937;
+        margin-bottom: 1.5rem;
+   }
+
+    .card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e5e7eb;
+        overflow: hidden;
+        margin-bottom: 1rem;
+        transition: all 0.2s;
+    }
+
+    .card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .review-card {
+        padding: 1rem;
+    }
+
+    .review-header {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .review-image {
+        width: 64px;
+        height: 64px;
+        border-radius: 8px;
+        flex-shrink: 0;
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        overflow: hidden;
+    }
+
+    .review-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .review-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .review-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 0.5rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .review-title {
+        font-weight: 600;
+        font-size: 1.125rem;
+        color: #1f2937;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .review-date {
+        font-size: 0.875rem;
+        color: #6b7280;
+        flex-shrink: 0;
+    }
+
+    .review-rating {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .stars {
+        display: flex;
+        gap: 0.125rem;
+    }
+
+    .star {
+        width: 16px;
+        height: 16px;
+        color: #fbbf24;
+    }
+
+    .star.empty {
+        color: #d1d5db;
+    }
+
+    .rating-value {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #374151;
+    }
+
+    .review-text {
+        color: #374151;
+        font-size: 0.875rem;
+        line-height: 1.6;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .settings-section {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e5e7eb;
+        margin-bottom: 1rem;
+    }
+
+    .settings-content {
+        padding: 1.5rem;
+    }
+
+    .settings-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 1rem;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .toggle-group {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .toggle {
+        position: relative;
+        width: 40px;
+        height: 24px;
+        background: #d1d5db;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        flex-shrink: 0;
+    }
+
+    .toggle.active {
+        background: #3b82f6;
+    }
+
+    .toggle::after {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 20px;
+        height: 20px;
+        background: white;
+        border-radius: 50%;
+        transition: transform 0.2s;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .toggle.active::after {
+        transform: translateX(16px);
+    }
+
+    .settings-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .settings-item:hover {
+        background-color: #f3f4f6;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #6b7280;
+    }
+
+    .empty-state-icon {
+        width: 48px;
+        height: 48px;
+        color: #d1d5db;
+        margin: 0 auto 1rem;
+    }
+
+    .empty-state h3 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #374151;
+    }
+
+    .empty-state p {
+        font-size: 0.875rem;
+        margin-bottom: 1rem;
+    }
+
+    .btn-primary {
+        background: #3b82f6;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 0.875rem;
+    }
+
+    .btn-primary:hover {
+        background: #2563eb;
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Мобильная адаптивность */
+    @media (max-width: 1024px) {
+        .profile-layout {
+            gap: 1rem;
+        }
+        
+        .sidebar {
+            width: 280px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .profile-layout {
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .sidebar {
+            width: 100%;
+            order: 1;
+        }
+        
+        .main-content {
+            order: 2;
+        }
+        
+        .profile-card {
+            padding: 1rem;
+        }
+        
+        .profile-header {
+            flex-direction: column;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .avatar {
+            margin-right: 0;
+            margin-bottom: 0.75rem;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+        
+        .stat-item {
+            padding: 0.75rem 0.5rem;
+        }
+        
+        .stat-number {
+            font-size: 1.25rem;
+        }
+        
+        .stat-label {
+            font-size: 0.6875rem;
+        }
+        
+        .nav-menu {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+        
+        .nav-item {
+            padding: 0.75rem;
+            text-align: center;
+            justify-content: center;
+            font-size: 0.8125rem;
+        }
+        
+        .nav-item-icon {
+            margin-right: 0.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        
+        .review-header {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .review-image {
+            width: 100%;
+            height: 120px;
+        }
+        
+        .review-meta {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.25rem;
+        }
+        
+        .settings-content {
+            padding: 1rem;
+        }
+        
+        .form-input {
+            padding: 0.75rem;
+        }
+        
+        .toggle-group {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        
+        .toggle-group span {
+            order: 1;
+        }
+        
+        .toggle {
+            order: 2;
+            align-self: flex-end;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+        
+        .nav-menu {
+            grid-template-columns: 1fr;
+        }
+        
+        .nav-item {
+            justify-content: flex-start;
+        }
+        
+        .empty-state {
+            padding: 2rem 0.5rem;
+        }
+        
+        .settings-content {
+            padding: 0.75rem;
+        }
+    }
+
+    @media (max-width: 360px) {
+        .profile-card {
+            padding: 0.75rem;
+        }
+        
+        .profile-info h1 {
+            font-size: 1.125rem;
+        }
+        
+        .review-card {
+            padding: 0.75rem;
+        }
+    }
+
+    /* Стили для карточек бронирований */
+    .booking-card {
+        transition: all 0.3s ease;
+    }
+
+    .booking-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .booking-header {
+        display: flex;
+        gap: 1.5rem;
+        align-items: flex-start;
+    }
+
+    .booking-image {
+        width: 120px;
+        height: 120px;
+        border-radius: 12px;
+        flex-shrink: 0;
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .image-link {
+        display: block;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .booking-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .image-link:hover img {
+        transform: scale(1.05);
+    }
+
+    .image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    .image-link:hover .image-overlay {
+        opacity: 1;
+    }
+
+    .placeholder-image {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: white;
+        font-size: 2.5rem;
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    }
+
+    .booking-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .booking-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .booking-title {
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: #1f2937;
+        margin: 0;
+        line-height: 1.3;
+    }
+
+    .title-link {
+        color: #1f2937;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    .title-link:hover {
+        color: #3b82f6;
+        text-decoration: underline;
+    }
+
+    .booking-date {
+        font-size: 0.875rem;
+        color: #6b7280;
+        flex-shrink: 0;
+        background: #f3f4f6;
+        padding: 0.5rem 0.75rem;
+        border-radius: 6px;
+        font-weight: 500;
+    }
+
+    .booking-status {
+        margin-bottom: 1rem;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+        border: 1px solid #fbbf24;
+    }
+
+    .status-confirmed {
+        background: #d1fae5;
+        color: #065f46;
+        border: 1px solid #10b981;
+    }
+
+    .status-completed {
+        background: #dbeafe;
+        color: #1e40af;
+        border: 1px solid #3b82f6;
+    }
+
+    .status-cancelled {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #ef4444;
+    }
+
+    .booking-details {
+        margin-bottom: 1.5rem;
+    }
+
+    .detail-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+        padding: 0.5rem;
+        background: #f9fafb;
+        border-radius: 8px;
+        border-left: 3px solid #3b82f6;
+    }
+
+    .detail-item i {
+        color: #3b82f6;
+        width: 16px;
+        text-align: center;
+    }
+
+    .detail-item span {
+        color: #374151;
+        font-size: 0.875rem;
+        line-height: 1.5;
+    }
+
+    .booking-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: #f3f4f6;
+        color: #374151;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 0.875rem;
+        transition: all 0.2s ease;
+        border: 1px solid #d1d5db;
+    }
+
+    .btn-secondary:hover {
+        background: #e5e7eb;
+        color: #1f2937;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        text-decoration: none;
+    }
+
+    /* Адаптивность для мобильных устройств */
+    @media (max-width: 768px) {
+        .booking-header {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .booking-image {
+            width: 100%;
+            height: 200px;
+        }
+
+        .booking-meta {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .booking-actions {
+            justify-content: center;
+        }
+
+        .btn-secondary {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container pt-2">
+    <div class="profile-layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="avatar">
+                        {% if user.avatar %}
+                            <img src="{{ user.avatar.url }}" alt="{{ user.full_name }}">
+                        {% else %}
+                            👤
+                        {% endif %}
+                    </div>
+                    <div class="profile-info">
+                        <h1>{{ user.full_name|default:user.username|default:user.email }}</h1>
+                        <p>{{ user.email }}</p>
+                        {% if user.phone %}
+                            <p>{{ user.phone }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number">{{ user_reviews }}</span>
+                        <span class="stat-label">Отзывы</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ total_spent|floatformat:0 }}</span>
+                        <span class="stat-label">Потрачено $</span>
+                    </div>
+                </div>                 
+                
+                <nav class="nav-menu">
+                    <button class="nav-item active" data-tab="reviews">
+                        <span class="nav-item-icon">💬</span>
+                        Мои отзывы
+                    </button>
+                    <button class="nav-item" data-tab="bookings">
+                        <span class="nav-item-icon">📅</span>
+                        Бронирования
+                    </button>
+                    <button class="nav-item" data-tab="settings">
+                        <span class="nav-item-icon">⚙️</span>
+                        Настройки
+                    </button>
+                    <button class="logout-btn" onclick="confirmLogout()">
+                        <span class="nav-item-icon">🚪</span>
+                        Выйти
+                    </button>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Reviews Section -->
+            <div id="reviews" class="content-section active">
+                <h2 class="section-title">Мои отзывы</h2>
+                
+                {% if all_user_reviews %}
+                    {% for review in all_user_reviews %}
+                    <div class="card">
+                        <div class="review-card">
+                            <div class="review-header">
+                                <div class="review-image">
+                                    {% if review.excursion.main_image %}
+                                        <img src="{{ review.excursion.main_image.image.url }}" alt="{{ review.excursion.title_ru }}">
+                                    {% else %}
+                                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: white; font-size: 2rem;">
+                                            🏔️
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="review-content">
+                                    <div class="review-meta">
+                                        <h3 class="review-title">{{ review.excursion.title_ru }}</h3>
+                                        <span class="review-date">{{ review.created_at|date:"d.m.Y" }}</span>
+                                    </div>
+                                    <div class="review-rating">
+                                        <div class="stars">
+                                            {% for i in "12345" %}
+                                                {% if forloop.counter <= review.rating %}
+                                                    <span class="star">★</span>
+                                                {% else %}
+                                                    <span class="star empty">☆</span>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        <span class="rating-value">{{ review.rating }}/5</span>
+                                    </div>
+                                    <p class="review-text">{{ review.text }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💬</div>
+                        <h3>У вас пока нет отзывов</h3>
+                        <p>Оставляйте отзывы о посещенных экскурсиях, чтобы помочь другим путешественникам</p>
+                        <a href="{% url 'catalog' %}" class="btn-primary">Найти экскурсии</a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Bookings Section -->
+            <div id="bookings" class="content-section">
+                <h2 class="section-title">Мои бронирования</h2>
+                
+                {% if all_user_bookings %}
+                    {% for booking in all_user_bookings %}
+                    <div class="card booking-card">
+                        <div class="booking-header">
+                            <div class="booking-image">
+                                <a href="{% url 'excursion_detail' slug=booking.excursion.slug %}" class="image-link">
+                                    {% if booking.excursion.main_image %}
+                                        <img src="{{ booking.excursion.main_image.image.url }}" alt="{{ booking.excursion.title_ru }}">
+                                    {% else %}
+                                        <div class="placeholder-image">
+                                            🏔️
+                                        </div>
+                                    {% endif %}
+                                    <div class="image-overlay">
+                                        <i class="fas fa-external-link-alt"></i>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="booking-content">
+                                <div class="booking-meta">
+                                    <h3 class="booking-title">
+                                        <a href="{% url 'excursion_detail' slug=booking.excursion.slug %}" class="title-link">
+                                            {{ booking.excursion.title_ru }}
+                                        </a>
+                                    </h3>
+                                    <span class="booking-date">{{ booking.date|date:"d.m.Y" }}</span>
+                                </div>
+                                <div class="booking-status">
+                                    <span class="status-badge status-{{ booking.status }}">
+                                        {% if booking.status == 'pending' %}
+                                            ⏳ Ожидание
+                                        {% elif booking.status == 'confirmed' %}
+                                            ✅ Подтверждено
+                                        {% elif booking.status == 'completed' %}
+                                            🎉 Завершено
+                                        {% elif booking.status == 'cancelled' %}
+                                            ❌ Отменено
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <div class="booking-details">
+                                    <div class="detail-item">
+                                        <i class="fas fa-users"></i>
+                                        <span><strong>Количество человек:</strong> {{ booking.people_count }}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-dollar-sign"></i>
+                                        <span><strong>Стоимость:</strong> ${{ booking.total_price }}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-calendar-plus"></i>
+                                        <span><strong>Дата бронирования:</strong> {{ booking.created_at|date:"d.m.Y H:i" }}</span>
+                                    </div>
+                                </div>
+                                <div class="booking-actions">
+                                    <a href="{% url 'excursion_detail' slug=booking.excursion.slug %}" class="btn-secondary">
+                                        <i class="fas fa-eye me-2"></i>Подробнее об экскурсии
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📅</div>
+                        <h3>У вас пока нет бронирований</h3>
+                        <p>Забронируйте экскурсию, чтобы начать свое путешествие</p>
+                        <a href="{% url 'catalog' %}" class="btn-primary">Найти экскурсии</a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settings" class="content-section">
+                <h2 class="section-title">Настройки</h2>
+                
+                <div class="settings-section">
+                    <div class="settings-content">
+                        <h3 class="settings-title">Личная информация</h3>
+                        <form method="post" action="{% url 'edit_profile' %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label class="form-label">Имя</label>
+                                <input type="text" name="first_name" class="form-input" value="{{ user.first_name|default:'' }}">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Фамилия</label>
+                                <input type="text" name="last_name" class="form-input" value="{{ user.last_name|default:'' }}">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" name="email" class="form-input" value="{{ user.email }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Телефон</label>
+                                <input type="tel" name="phone" class="form-input" value="{{ user.phone|default:'' }}">
+                            </div>
+                            <button type="submit" class="btn-primary">Сохранить изменения</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="settings-content">
+                        <h3 class="settings-title">Уведомления</h3>
+                        <div class="toggle-group">
+                            <span>Email уведомления</span>
+                            <div class="toggle {% if user_settings.email_notifications %}active{% endif %}" 
+                                 onclick="toggleSwitch(this, 'email')" data-setting="email"></div>
+                        </div>
+                        <div class="toggle-group">
+                            <span>Push уведомления</span>
+                            <div class="toggle {% if user_settings.push_notifications %}active{% endif %}" 
+                                 onclick="toggleSwitch(this, 'push')" data-setting="push"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="settings-content">
+                        <h3 class="settings-title">Конфиденциальность</h3>
+                        <div class="settings-item" onclick="changePassword()">
+                            <span>Изменить пароль</span>
+                            <span>→</span>
+                        </div>
+                        <div class="settings-item" onclick="exportData()">
+                            <span>Экспорт данных</span>
+                            <span>→</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно подтверждения выхода -->
+<div class="modal fade" id="logoutConfirmModal" tabindex="-1" aria-labelledby="logoutConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="logoutConfirmModalLabel">Подтверждение выхода</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Вы уверены, что хотите выйти из системы?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <a href="{% url 'account_logout' %}" class="btn btn-danger">Выйти</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Tab switching functionality
+    const navItems = document.querySelectorAll('.nav-item[data-tab]');
+    const contentSections = document.querySelectorAll('.content-section');
+
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            // Remove active class from all nav items
+            navItems.forEach(nav => nav.classList.remove('active'));
+            
+            // Add active class to clicked item
+            item.classList.add('active');
+            
+            // Hide all content sections
+            contentSections.forEach(section => section.classList.remove('active'));
+            
+            // Show corresponding content section
+            const tabId = item.getAttribute('data-tab');
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+
+    // Toggle switch functionality
+    function toggleSwitch(toggle, setting) {
+        toggle.classList.toggle('active');
+        const isActive = toggle.classList.contains('active');
+        
+        // Отправляем AJAX запрос для обновления настроек
+        fetch('{% url "dashboard" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            },
+            body: JSON.stringify({
+                action: 'update_settings',
+                setting: setting,
+                value: isActive
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast(`${setting === 'email' ? 'Email' : 'Push'} уведомления ${isActive ? 'включены' : 'отключены'}`, 'success');
+            } else {
+                showToast('Ошибка при обновлении настроек', 'error');
+                // Возвращаем переключатель в предыдущее состояние
+                toggle.classList.toggle('active');
+            }
+        })
+        .catch(error => {
+            showToast('Ошибка при обновлении настроек', 'error');
+            // Возвращаем переключатель в предыдущее состояние
+            toggle.classList.toggle('active');
+        });
+    }
+
+    // Change password function
+    function changePassword() {
+        showToast('Функция смены пароля в разработке', 'info');
+    }
+
+    // Export data function
+    function exportData() {
+        showToast('Функция экспорта данных в разработке', 'info');
+    }
+
+    // Show toast notification
+    function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            max-width: calc(100vw - 40px);
+            word-wrap: break-word;
+        `;
+        toast.textContent = message;
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.transform = 'translateX(0)';
+        }, 100);
+        
+        setTimeout(() => {
+            toast.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                if (document.body.contains(toast)) {
+                    document.body.removeChild(toast);
+                }
+            }, 300);
+        }, 3000);
+    }
+
+    // Form submission handling
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Сохранение...';
+                submitBtn.disabled = true;
+                
+                // Форма будет отправлена обычным способом
+                // Кнопка вернется в исходное состояние после перезагрузки страницы
+            }
+        });
+    });
+
+    // Функция подтверждения выхода
+    function confirmLogout() {
+        const modal = new bootstrap.Modal(document.getElementById('logoutConfirmModal'));
+        modal.show();
+    }
+
+    // Gmail функции
+    function syncGmailProfile() {
+        const syncBtn = event.target;
+        const originalText = syncBtn.textContent;
+        syncBtn.textContent = 'Синхронизация...';
+        syncBtn.disabled = true;
+        
+        fetch('{% url "sync_gmail_profile" %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                showToast('Профиль успешно синхронизирован с Gmail!', 'success');
+                // Перезагружаем страницу для отображения обновленных данных
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            } else {
+                showToast('Ошибка при синхронизации профиля', 'error');
+            }
+        })
+        .catch(error => {
+            showToast('Ошибка при синхронизации профиля', 'error');
+        })
+        .finally(() => {
+            syncBtn.textContent = originalText;
+            syncBtn.disabled = false;
+        });
+    }
+
+    function disconnectGmail() {
+        if (confirm('Вы уверены, что хотите отключить Gmail аккаунт?')) {
+            const disconnectBtn = event.target;
+            const originalText = disconnectBtn.textContent;
+            disconnectBtn.textContent = 'Отключение...';
+            disconnectBtn.disabled = true;
+            
+            fetch('{% url "disconnect_gmail" %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    showToast('Gmail аккаунт успешно отключен', 'success');
+                    // Перезагружаем страницу для отображения обновленных данных
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    showToast('Ошибка при отключении Gmail', 'error');
+                }
+            })
+            .catch(error => {
+                showToast('Ошибка при отключении Gmail', 'error');
+            })
+            .finally(() => {
+                disconnectBtn.textContent = originalText;
+                disconnectBtn.disabled = false;
+            });
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,753 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Каталог экскурсий" %} - SELEXIA Travel{% endblock %}
+
+{% block extra_css %}
+{% csrf_token %}
+<style>
+    .catalog-container {
+        padding: 20px;
+        background: #f8f9fa;
+        min-height: calc(100vh - 80px);
+        margin-top: 20px;
+    }
+    
+    .search-panel {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        
+        top: 100px;
+        z-index: 100;
+    }
+    
+    .filter-btn {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .filter-btn:hover {
+        background: #e9ecef;
+        border-color: #adb5bd;
+    }
+    
+    .search-input {
+        flex: 1;
+        min-width: 300px;
+        position: relative;
+    }
+    
+    .search-input input {
+        width: 100%;
+        padding: 12px 20px 12px 50px;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        font-size: 16px;
+    }
+    
+    .search-input .search-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+    }
+    
+    .search-btn {
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 30px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+    
+    .search-btn:hover {
+        background: #0056b3;
+    }
+    
+    .excursions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 25px;
+        margin-top: 20px;
+    }
+    
+    .excursion-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .excursion-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+    }
+    
+    /* Стили для красивого обрезания текста в каталоге */
+    .card-location {
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.3;
+        max-height: 1.3em;
+    }
+    
+    .card-title {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.3;
+        max-height: 2.6em;
+    }
+    
+    .card-description {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.4;
+        max-height: 4.2em;
+    }
+    
+    .card-image {
+        position: relative;
+        height: 200px;
+        overflow: hidden;
+    }
+    
+    .card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .favorite-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .favorite-btn:hover {
+        transform: scale(1.1);
+    }
+    
+    .favorite-btn.active {
+        color: #dc3545;
+    }
+    
+    .card-content {
+        padding: 20px;
+    }
+    
+    .card-location {
+        color: #6c757d;
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+    
+    .card-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #212529;
+        margin-bottom: 10px;
+        line-height: 1.3;
+    }
+    
+    .card-description {
+        color: #6c757d;
+        font-size: 14px;
+        line-height: 1.5;
+        margin-bottom: 15px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .card-price {
+        font-size: 24px;
+        font-weight: 700;
+        color: #212529;
+    }
+    
+    .details-btn {
+        background: #ff8e14;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+    
+    .details-btn:hover {
+        background: #e67e00;
+    }
+    
+    .time-icon {
+        color: #6c757d;
+        margin-left: 10px;
+    }
+    
+    /* Модальное окно фильтров */
+    .filter-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+    }
+    
+    .filter-modal.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .filter-content {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        max-width: 500px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+    
+    .filter-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+    
+    .filter-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #212529;
+    }
+    
+    .close-btn {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #6c757d;
+    }
+    
+    .filter-group {
+        margin-bottom: 20px;
+    }
+    
+    .filter-label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #212529;
+    }
+    
+    .filter-input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        font-size: 14px;
+    }
+    
+    .filter-select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        font-size: 14px;
+        background: white;
+    }
+    
+    .filter-buttons {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+    }
+    
+    .apply-filters {
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 30px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        flex: 1;
+    }
+    
+    .reset-filters {
+        background: #6c757d;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 30px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        flex: 1;
+    }
+    
+    .loading {
+        text-align: center;
+        padding: 50px;
+        color: #6c757d;
+    }
+    
+    .no-results {
+        text-align: center;
+        padding: 50px;
+        color: #6c757d;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="catalog-container">
+    <!-- Верхняя панель поиска -->
+    <div class="search-panel">
+        <button class="filter-btn" id="filterBtn">
+            <i class="fas fa-ellipsis-h"></i>
+            <span>{% trans "Фильтры" %}</span>
+            <i class="fas fa-chevron-down"></i>
+        </button>
+        
+        <div class="search-input">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="searchInput" placeholder="{% trans 'Город / Страна' %}">
+        </div>
+        
+        <button class="search-btn" id="searchBtn">
+            {% trans "Поиск" %}
+        </button>
+    </div>
+    
+    <!-- Сетка экскурсий -->
+    <div class="excursions-grid" id="excursionsGrid">
+        {% for excursion in excursions %}
+        <div class="excursion-card" data-excursion-id="{{ excursion.id }}">
+            <div class="card-image">
+                {% if excursion.images.first %}
+                <img src="{{ excursion.images.first.image.url }}" alt="{{ excursion.title_ru }}">
+                {% else %}
+                <img src="{% static 'images/placeholder.jpg' %}" alt="{{ excursion.title_ru }}">
+                {% endif %}
+                
+                <button class="favorite-btn {% if excursion.id in user_favorites %}active{% endif %}" 
+                        data-excursion-id="{{ excursion.id }}">
+                    <i class="fas fa-heart"></i>
+                </button>
+            </div>
+            
+            <div class="card-content">
+                <div class="card-location">
+                    {{ excursion.city.name_ru }}: {{ excursion.title_ru|truncatechars:40 }}
+                </div>
+                
+                <div class="card-title">
+                    {{ excursion.title_ru|truncatechars:50 }}
+                    <i class="fas fa-clock time-icon"></i>
+                </div>
+                
+                <div class="card-description">
+                    {{ excursion.short_description_ru|default:excursion.description_ru|truncatechars:120 }}
+                </div>
+                
+                <div class="card-footer">
+                    <div class="card-price">
+                        ${{ excursion.price }}
+                    </div>
+                    <a href="{% url 'excursion_detail' excursion.slug %}" class="details-btn">
+                        {% trans "Подробнее" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="no-results">
+            <h4>{% trans "Экскурсии не найдены" %}</h4>
+            <p>{% trans "Попробуйте изменить параметры поиска" %}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Модальное окно фильтров -->
+<div class="filter-modal" id="filterModal">
+    <div class="filter-content">
+        <div class="filter-header">
+            <h3 class="filter-title">{% trans "Фильтры" %}</h3>
+            <button class="close-btn" id="closeFilter">&times;</button>
+        </div>
+        
+        <form id="filterForm">
+            <div class="filter-group">
+                <label class="filter-label">{% trans "Страна" %}</label>
+                <select class="filter-select" name="country" id="filterCountry">
+                    <option value="">{% trans "Все страны" %}</option>
+                    {% for country in countries %}
+                    <option value="{{ country.slug }}">{{ country.name_ru }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">{% trans "Город" %}</label>
+                <select class="filter-select" name="city" id="filterCity">
+                    <option value="">{% trans "Все города" %}</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">{% trans "Категория" %}</label>
+                <select class="filter-select" name="category" id="filterCategory">
+                    <option value="">{% trans "Все категории" %}</option>
+                    {% for category in categories %}
+                    <option value="{{ category.slug }}">{{ category.name_ru }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">{% trans "Цена (от)" %}</label>
+                <input type="number" class="filter-input" name="price_min" id="filterPriceMin" placeholder="0">
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">{% trans "Цена (до)" %}</label>
+                <input type="number" class="filter-input" name="price_max" id="filterPriceMax" placeholder="1000">
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">{% trans "Рейтинг (от)" %}</label>
+                <select class="filter-select" name="rating" id="filterRating">
+                    <option value="">{% trans "Любой рейтинг" %}</option>
+                    <option value="4.5">4.5+</option>
+                    <option value="4.0">4.0+</option>
+                    <option value="3.5">3.5+</option>
+                    <option value="3.0">3.0+</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">{% trans "Сортировка" %}</label>
+                <select class="filter-select" name="sort" id="filterSort">
+                    <option value="popular">{% trans "По популярности" %}</option>
+                    <option value="price_asc">{% trans "По цене (возрастание)" %}</option>
+                    <option value="price_desc">{% trans "По цене (убывание)" %}</option>
+                    <option value="rating">{% trans "По рейтингу" %}</option>
+                    <option value="newest">{% trans "По дате" %}</option>
+                </select>
+            </div>
+            
+            <div class="filter-buttons">
+                <button type="button" class="reset-filters" id="resetFilters">
+                    {% trans "Сбросить" %}
+                </button>
+                <button type="submit" class="apply-filters">
+                    {% trans "Применить" %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const filterBtn = document.getElementById('filterBtn');
+    const filterModal = document.getElementById('filterModal');
+    const closeFilter = document.getElementById('closeFilter');
+    const filterForm = document.getElementById('filterForm');
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const excursionsGrid = document.getElementById('excursionsGrid');
+    const filterCountry = document.getElementById('filterCountry');
+    const filterCity = document.getElementById('filterCity');
+    
+    // Открытие/закрытие модального окна фильтров
+    filterBtn.addEventListener('click', function() {
+        filterModal.classList.add('active');
+    });
+    
+    closeFilter.addEventListener('click', function() {
+        filterModal.classList.remove('active');
+    });
+    
+    // Закрытие по клику вне модального окна
+    filterModal.addEventListener('click', function(e) {
+        if (e.target === filterModal) {
+            filterModal.classList.remove('active');
+        }
+    });
+    
+    // Загрузка городов по стране
+    filterCountry.addEventListener('change', function() {
+        const countrySlug = this.value;
+        filterCity.innerHTML = '<option value="">{% trans "Все города" %}</option>';
+        
+        if (countrySlug) {
+            fetch(`/api/cities-by-country/?country=${countrySlug}`)
+                .then(response => response.json())
+                .then(cities => {
+                    cities.forEach(city => {
+                        const option = document.createElement('option');
+                        option.value = city.slug;
+                        option.textContent = city.name;
+                        filterCity.appendChild(option);
+                    });
+                });
+        }
+    });
+    
+    // Применение фильтров
+    filterForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        applyFilters();
+    });
+    
+    // Сброс фильтров
+    document.getElementById('resetFilters').addEventListener('click', function() {
+        filterForm.reset();
+        applyFilters();
+    });
+    
+    // Поиск
+    searchBtn.addEventListener('click', function() {
+        applyFilters();
+    });
+    
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            applyFilters();
+        }
+    });
+    
+    // Функция применения фильтров
+    function applyFilters() {
+        const formData = new FormData(filterForm);
+        const searchQuery = searchInput.value;
+        
+        let url = '/catalog/?';
+        const params = new URLSearchParams();
+        
+        // Добавляем параметры фильтров
+        for (let [key, value] of formData.entries()) {
+            if (value) {
+                params.append(key, value);
+            }
+        }
+        
+        // Добавляем поисковый запрос
+        if (searchQuery) {
+            params.append('search', searchQuery);
+        }
+        
+        url += params.toString();
+        
+        // Загружаем отфильтрованные экскурсии
+        loadExcursions(url);
+        
+        // Закрываем модальное окно
+        filterModal.classList.remove('active');
+    }
+    
+    // Загрузка экскурсий
+    function loadExcursions(url) {
+        excursionsGrid.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin fa-2x"></i><p>{% trans "Загрузка..." %}</p></div>';
+        
+        fetch(url)
+            .then(response => response.text())
+            .then(html => {
+                // Создаем временный элемент для парсинга HTML
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html;
+                
+                // Извлекаем только сетку экскурсий
+                const newGrid = tempDiv.querySelector('.excursions-grid');
+                if (newGrid) {
+                    excursionsGrid.innerHTML = newGrid.innerHTML;
+                }
+                
+                // Обновляем URL без перезагрузки страницы
+                window.history.pushState({}, '', url);
+                
+                // Переинициализируем обработчики событий для новых карточек
+                initFavoriteButtons();
+            })
+            .catch(error => {
+                console.error('Ошибка загрузки:', error);
+                excursionsGrid.innerHTML = '<div class="no-results"><p>{% trans "Ошибка загрузки данных" %}</p></div>';
+            });
+    }
+    
+    // Обработчики для кнопок избранного
+    function initFavoriteButtons() {
+        document.querySelectorAll('.favorite-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const excursionId = this.dataset.excursionId;
+                toggleFavorite(excursionId, this);
+            });
+        });
+    }
+    
+    // Переключение избранного
+    function toggleFavorite(excursionId, button) {
+        fetch('/api/favorites/toggle/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                item_id: excursionId,
+                item_type: 'excursion'
+            })
+        })
+        .then(response => {
+            if (response.status === 401) {
+                // Пользователь не авторизован, показываем модальное окно входа
+                showLoginModal();
+                return;
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data && data.success) {
+                if (data.is_favorite) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+                
+                // Обновляем счетчик избранного в header
+                if (typeof window.updateFavoritesCount === 'function') {
+                    window.updateFavoritesCount();
+                }
+            } else if (data && !data.success) {
+                console.error('Ошибка переключения избранного:', data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка:', error);
+        });
+    }
+    
+    // Функция для показа модального окна входа
+    function showLoginModal() {
+        // Создаем модальное окно для входа
+        const modal = document.createElement('div');
+        modal.className = 'modal fade';
+        modal.id = 'loginModal';
+        modal.innerHTML = `
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Вход в систему</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-muted mb-3">Для добавления в избранное необходимо войти в систему</p>
+                        <div class="d-grid gap-2">
+                            <a href="/accounts/login/" class="btn btn-primary">
+                                <i class="fas fa-sign-in-alt me-2"></i>Войти
+                            </a>
+                            <a href="/accounts/signup/" class="btn btn-outline-primary">
+                                <i class="fas fa-user-plus me-2"></i>Зарегистрироваться
+                            </a>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Показываем модальное окно
+        const bootstrapModal = new bootstrap.Modal(modal);
+        bootstrapModal.show();
+        
+        // Удаляем модальное окно после закрытия
+        modal.addEventListener('hidden.bs.modal', function() {
+            document.body.removeChild(modal);
+        });
+    }
+
+    // Инициализация обработчиков
+    initFavoriteButtons();
+    
+    // Устанавливаем текущие значения фильтров из URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('country')) filterCountry.value = urlParams.get('country');
+    if (urlParams.get('city')) filterCity.value = urlParams.get('city');
+    if (urlParams.get('category')) document.getElementById('filterCategory').value = urlParams.get('category');
+    if (urlParams.get('price_min')) document.getElementById('filterPriceMin').value = urlParams.get('price_min');
+    if (urlParams.get('price_max')) document.getElementById('filterPriceMax').value = urlParams.get('price_max');
+    if (urlParams.get('rating')) document.getElementById('filterRating').value = urlParams.get('rating');
+    if (urlParams.get('sort')) document.getElementById('filterSort').value = urlParams.get('sort');
+    if (urlParams.get('search')) searchInput.value = urlParams.get('search');
+    
+    // Загружаем города для выбранной страны
+    if (filterCountry.value) {
+        filterCountry.dispatchEvent(new Event('change'));
+    }
+});
+</script>
+{% endblock %}

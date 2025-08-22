@@ -1,0 +1,437 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Личный кабинет" %} - SELEXIA Travel{% endblock %}
+
+{% block description %}{% trans "Управляйте своим профилем, бронированиями и избранными экскурсиями в личном кабинете SELEXIA Travel." %}{% endblock %}
+
+{% block extra_css %}
+<!-- Дополнительные стили для профиля -->
+<style>
+    .profile-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 0;
+    }
+    
+    .profile-sidebar {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        height: fit-content;
+        position: sticky;
+        top: 2rem;
+    }
+    
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        margin: 0 auto 1.5rem;
+        display: block;
+    }
+    
+    .profile-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin: 1.5rem 0;
+    }
+    
+    .stat-item {
+        text-align: center;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+    }
+    
+    .stat-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--bs-primary);
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+    
+    .profile-nav {
+        list-style: none;
+        padding: 0;
+        margin: 2rem 0 0 0;
+    }
+    
+    .profile-nav li {
+        margin-bottom: 0.5rem;
+    }
+    
+    .profile-nav a {
+        display: block;
+        padding: 0.75rem 1rem;
+        color: #495057;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .profile-nav a:hover,
+    .profile-nav a.active {
+        background: var(--bs-primary);
+        color: white;
+    }
+    
+    .profile-nav i {
+        width: 20px;
+        margin-right: 0.75rem;
+    }
+    
+    .profile-content {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        min-height: 600px;
+    }
+    
+    .content-header {
+        display: flex;
+        justify-content-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #f8f9fa;
+    }
+    
+    .content-title {
+        margin: 0;
+        color: #333;
+    }
+    
+    .loading-spinner {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 400px;
+    }
+    
+    .no-content {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+    
+    .profile-form {
+        max-width: 600px;
+    }
+    
+    .form-section {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .form-section h6 {
+        color: #495057;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .avatar-upload {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .avatar-preview {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin: 0 auto 1rem;
+        border: 3px solid #dee2e6;
+        cursor: pointer;
+        transition: border-color 0.3s ease;
+    }
+    
+    .avatar-preview:hover {
+        border-color: var(--bs-primary);
+    }
+    
+    .avatar-input {
+        display: none;
+    }
+    
+    .upload-btn {
+        background: var(--bs-primary);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    
+    .upload-btn:hover {
+        background: #0056b3;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero секция -->
+<section class="profile-hero">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-5 fw-bold mb-3">
+                    {% trans "Личный кабинет" %}
+                </h1>
+                <p class="lead mb-0">
+                    {% trans "Добро пожаловать," %} {{ user.full_name|default:user.username }}!
+                </p>
+            </div>
+            <div class="col-lg-4 text-center">
+                <i class="fas fa-user-circle fa-5x text-light opacity-75"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Основной контент -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Боковая панель профиля -->
+            <div class="col-lg-3 mb-4">
+                <div class="profile-sidebar">
+                    <!-- Аватар пользователя -->
+                    {% if user.avatar %}
+                    <img src="{{ user.avatar.url }}" alt="{{ user.full_name|default:user.username }}" 
+                         class="profile-avatar">
+                    {% else %}
+                    <div class="profile-avatar bg-secondary d-flex align-items-center justify-content-center">
+                        <i class="fas fa-user fa-3x text-white"></i>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Имя пользователя -->
+                    <h5 class="text-center mb-3">{{ user.full_name|default:user.username }}</h5>
+                    
+                    <!-- Статистика -->
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <div class="stat-number" id="bookings-count">0</div>
+                            <div class="stat-label">{% trans "Бронирований" %}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="favorites-count">0</div>
+                            <div class="stat-label">{% trans "Избранных" %}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="reviews-count">0</div>
+                            <div class="stat-label">{% trans "Отзывов" %}</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Навигация по профилю -->
+                    <ul class="profile-nav">
+                        <li>
+                            <a href="#profile" class="active" data-tab="profile">
+                                <i class="fas fa-user"></i>
+                                {% trans "Профиль" %}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#bookings" data-tab="bookings">
+                                <i class="fas fa-calendar-check"></i>
+                                {% trans "Бронирования" %}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#favorites" data-tab="favorites">
+                                <i class="fas fa-heart"></i>
+                                {% trans "Избранное" %}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#reviews" data-tab="reviews">
+                                <i class="fas fa-comments"></i>
+                                {% trans "Мои отзывы" %}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#settings" data-tab="settings">
+                                <i class="fas fa-cog"></i>
+                                {% trans "Настройки" %}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'account_logout' %}">
+                                <i class="fas fa-sign-out-alt"></i>
+                                {% trans "Выйти" %}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Основная область контента -->
+            <div class="col-lg-9">
+                <div class="profile-content">
+                    <!-- Заголовок контента -->
+                    <div class="content-header">
+                        <h3 class="content-title" id="content-title">{% trans "Профиль" %}</h3>
+                        <div class="content-actions" id="content-actions">
+                            <!-- Действия будут добавлены Vue.js -->
+                        </div>
+                    </div>
+                    
+                    <!-- Контент профиля -->
+                    <div id="profile-app">
+                        <!-- Vue.js приложение профиля будет смонтировано здесь -->
+                        <div class="loading-spinner">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">{% trans "Загрузка профиля..." %}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block page_data %}
+{
+    "pageType": "profile",
+    "userData": {
+        "id": {{ user.id }},
+        "username": "{{ user.username }}",
+        "email": "{{ user.email }}",
+        "firstName": "{{ user.first_name|default:"" }}",
+        "lastName": "{{ user.last_name|default:"" }}",
+        "fullName": "{{ user.full_name|default:"" }}",
+        "avatar": {% if user.avatar %}"{{ user.avatar.url }}"{% else %}null{% endif %},
+        "phone": "{{ user.phone|default:"" }}",
+        "dateOfBirth": "{{ user.date_of_birth|date:'Y-m-d'|default:"" }}",
+        "isStaff": {{ user.is_staff|yesno:"true,false" }},
+        "isSuperuser": {{ user.is_superuser|yesno:"true,false" }},
+        "dateJoined": "{{ user.date_joined|date:'Y-m-d' }}",
+        "lastLogin": "{{ user.last_login|date:'Y-m-d H:i'|default:"" }}"
+    },
+    "profileTabs": [
+        {
+            "id": "profile",
+            "title": "{% trans 'Профиль' %}",
+            "icon": "fas fa-user",
+            "component": "ProfileTab"
+        },
+        {
+            "id": "bookings",
+            "title": "{% trans 'Бронирования' %}",
+            "icon": "fas fa-calendar-check",
+            "component": "BookingsTab"
+        },
+        {
+            "id": "favorites",
+            "title": "{% trans 'Избранное' %}",
+            "icon": "fas fa-heart",
+            "component": "FavoritesTab"
+        },
+        {
+            "id": "reviews",
+            "title": "{% trans 'Мои отзывы' %}",
+            "icon": "fas fa-comments",
+            "component": "ReviewsTab"
+        },
+        {
+            "id": "settings",
+            "title": "{% trans 'Настройки' %}",
+            "icon": "fas fa-cog",
+            "component": "SettingsTab"
+        }
+    ],
+    "defaultTab": "profile"
+}
+{% endblock %}
+
+{% block mount_script %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализация Vue.js приложения профиля
+    if (window.Vue && window.ProfileApp) {
+        const app = window.Vue.createApp(window.ProfileApp);
+        app.mount('#profile-app');
+    } else {
+        console.warn('Vue.js или ProfileApp не найдены');
+        // Fallback - показать базовый контент
+        document.getElementById('profile-app').innerHTML = `
+            <div class="no-content">
+                <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                <h5>{% trans "Приложение профиля не загружено" %}</h5>
+                <p>{% trans "Пожалуйста, обновите страницу или обратитесь к администратору." %}</p>
+            </div>
+        `;
+    }
+    
+    // Обработка навигации по вкладкам
+    const navLinks = document.querySelectorAll('.profile-nav a[data-tab]');
+    const contentTitle = document.getElementById('content-title');
+    
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Убираем активный класс у всех ссылок
+            navLinks.forEach(l => l.classList.remove('active'));
+            
+            // Добавляем активный класс к текущей ссылке
+            this.classList.add('active');
+            
+            // Обновляем заголовок
+            const tabTitle = this.textContent.trim();
+            contentTitle.textContent = tabTitle;
+            
+            // Здесь можно добавить логику переключения контента
+            // или передать управление Vue.js приложению
+        });
+    });
+    
+    // Загружаем статистику пользователя
+    if (window.DJANGO_CONTEXT && window.DJANGO_CONTEXT.user.isAuthenticated) {
+        // Загружаем количество бронирований
+        fetch('/api/bookings/count/')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('bookings-count').textContent = data.count || 0;
+            })
+            .catch(error => console.log('Error loading bookings count:', error));
+        
+        // Загружаем количество избранных
+        fetch('/api/favorites/count/')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('favorites-count').textContent = data.count || 0;
+            })
+            .catch(error => console.log('Error loading favorites count:', error));
+        
+        // Загружаем количество отзывов
+        fetch('/api/reviews/count/')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('reviews-count').textContent = data.count || 0;
+            })
+            .catch(error => console.log('Error loading reviews count:', error));
+    }
+});
+</script>
+{% endblock %}

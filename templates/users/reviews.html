@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}Мои отзывы - SELEXIA Travel{% endblock %}
+{% block description %}Управление вашими отзывами об экскурсиях{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Заголовок страницы -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h1 class="display-4 fw-bold text-primary">
+                <i class="fas fa-star me-3"></i>
+                Мои отзывы
+            </h1>
+            <p class="lead text-muted">Поделитесь впечатлениями о посещенных экскурсиях</p>
+        </div>
+    </div>
+
+    <!-- Статистика отзывов -->
+    <div class="row mb-5">
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card bg-warning text-white h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-star fa-3x mb-3"></i>
+                    <h3 class="card-title">{{ reviews|length }}</h3>
+                    <p class="card-text">Всего отзывов</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card bg-success text-white h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-check-circle fa-3x mb-3"></i>
+                    <h3 class="card-title">{{ reviews|length }}</h3>
+                    <p class="card-text">Одобрено</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card bg-info text-white h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-clock fa-3x mb-3"></i>
+                    <h3 class="card-title">0</h3>
+                    <p class="card-text">На модерации</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card bg-primary text-white h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-heart fa-3x mb-3"></i>
+                    <h3 class="card-title">0</h3>
+                    <p class="card-text">Лайков</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Список отзывов -->
+    <div class="row">
+        <div class="col-12">
+            {% if reviews %}
+                <div class="row">
+                    {% for review in reviews %}
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header bg-white">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">{{ review.excursion.title_ru }}</h6>
+                                    <span class="badge bg-success">Одобрен</span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <!-- Рейтинг -->
+                                <div class="mb-3">
+                                    <div class="text-warning mb-2">
+                                        {% for i in "12345" %}
+                                            {% if forloop.counter <= review.rating %}
+                                                <i class="fas fa-star"></i>
+                                            {% else %}
+                                                <i class="far fa-star"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <span class="ms-2 text-muted">({{ review.rating }}/5)</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Текст отзыва -->
+                                <p class="text-muted mb-3">{{ review.text|truncatewords:30 }}</p>
+                                
+                                <!-- Информация об экскурсии -->
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <small class="text-muted">Место:</small><br>
+                                        <strong>{{ review.excursion.city.name_ru }}, {{ review.excursion.country.name_ru }}</strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">Дата отзыва:</small><br>
+                                        <strong>{{ review.created_at|date:"d.m.Y" }}</strong>
+                                    </div>
+                                </div>
+                                
+                                <!-- Действия -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a href="{% url 'excursion_detail' review.excursion.slug %}" 
+                                       class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-eye me-1"></i>
+                                        Посмотреть экскурсию
+                                    </a>
+                                    <div class="btn-group">
+                                        <button class="btn btn-outline-warning btn-sm edit-review" 
+                                                data-review-id="{{ review.id }}">
+                                            <i class="fas fa-edit me-1"></i>
+                                            Редактировать
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-sm delete-review" 
+                                                data-review-id="{{ review.id }}">
+                                            <i class="fas fa-trash me-1"></i>
+                                            Удалить
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <div class="card shadow-sm">
+                        <div class="card-body py-5">
+                            <i class="fas fa-star fa-5x text-muted mb-4"></i>
+                            <h3 class="text-muted">У вас пока нет отзывов</h3>
+                            <p class="lead text-muted mb-4">
+                                Поделитесь впечатлениями о посещенных экскурсиях!
+                            </p>
+                            <a href="{% url 'catalog' %}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-search me-2"></i>
+                                Найти экскурсии
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Редактирование отзыва
+    document.querySelectorAll('.edit-review').forEach(button => {
+        button.addEventListener('click', function() {
+            const reviewId = this.dataset.reviewId;
+            alert('Функция редактирования отзыва будет добавлена позже');
+        });
+    });
+    
+    // Удаление отзыва
+    document.querySelectorAll('.delete-review').forEach(button => {
+        button.addEventListener('click', function() {
+            const reviewId = this.dataset.reviewId;
+            
+            if (confirm('Вы уверены, что хотите удалить этот отзыв?')) {
+                // Здесь можно добавить AJAX запрос для удаления отзыва
+                alert('Функция удаления отзыва будет добавлена позже');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

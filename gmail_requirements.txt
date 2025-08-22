@@ -1,0 +1,32 @@
+# Gmail API интеграция для SELEXIA Travel
+# Установка: pip install -r gmail_requirements.txt
+
+# Google API клиенты
+google-auth==2.23.4
+google-auth-oauthlib==1.1.0
+google-auth-httplib2==0.1.1
+google-api-python-client==2.108.0
+
+# Дополнительные зависимости
+requests==2.31.0
+urllib3==2.0.7
+
+# Для работы с датами и временем
+python-dateutil==2.8.2
+
+# Для логирования (опционально)
+colorlog==6.8.0
+
+# Для тестирования (опционально)
+pytest==7.4.3
+pytest-django==4.7.0
+pytest-mock==3.12.0
+
+# Примечания по версиям:
+# - google-auth 2.23.4+ поддерживает Django 4.2+
+# - google-api-python-client 2.108.0+ имеет улучшенную поддержку Gmail API
+# - requests 2.31.0+ исправляет уязвимости безопасности
+# - python-dateutil 2.8.2+ улучшает работу с датами
+
+# Альтернативная установка через pip:
+# pip install google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client requests python-dateutil

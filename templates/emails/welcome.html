@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добро пожаловать в SELEXIA Travel!</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: linear-gradient(135deg, #205696 0%, #1a4a7a 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px 10px 0 0;
+        }
+        .content {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 0 0 10px 10px;
+        }
+        .welcome-text {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .features {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+        }
+        .feature-icon {
+            background: #205696;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 18px;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #205696 0%, #1a4a7a 100%);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Добро пожаловать в SELEXIA Travel! 🎉</h1>
+        <p>Привет, {{ user.first_name|default:user.email }}!</p>
+    </div>
+    
+    <div class="content">
+        <div class="welcome-text">
+            <p>Мы рады приветствовать вас в мире незабываемых путешествий! Теперь у вас есть доступ к лучшим экскурсиям по всему миру.</p>
+        </div>
+        
+        <div class="features">
+            <h3>Что вас ждет:</h3>
+            
+            <div class="feature-item">
+                <div class="feature-icon">🌍</div>
+                <div>
+                    <strong>Экскурсии по всему миру</strong><br>
+                    От Европы до Азии, от гор до моря
+                </div>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">👥</div>
+                <div>
+                    <strong>Индивидуальный подход</strong><br>
+                    Персональные маршруты для каждого
+                </div>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">⭐</div>
+                <div>
+                    <strong>Профессиональные гиды</strong><br>
+                    Опытные проводники с глубокими знаниями
+                </div>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">💎</div>
+                <div>
+                    <strong>Лучшие цены</strong><br>
+                    Конкурентные тарифы без скрытых доплат
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center;">
+            <a href="http://127.0.0.1:8000/catalog/" class="cta-button">
+                Начать путешествие →
+            </a>
+        </div>
+        
+        <div style="margin-top: 30px; padding: 20px; background: white; border-radius: 8px;">
+            <h4>Ваш аккаунт:</h4>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            {% if user.first_name %}
+            <p><strong>Имя:</strong> {{ user.first_name }}</p>
+            {% endif %}
+            {% if user.last_name %}
+            <p><strong>Фамилия:</strong> {{ user.last_name }}</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>С уважением, команда SELEXIA Travel</p>
+        <p>📧 info@selexiatravel.com | 📱 +90 (544) 157-34-33</p>
+        <p><small>Если у вас есть вопросы, не стесняйтесь обращаться к нам</small></p>
+    </div>
+</body>
+</html>

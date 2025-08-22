@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}FAQ - Часто задаваемые вопросы - SELEXIA Travel{% endblock %}
+{% block description %}Ответы на часто задаваемые вопросы о наших экскурсиях и услугах{% endblock %}
+
+{% block extra_css %}
+<!-- CSRF Token -->
+<meta name="csrf-token" content="{{ csrf_token }}">
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Заголовок страницы -->
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h1 class="display-4 fw-bold text-primary">
+                <i class="fas fa-question-circle me-3"></i>
+                Часто задаваемые вопросы
+            </h1>
+            <p class="lead text-muted">Найдите ответы на популярные вопросы о наших экскурсиях</p>
+        </div>
+    </div>
+
+    <!-- Поиск по FAQ -->
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="input-group">
+                        <span class="input-group-text bg-primary text-white">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" 
+                               class="form-control form-control-lg" 
+                               id="faq-search" 
+                               placeholder="Поиск по вопросам...">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ аккордеон -->
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <div class="accordion" id="faqAccordion">
+                {% for faq in faqs %}
+                <div class="accordion-item shadow-sm mb-3 faq-item">
+                    <h2 class="accordion-header" id="faq{{ forloop.counter }}">
+                        <button class="accordion-button collapsed" 
+                                type="button" 
+                                data-bs-toggle="collapse" 
+                                data-bs-target="#collapse{{ forloop.counter }}" 
+                                aria-expanded="false" 
+                                aria-controls="collapse{{ forloop.counter }}">
+                            <i class="fas fa-question-circle text-primary me-3"></i>
+                            {{ faq.question }}
+                        </button>
+                    </h2>
+                    <div id="collapse{{ forloop.counter }}" 
+                         class="accordion-collapse collapse" 
+                         aria-labelledby="faq{{ forloop.counter }}" 
+                         data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            <div class="d-flex">
+                                <i class="fas fa-lightbulb text-warning me-3 mt-1"></i>
+                                <div>{{ faq.answer }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Дополнительная помощь -->
+    <div class="row mt-5">
+        <div class="col-12 text-center">
+            <div class="card bg-light border-0">
+                <div class="card-body py-5">
+                    <i class="fas fa-headset fa-3x text-primary mb-3"></i>
+                    <h3>Не нашли ответ на свой вопрос?</h3>
+                    <p class="lead text-muted mb-4">
+                        Наша команда поддержки готова помочь вам 24/7
+                    </p>
+                    <div class="d-flex gap-3 justify-content-center flex-wrap">
+                        <a href="{% url 'contact' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-envelope me-2"></i>
+                            Написать нам
+                        </a>
+                        <a href="tel:+1234567890" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-phone me-2"></i>
+                            Позвонить
+                        </a>
+                        <a href="#" class="btn btn-outline-success btn-lg">
+                            <i class="fab fa-whatsapp me-2"></i>
+                            WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('faq-search');
+    const faqItems = document.querySelectorAll('.faq-item');
+    
+    // Поиск по FAQ
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase().trim();
+        
+        faqItems.forEach(item => {
+            const question = item.querySelector('.accordion-button').textContent.toLowerCase();
+            const answer = item.querySelector('.accordion-body').textContent.toLowerCase();
+            
+            if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                item.style.display = 'block';
+                // Автоматически раскрываем найденные вопросы
+                if (searchTerm) {
+                    const collapse = item.querySelector('.accordion-collapse');
+                    if (collapse && !collapse.classList.contains('show')) {
+                        const bsCollapse = new bootstrap.Collapse(collapse, {
+                            show: true
+                        });
+                    }
+                }
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+    
+    // Очистка поиска при клике на X
+    searchInput.addEventListener('search', function() {
+        if (this.value === '') {
+            faqItems.forEach(item => {
+                item.style.display = 'block';
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

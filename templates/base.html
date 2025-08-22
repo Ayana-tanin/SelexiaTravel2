@@ -1,0 +1,902 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="{% if LANGUAGE_CODE %}{{ LANGUAGE_CODE }}{% else %}ru{% endif %}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <!-- SEO Meta Tags -->
+    <title>{% block title %}SELEXIA Travel - {% trans "Индивидуальные экскурсии по всему миру" %}{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}{% trans "Откройте мир с SELEXIA Travel. Индивидуальные экскурсии по всему миру. Профессиональные гиды, уникальные маршруты, незабываемые впечатления." %}{% endblock %}">
+    <meta name="keywords" content="{% block keywords %}{% trans "экскурсии, туризм, путешествия, гид, индивидуальные туры" %}{% endblock %}">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:title" content="{% block og_title %}SELEXIA Travel{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Индивидуальные экскурсии по всему миру{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'images/og-image.jpg' %}{% endblock %}">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request.build_absolute_uri }}">
+    <meta property="twitter:title" content="{% block twitter_title %}SELEXIA Travel{% endblock %}">
+    <meta property="twitter:description" content="{% block twitter_description %}Индивидуальные экскурсии по всему миру{% endblock %}">
+    <meta property="twitter:image" content="{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'images/og-image.jpg' %}{% endblock %}">
+    
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}">
+    
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    
+    {% block extra_css %}{% endblock %}
+    
+    <style>
+        /* Основные стили */
+        body {
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        * {
+            font-family: inherit;
+        }
+        
+        /* Стили для навигации */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 0.5rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1050;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar.transparent {
+            background: transparent !important;
+            backdrop-filter: none;
+            box-shadow: none;
+        }
+        
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.98) !important;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.15);
+        }
+        
+        /* Отступ для контента под фиксированной навигацией */
+        body {
+            padding-top: 50px;
+        }
+        
+        .home-page body {
+            padding-top: 0;
+        }
+        
+        /* Логотип */
+        .navbar-brand {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            padding: 0;
+        }
+        
+        .img_logo {
+            height: 2rem;
+            width: auto;
+        }
+        
+        /* Поисковая форма */
+       
+              /* Навигационные элементы */
+        .navbar-nav {
+            align-items: center;
+        }
+        
+        .navbar-nav .nav-item {
+            margin: 0 0.25rem;
+        }
+        
+        .navbar-nav .nav-link {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            color: #333 !important;
+            padding: 0.5rem 1rem !important;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .navbar-nav .nav-link:hover {
+            background-color: rgba(0, 123, 255, 0.1);
+            color: #007bff !important;
+            transform: translateY(-1px);
+        }
+        
+        .navbar-nav .nav-link.active {
+            background-color: rgba(0, 123, 255, 0.15);
+            color: #007bff !important;
+        }
+        
+        /* Избранное с счетчиком */
+        .favorites-link {
+            position: relative !important;
+        }
+        
+        .favorites-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #dc3545 !important;
+            color: white !important;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.4rem;
+            border-radius: 50%;
+            min-width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        /* Кнопка входа */
+        .btn-login {
+            background: #007bff;
+            color: white !important;
+            border: 2px solid #007bff;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-login:hover {
+            background: transparent;
+            color: #007bff !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+        
+        /* Dropdown меню */
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-radius: 15px;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .dropdown-item {
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .dropdown-item:hover {
+            background: #f8f9fa;
+            color: #007bff;
+            transform: translateX(5px);
+        }
+        
+        /* Мобильная навигация */
+        .navbar-toggler {
+            border: none;
+            padding: 0.5rem;
+            border-radius: 8px;
+            background: rgba(0, 123, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-toggler:hover {
+            background: rgba(0, 123, 255, 0.2);
+        }
+        
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            outline: none;
+        }
+        
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 123, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+        
+        /* Мобильные стили */
+        @media (max-width: 991.98px) {
+            
+            .navbar-collapse {
+                background: rgba(255, 255, 255, 0.98);
+                border-radius: 15px;
+                margin-top: 1rem;
+                padding: 1rem;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+                backdrop-filter: blur(10px);
+            }
+            
+            .navbar-nav {
+                text-align: center;
+                width: 100%;
+            }
+            
+            .navbar-nav .nav-item {
+                width: 100%;
+                margin: 0.25rem 0;
+            }
+            
+            .navbar-nav .nav-link {
+                padding: 1rem !important;
+                border-radius: 10px;
+                justify-content: center;
+            }
+            
+            .navbar-nav .nav-link:hover {
+                background-color: rgba(0, 123, 255, 0.1);
+                transform: translateX(5px);
+            }
+        }
+        
+        @media (max-width: 767.98px) {
+            body {
+                padding-top: 70px;
+            }
+            
+            .img_logo {
+                height: 1.5rem;
+            }      
+            
+            
+        
+        }
+        
+        /* Стили для футера */
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 3rem 0 1rem;
+            margin-top: 4rem;
+        }
+        
+        footer h5, footer h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        footer a {
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        footer a:hover {
+            color: #3498db;
+            transform: translateX(5px);
+        }
+        
+        /* Floating button */
+        .btn-floating {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 123, 255, 0.3);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .btn-floating.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .btn-floating:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 123, 255, 0.4);
+        }
+        
+        /* Анимации */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .slide-down {
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    {% load socialaccount %}
+    
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg {% if request.resolver_match.url_name == 'home' %}transparent{% endif %}">
+        <div class="container">
+            <!-- Логотип -->
+            <a class="navbar-brand" href="/">
+                <img src="{% static 'images/SelexiaLogo.svg' %}" alt="Selexia Travel" class="img_logo">
+            </a>
+            
+            <!-- Поисковая форма (только для не главных страниц) -->
+                        
+            <!-- Мобильная кнопка -->
+            <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- Навигационное меню -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- Мобильная поисковая форма -->
+                
+                <ul class="navbar-nav ms-auto">
+                    <!-- Избранное -->
+                    <li class="nav-item">
+                        <a class="nav-link favorites-link" href="/favorites/">
+                            <i class="fas fa-heart"></i> <span class="">Избранное</span>
+                            {% if user.is_authenticated %}
+                            <span class="badge favorites-count" id="favorites-count" style="display: none;">0</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    
+                    <!-- Бронирования -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/my/bookings/">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="">Бронирования</span>
+                        </a>
+                    </li>
+                    
+                    <!-- Экскурсии -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/catalog/">
+                            <i class="fas fa-map-signs"></i>
+                            <span class="">Экскурсии</span>
+                        </a>
+                    </li>
+                    
+                    <!-- Языки -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-globe"></i>
+                            <span class="">Ru / En</span>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="languageDropdown">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-flag me-2"></i>Русский</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-flag me-2"></i>English</a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Пользователь -->
+                    {% if user.is_authenticated %}
+                    <li class="nav-item ">
+                        <a class="nav-link" href="/dashboard/" >
+                            <i class="fas fa-user-circle"></i>
+                            <span class="">{{ user.first_name|default:user.username }}</span>
+                        </a>                
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link btn-login" href="#" data-bs-toggle="modal" data-bs-target="#socialLoginModal">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span class="d-none d-lg-inline ms-1">Войти</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <h5 class="mb-3"><img src="{% static 'images/SelexiaLogo.svg' %}" alt="Selexia Travel" class="img_logo"></h5>
+                    <p class="text-light">Индивидуальные экскурсии по всему миру с профессиональными гидами. Создаем незабываемые впечатления для каждого путешественника.</p>
+                    <div class="d-flex">
+                        <a href="#" class="text-light me-3"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-tiktok"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-light"><i class="fab fa-google"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <h6 class="mb-3">Компания</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="/about/" class="text-light text-decoration-none">О нас</a></li>
+                        <li class="mb-2"><a href="#reviews" class="text-light text-decoration-none">Отзывы</a></li>
+                        <li class="mb-2"><a href="/about/" class="text-light text-decoration-none">+90 545 573 03 01</a></li>
+                        <li class="mb-2"><a href="/catalog/" class="text-light text-decoration-none">Каталог</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2">
+                    <h6 class="mb-3">Поддержка</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="/terms/" class="text-light text-decoration-none">Условия использования</a></li>
+                        <li class="mb-2"><a href="/privacy/" class="text-light text-decoration-none">Политика конфиденциальности</a></li>
+                        <li class="mb-2"><a href="/faq/" class="text-light text-decoration-none">FAQ</a></li>
+                        <li class="mb-2"><a href="/contact/" class="text-light text-decoration-none">Помощь</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Auth Section in Footer -->
+            {% if not user.is_authenticated %}
+            <hr class="my-4" style="border-color: #34495e;">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h6 class="mb-3">Присоединяйтесь к нам</h6>
+                    <p class="text-light mb-3">Получайте уведомления о новых экскурсиях и специальных предложениях</p>
+                    <form class="d-flex gap-2">
+                        <input type="email" class="form-control" placeholder="Ваш email" required>
+                        <button type="submit" class="btn btn-primary">Подписаться</button>
+                    </form>
+                </div>
+                <div class="col-lg-6 text-lg-end">
+                    <h6 class="mb-3">Связаться с нами</h6>
+                    <p class="text-light mb-2"><i class="fas fa-phone me-2"></i>+7 (999) 123-45-67</p>
+                    <p class="text-light mb-2"><i class="fas fa-envelope me-2"></i>info@selexiatravel.com</p>
+                    <p class="text-light"><i class="fas fa-map-marker-alt me-2"></i>Бишкек, Кыргызстан</p>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Copyright -->
+            <hr class="my-4" style="border-color: #34495e;">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="text-light mb-0">&copy; 2025 SELEXIA Travel.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Action Button -->
+    <button class="btn-floating" id="scrollToTop" aria-label="Наверх">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Toast уведомления -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">SELEXIA Travel</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body">
+                <!-- Содержимое уведомления -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script>
+        // Глобальные переменные
+        window.selexiaConfig = {
+            languageCode: '{{ LANGUAGE_CODE|default:"ru" }}',
+            user: {
+                {% if user.is_authenticated %}
+                isAuthenticated: true,
+                id: {{ user.id }},
+                username: '{{ user.username|default:"" }}',
+                email: '{{ user.email }}',
+                firstName: '{{ user.first_name|default:"" }}',
+                lastName: '{{ user.last_name|default:"" }}',
+                {% else %}
+                isAuthenticated: false,
+                {% endif %}
+            },
+            staticUrl: '{% static "" %}',
+            apiUrl: '/api/',
+            isHomePage: {% if request.resolver_match.url_name == 'home' %}true{% else %}false{% endif %},
+            pageName: '{{ request.resolver_match.url_name|default:"unknown" }}'
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const navbar = document.querySelector('.navbar');
+            const scrollToTopBtn = document.getElementById('scrollToTop');
+            const navbarToggler = document.querySelector('.navbar-toggler');
+            const navbarCollapse = document.querySelector('.navbar-collapse');
+            
+            // Обработка скролла
+            function handleScroll() {
+                const scrolled = window.scrollY > 50;
+                
+                if (navbar) {
+                    if (scrolled) {
+                        navbar.classList.add('scrolled');
+                        navbar.classList.remove('transparent');
+                    } else if (window.selexiaConfig.isHomePage) {
+                        navbar.classList.remove('scrolled');
+                        navbar.classList.add('transparent');
+                    }
+                }
+                
+                // Показ/скрытие кнопки "наверх"
+                if (scrollToTopBtn) {
+                    if (scrolled) {
+                        scrollToTopBtn.classList.add('show');
+                    } else {
+                        scrollToTopBtn.classList.remove('show');
+                    }
+                }
+            }
+            
+            window.addEventListener('scroll', handleScroll);
+            
+            // Инициализация при загрузке
+            handleScroll();
+            
+            // Кнопка "наверх"
+            if (scrollToTopBtn) {
+                scrollToTopBtn.addEventListener('click', function() {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+            
+            // Обработка мобильного меню
+            if (navbarToggler && navbarCollapse) {
+                navbarToggler.addEventListener('click', function() {
+                    const isExpanded = this.getAttribute('aria-expanded') === 'true';
+                    this.setAttribute('aria-expanded', !isExpanded);
+                });
+                
+                // Закрытие меню при клике на ссылку
+                const navLinks = navbarCollapse.querySelectorAll('.nav-link:not(.dropdown-toggle)');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        if (window.innerWidth < 992) {
+                            const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
+                            if (bsCollapse) {
+                                bsCollapse.hide();
+                            }
+                        }
+                    });
+                });
+            }
+            
+            // Обработка активных ссылок
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+            
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href === currentPath || (href !== '/' && currentPath.startsWith(href))) {
+                    link.classList.add('active');
+                }
+            });
+            
+            // Обработка избранного
+            function updateFavoritesCount() {
+                if (window.selexiaConfig.user.isAuthenticated) {
+                    fetch('/api/favorites/count/')
+                        .then(response => response.json())
+                        .then(data => {
+                            const countElement = document.getElementById('favorites-count');
+                            if (countElement && data.count > 0) {
+                                countElement.textContent = data.count;
+                                countElement.style.display = 'flex';
+                            } else if (countElement) {
+                                countElement.style.display = 'none';
+                            }
+                        })
+                        .catch(error => console.log('Favorites count error:', error));
+                }
+            }
+            
+            // Обновление счетчика избранного при загрузке
+            updateFavoritesCount();
+            
+            // Функция для показа уведомлений
+            window.showToast = function(message, type = 'info') {
+                const toast = document.getElementById('liveToast');
+                const toastBody = toast.querySelector('.toast-body');
+                
+                if (toastBody) {
+                    toastBody.textContent = message;
+                    
+                    // Добавляем класс для типа уведомления
+                    toast.className = `toast bg-${type} text-white`;
+                    
+                    const bsToast = new bootstrap.Toast(toast, {
+                        delay: 5000
+                    });
+                    bsToast.show();
+                }
+            };
+            
+            // Обработка CSRF токена для AJAX запросов
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            
+            // Настройка CSRF для всех AJAX запросов
+            const csrftoken = getCookie('csrftoken');
+            if (csrftoken) {
+                window.csrfToken = csrftoken;
+            }
+            
+            // Добавление анимаций при появлении элементов
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            
+            // Наблюдение за элементами для анимации
+            const animatedElements = document.querySelectorAll('.card, .tour-item, .testimonial-item');
+            animatedElements.forEach(el => observer.observe(el));
+            
+            
+            
+            // Улучшенная обработка dropdown меню
+            const dropdownElements = document.querySelectorAll('.dropdown-toggle');
+            dropdownElements.forEach(dropdown => {
+                dropdown.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const dropdownMenu = this.nextElementSibling;
+                    
+                    // Закрываем все другие dropdown
+                    document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                        if (menu !== dropdownMenu) {
+                            menu.classList.remove('show');
+                        }
+                    });
+                    
+                    // Переключаем текущий dropdown
+                    if (dropdownMenu) {
+                        dropdownMenu.classList.toggle('show');
+                    }
+                });
+            });
+            
+            // Закрытие dropdown при клике вне
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.dropdown')) {
+                    document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                        menu.classList.remove('show');
+                    });
+                }
+            });
+            
+            // Обработка языкового переключателя
+            const languageLinks = document.querySelectorAll('#languageDropdown + .dropdown-menu .dropdown-item');
+            languageLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const language = this.textContent.includes('English') ? 'en' : 'ru';
+                    
+                    // Здесь можно добавить логику смены языка
+                    console.log('Switching to language:', language);
+                    window.showToast('Смена языка будет доступна в следующих версиях', 'info');
+                });
+            });
+            
+            // Плавная прокрутка для якорных ссылок
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const targetId = this.getAttribute('href');
+                    if (targetId !== '#' && targetId !== '#!') {
+                        const targetElement = document.querySelector(targetId);
+                        if (targetElement) {
+                            e.preventDefault();
+                            const offsetTop = targetElement.offsetTop - 100; // Учитываем высоту navbar
+                            window.scrollTo({
+                                top: offsetTop,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                });
+            });
+            
+            // Обработка формы подписки в футере
+            const subscriptionForm = document.querySelector('footer form');
+            if (subscriptionForm) {
+                subscriptionForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const emailInput = this.querySelector('input[type="email"]');
+                    const email = emailInput.value.trim();
+                    
+                    if (email) {
+                        // Имитация отправки
+                        setTimeout(() => {
+                            window.showToast('Спасибо за подписку! Мы будем присылать вам интересные предложения.', 'success');
+                            emailInput.value = '';
+                        }, 500);
+                    }
+                });
+            }
+            
+            // Улучшенная анимация для navbar при скролле
+            let ticking = false;
+            function requestTick() {
+                if (!ticking) {
+                    requestAnimationFrame(handleScroll);
+                    ticking = true;
+                }
+            }
+            
+            window.addEventListener('scroll', () => {
+                requestTick();
+                ticking = false;
+            });
+            
+            // Предзагрузка критичных изображений
+            const criticalImages = document.querySelectorAll('img[data-preload]');
+            criticalImages.forEach(img => {
+                const imageUrl = img.getAttribute('data-src') || img.src;
+                if (imageUrl) {
+                    const preloadImg = new Image();
+                    preloadImg.src = imageUrl;
+                }
+            });
+            
+            // Обработка ошибок изображений
+            document.querySelectorAll('img').forEach(img => {
+                img.addEventListener('error', function() {
+                    this.src = '{% static "images/placeholder.jpg" %}';
+                    this.alt = 'Изображение недоступно';
+                });
+            });
+            
+            // Оптимизация производительности для мобильных устройств
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                document.body.classList.add('mobile-device');
+                
+                // Отключаем некоторые анимации на мобильных для лучшей производительности
+                const style = document.createElement('style');
+                style.textContent = `
+                    @media (max-width: 768px) {
+                        .fade-in { animation: none !important; }
+                        .slide-down { animation: none !important; }
+                        * { transition-duration: 0.1s !important; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        });
+        
+        // Экспорт полезных функций в глобальную область
+        window.SelexiaUtils = {
+            showToast: window.showToast,
+            csrfToken: window.csrfToken,
+            config: window.selexiaConfig
+        };
+    </script>
+
+    {% block extra_js %}{% endblock %}
+    
+    <!-- Модальное окно для входа (если нужно) -->
+    {% if not user.is_authenticated %}
+    <div class="modal fade" id="socialLoginModal" tabindex="-1" aria-labelledby="socialLoginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="socialLoginModalLabel">Вход в SELEXIA Travel</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="text-muted mb-4">Войдите, чтобы сохранять избранные экскурсии и управлять бронированиями</p>
+                    
+                    <!-- Здесь должны быть кнопки социальных сетей -->
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'social_signup' %}" class="btn btn-outline">
+                            <img src="{% static 'images/googleFA.svg' %}" alt="Google" class="me-2">
+                            Войти через Google
+                        </a>
+                        <a href="{% url 'social_signup' %}" class="btn btn-outline-danger">
+                            <i class="fab fa-yandex me-2"></i>
+                            Войти через Яндекс
+                        </a>
+                    </div>
+                    
+                    <hr class="my-4">
+                    <p class="small text-muted">
+                        Входя в систему, вы соглашаетесь с нашими 
+                        <a href="/terms/">условиями использования</a> и 
+                        <a href="/privacy/">политикой конфиденциальности</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</body>
+</html>

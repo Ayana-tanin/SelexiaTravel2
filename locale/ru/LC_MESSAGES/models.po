@@ -1,0 +1,266 @@
+# Russian translations for SELEXIA Travel models.
+# Copyright (C) 2024 SELEXIA Travel
+# This file is distributed under the same license as the SELEXIA Travel project.
+msgid ""
+msgstr ""
+"Project-Id-Version: SELEXIA Travel 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-08-20 17:47+0000\n"
+"PO-Revision-Date: 2024-08-20 17:47+0000\n"
+"Last-Translator: \n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+# User Model
+#: selexia_travel/models.py:45
+msgid "Email"
+msgstr "Email"
+
+#: selexia_travel/models.py:46
+msgid "Phone"
+msgstr "Телефон"
+
+#: selexia_travel/models.py:47
+msgid "Avatar"
+msgstr "Аватар"
+
+#: selexia_travel/models.py:48
+msgid "Date of birth"
+msgstr "Дата рождения"
+
+#: selexia_travel/models.py:49
+msgid "Registration date"
+msgstr "Дата регистрации"
+
+#: selexia_travel/models.py:58
+msgid "User"
+msgstr "Пользователь"
+
+#: selexia_travel/models.py:59
+msgid "Users"
+msgstr "Пользователи"
+
+# Country Model
+#: selexia_travel/models.py:75
+msgid "Name (Russian)"
+msgstr "Название (рус)"
+
+#: selexia_travel/models.py:76
+msgid "Name (English)"
+msgstr "Название (англ)"
+
+#: selexia_travel/models.py:77
+msgid "ISO code"
+msgstr "ISO код"
+
+#: selexia_travel/models.py:78
+msgid "Slug"
+msgstr "Слаг"
+
+#: selexia_travel/models.py:79
+msgid "Image"
+msgstr "Изображение"
+
+#: selexia_travel/models.py:80
+msgid "Popular"
+msgstr "Популярная"
+
+#: selexia_travel/models.py:82
+msgid "Country"
+msgstr "Страна"
+
+#: selexia_travel/models.py:83
+msgid "Countries"
+msgstr "Страны"
+
+# City Model
+#: selexia_travel/models.py:100
+msgid "City"
+msgstr "Город"
+
+#: selexia_travel/models.py:101
+msgid "Cities"
+msgstr "Города"
+
+#: selexia_travel/models.py:102
+msgid "Country"
+msgstr "Страна"
+
+#: selexia_travel/models.py:103
+msgid "Latitude"
+msgstr "Широта"
+
+#: selexia_travel/models.py:104
+msgid "Longitude"
+msgstr "Долгота"
+
+# Category Model
+#: selexia_travel/models.py:130
+msgid "Category"
+msgstr "Категория"
+
+#: selexia_travel/models.py:131
+msgid "Categories"
+msgstr "Категории"
+
+#: selexia_travel/models.py:132
+msgid "Description (Russian)"
+msgstr "Описание (рус)"
+
+#: selexia_travel/models.py:133
+msgid "Description (English)"
+msgstr "Описание (англ)"
+
+#: selexia_travel/models.py:134
+msgid "Icon"
+msgstr "Иконка"
+
+#: selexia_travel/models.py:135
+msgid "Color"
+msgstr "Цвет"
+
+#: selexia_travel/models.py:136
+msgid "Featured"
+msgstr "Рекомендуемая"
+
+# Excursion Model
+#: selexia_travel/models.py:160
+msgid "Title (Russian)"
+msgstr "Название (рус)"
+
+#: selexia_travel/models.py:161
+msgid "Title (English)"
+msgstr "Название (англ)"
+
+#: selexia_travel/models.py:162
+msgid "Description (Russian)"
+msgstr "Описание (рус)"
+
+#: selexia_travel/models.py:163
+msgid "Description (English)"
+msgstr "Описание (англ)"
+
+#: selexia_travel/models.py:164
+msgid "Short description (Russian)"
+msgstr "Краткое описание (рус)"
+
+#: selexia_travel/models.py:165
+msgid "Short description (English)"
+msgstr "Краткое описание (англ)"
+
+#: selexia_travel/models.py:167
+msgid "Price"
+msgstr "Цена"
+
+#: selexia_travel/models.py:168
+msgid "Currency"
+msgstr "Валюта"
+
+#: selexia_travel/models.py:170
+msgid "Duration"
+msgstr "Длительность"
+
+#: selexia_travel/models.py:171
+msgid "Time unit"
+msgstr "Единица времени"
+
+#: selexia_travel/models.py:172
+msgid "Maximum people"
+msgstr "Максимум человек"
+
+#: selexia_travel/models.py:174
+msgid "Program (Russian)"
+msgstr "Программа (рус)"
+
+#: selexia_travel/models.py:175
+msgid "Program (English)"
+msgstr "Программа (англ)"
+
+#: selexia_travel/models.py:176
+msgid "Included (Russian)"
+msgstr "Включено (рус)"
+
+#: selexia_travel/models.py:177
+msgid "Included (English)"
+msgstr "Включено (англ)"
+
+#: selexia_travel/models.py:178
+msgid "Important info (Russian)"
+msgstr "Важная информация (рус)"
+
+#: selexia_travel/models.py:179
+msgid "Important info (English)"
+msgstr "Важная информация (англ)"
+
+#: selexia_travel/models.py:181
+msgid "Meeting point (Russian)"
+msgstr "Место встречи (рус)"
+
+#: selexia_travel/models.py:182
+msgid "Meeting point (English)"
+msgstr "Место встречи (англ)"
+
+#: selexia_travel/models.py:184
+msgid "Status"
+msgstr "Статус"
+
+#: selexia_travel/models.py:186
+msgid "Views count"
+msgstr "Просмотры"
+
+#: selexia_travel/models.py:187
+msgid "Rating"
+msgstr "Рейтинг"
+
+#: selexia_travel/models.py:188
+msgid "Reviews count"
+msgstr "Количество отзывов"
+
+#: selexia_travel/models.py:189
+msgid "Popular"
+msgstr "Популярная"
+
+#: selexia_travel/models.py:190
+msgid "Featured"
+msgstr "Рекомендуемая"
+
+#: selexia_travel/models.py:192
+msgid "Created"
+msgstr "Создано"
+
+#: selexia_travel/models.py:193
+msgid "Updated"
+msgstr "Обновлено"
+
+#: selexia_travel/models.py:195
+msgid "Excursion"
+msgstr "Экскурсия"
+
+#: selexia_travel/models.py:196
+msgid "Excursions"
+msgstr "Экскурсии"
+
+# Status Choices
+#: selexia_travel/models.py:200
+msgid "Draft"
+msgstr "Черновик"
+
+#: selexia_travel/models.py:201
+msgid "Published"
+msgstr "Опубликовано"
+
+#: selexia_travel/models.py:202
+msgid "Archived"
+msgstr "Архив"
+
+# Time Unit Choices
+#: selexia_travel/models.py:205
+msgid "Hours"
+msgstr "Часы"
+
+#: selexia_travel/models.py:206
+msgid "Days"
+msgstr "Дни"

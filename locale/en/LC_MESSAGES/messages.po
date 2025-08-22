@@ -1,0 +1,30 @@
+# English translations for SELEXIA Travel messages.
+# Copyright (C) 2024 SELEXIA Travel
+# This file is distributed under the same license as the SELEXIA Travel project.
+msgid ""
+msgstr ""
+"Project-Id-Version: SELEXIA Travel 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-08-20 17:47+0000\n"
+"PO-Revision-Date: 2024-08-20 17:47+0000\n"
+"Last-Translator: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# Application Messages
+#: selexia_travel/views.py:330
+msgid "Your application has been sent! We will contact you soon."
+msgstr "Your application has been sent! We will contact you soon."
+
+# Booking Messages
+#: selexia_travel/views.py:350
+msgid "Your booking has been sent! We will contact you for confirmation."
+msgstr "Your booking has been sent! We will contact you for confirmation."
+
+# Review Messages
+#: selexia_travel/views.py:380
+msgid "Thank you for your review!"
+msgstr "Thank you for your review!"

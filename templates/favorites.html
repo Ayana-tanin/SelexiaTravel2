@@ -1,0 +1,271 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}Избранные экскурсии - SELEXIA Travel{% endblock %}
+{% block description %}Ваши избранные экскурсии и путешествия{% endblock %}
+
+{% block extra_css %}
+<!-- CSRF Token -->
+<meta name="csrf-token" content="{{ csrf_token }}">
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="display-4 mb-4">
+                <i class="fas fa-heart text-danger me-3"></i>
+                Избранное
+            </h1>
+            
+            {% if excursions or categories or countries %}
+                <p class="lead text-muted mb-5">
+                    {{ favorites_count }} избранных элементов
+                    {% if countries_count > 0 %}{% if excursions_count > 0 %}, {% endif %}{{ countries_count }} стран{% endif %}
+                    {% if categories_count > 0 %}{% if excursions_count > 0 or countries_count > 0 %}, {% endif %}{{ categories_count }} категорий{% endif %}
+                    {% if excursions_count > 0 or countries_count > 0 or categories_count > 0 %}{% endif %}
+                </p>
+                
+                <div class="row">
+                    {% for excursion in excursions %}
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100 excursion-card shadow-sm">
+                            {% if excursion.main_image %}
+                                <img src="{{ excursion.main_image.image.url }}" 
+                                     class="card-img-top" 
+                                     alt="{{ excursion.title_ru }}"
+                                     style="height: 200px; object-fit: cover;">
+                            {% else %}
+                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
+                                     style="height: 200px;">
+                                    <i class="fas fa-image fa-3x text-muted"></i>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="card-body">
+                                <h5 class="card-title">{{ excursion.title_ru }}</h5>
+                                <p class="card-text text-muted">
+                                    <i class="fas fa-map-marker-alt me-2"></i>
+                                    {{ excursion.city.name_ru }}, {{ excursion.country.name_ru }}
+                                </p>
+                                <p class="card-text">{{ excursion.short_description_ru|truncatewords:20 }}</p>
+                                
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="rating">
+                                        <i class="fas fa-star text-warning"></i>
+                                        <span class="ms-1">{{ excursion.rating|floatformat:1 }}</span>
+                                        <small class="text-muted">({{ excursion.reviews_count }})</small>
+                                    </div>
+                                    <div class="price">
+                                        <span class="h5 text-primary mb-0">{{ excursion.price }} {{ excursion.currency }}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        <i class="fas fa-clock me-1"></i>
+                                        {{ excursion.duration }} {{ excursion.duration_unit }}
+                                    </small>
+                                    <div class="btn-group">
+                                        <a href="{% url 'excursion_detail' excursion.slug %}" 
+                                           class="btn btn-outline-primary btn-sm">
+                                            Подробнее
+                                        </a>
+                                                                            <button class="btn btn-outline-danger btn-sm toggle-favorite" 
+                                            data-excursion-id="{{ excursion.id }}"
+                                            data-item-type="excursion"
+                                            data-is-favorite="true">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Избранные страны -->
+                {% if countries %}
+                <h3 class="mt-5 mb-4">
+                    <i class="fas fa-globe text-primary me-2"></i>
+                    Избранные страны
+                </h3>
+                <div class="row">
+                    {% for country in countries %}
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100 country-card shadow-sm">
+                            {% if country.image %}
+                                <img src="{{ country.image.url }}" 
+                                     class="card-img-top" 
+                                     alt="{{ country.name_ru }}"
+                                     style="height: 200px; object-fit: cover;">
+                            {% else %}
+                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
+                                     style="height: 200px;">
+                                    <i class="fas fa-globe fa-3x text-muted"></i>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="card-body">
+                                <h5 class="card-title">{{ country.name_ru }}</h5>
+                                <p class="card-text text-muted">
+                                    <i class="fas fa-map-marker-alt me-2"></i>
+                                    {{ country.cities.all|length }} городов
+                                </p>
+                                
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a href="{% url 'catalog' %}?country={{ country.slug }}" 
+                                       class="btn btn-outline-primary btn-sm">
+                                        Смотреть экскурсии
+                                    </a>
+                                    <button class="btn btn-outline-danger btn-sm toggle-favorite" 
+                                            data-country-id="{{ country.id }}"
+                                            data-item-type="country"
+                                            data-is-favorite="true">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Избранные категории -->
+                {% if categories %}
+                <h3 class="mt-5 mb-4">
+                    <i class="fas fa-tags text-success me-2"></i>
+                    Избранные категории
+                </h3>
+                <div class="row">
+                    {% for category in categories %}
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100 category-card shadow-sm">
+                            {% if category.image %}
+                                <img src="{{ category.image.url }}" 
+                                     class="card-img-top" 
+                                     alt="{{ category.name_ru }}"
+                                     style="height: 200px; object-fit: cover;">
+                            {% else %}
+                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
+                                     style="height: 200px;">
+                                    <i class="fas fa-tags fa-3x text-muted"></i>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="card-body">
+                                <h5 class="card-title">{{ category.name_ru }}</h5>
+                                <p class="card-text text-muted">
+                                    <i class="fas fa-route me-2"></i>
+                                    {{ category.excursions.all|length }} экскурсий
+                                </p>
+                                
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a href="{% url 'catalog' %}?category={{ category.slug }}" 
+                                       class="btn btn-outline-primary btn-sm">
+                                        Смотреть экскурсии
+                                    </a>
+                                    <button class="btn btn-outline-danger btn-sm toggle-favorite" 
+                                            data-category-id="{{ category.id }}"
+                                            data-item-type="category"
+                                            data-is-favorite="true">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-heart-broken fa-5x text-muted mb-4"></i>
+                    <h3 class="text-muted">У вас пока нет избранного</h3>
+                    <p class="lead text-muted mb-4">
+                        Добавляйте экскурсии, страны и категории в избранное, чтобы вернуться к ним позже
+                    </p>
+                    <a href="{% url 'catalog' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-search me-2"></i>
+                        Найти экскурсии
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Обработка удаления из избранного
+    document.querySelectorAll('.toggle-favorite').forEach(button => {
+        button.addEventListener('click', function() {
+            const excursionId = this.dataset.excursionId;
+            const countryId = this.dataset.countryId;
+            const categoryId = this.dataset.categoryId;
+            const itemType = this.dataset.itemType || 'excursion';
+            
+            let itemId;
+            if (excursionId) {
+                itemId = excursionId;
+            } else if (countryId) {
+                itemId = countryId;
+            } else if (categoryId) {
+                itemId = categoryId;
+            }
+            
+            if (!itemId) return;
+            
+            fetch('/api/favorites/toggle/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                },
+                body: JSON.stringify({
+                    item_id: itemId,
+                    item_type: itemType
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Удаляем карточку элемента
+                    this.closest('.col-lg-4').remove();
+                    
+                    // Обновляем счетчик избранного в header
+                    const favoritesCount = document.querySelector('.favorites-count');
+                    if (favoritesCount) {
+                        const currentCount = parseInt(favoritesCount.textContent);
+                        favoritesCount.textContent = currentCount - 1;
+                    }
+                    
+                    // Показываем сообщение
+                    if (data.message) {
+                        alert(data.message);
+                    }
+                    
+                    // Проверяем, есть ли еще элементы в избранном
+                    const remainingCards = document.querySelectorAll('.excursion-card, .country-card, .category-card');
+                    if (remainingCards.length === 0) {
+                        // Перезагружаем страницу, чтобы показать сообщение об отсутствии избранного
+                        location.reload();
+                    }
+                } else {
+                    console.error('Error removing from favorites:', data.error);
+                    alert('Ошибка при удалении из избранного: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Произошла ошибка при удалении из избранного');
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

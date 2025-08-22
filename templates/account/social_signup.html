@@ -1,0 +1,422 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load account %}
+{% load socialaccount %}
+{% load static %}
+
+{% block title %}Завершение регистрации - SELEXIA Travel{% endblock %}
+
+{% block extra_css %}
+<style>
+    .social-signup-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 2rem 1rem;
+    }
+    
+    .signup-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+        padding: 3rem;
+        max-width: 500px;
+        width: 100%;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .signup-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #205696, #FF8E14);
+    }
+    
+    .logo-section {
+        margin-bottom: 2rem;
+    }
+    
+    .logo-section img {
+        height: 60px;
+        margin-bottom: 1rem;
+    }
+    
+    .welcome-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #205696;
+        margin-bottom: 1rem;
+    }
+    
+    .welcome-subtitle {
+        font-size: 1.1rem;
+        color: #666;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+    
+    .provider-info {
+        background: rgba(32, 86, 150, 0.1);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border-left: 4px solid #205696;
+    }
+    
+    .provider-name {
+        font-weight: 600;
+        color: #205696;
+        margin-bottom: 0.5rem;
+    }
+    
+    .provider-email {
+        color: #666;
+        font-size: 0.95rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+        text-align: left;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+    }
+    
+    .form-control:focus {
+        border-color: #205696;
+        box-shadow: 0 0 0 0.2rem rgba(32, 86, 150, 0.25);
+        outline: none;
+    }
+    
+    .btn-complete {
+        background: linear-gradient(135deg, #205696, #1a4a7a);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    .btn-complete:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(32, 86, 150, 0.3);
+    }
+    
+    .btn-complete:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+    }
+    
+    .loading-spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255,255,255,.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 1s ease-in-out infinite;
+        margin-right: 0.5rem;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    
+    .success-message {
+        background: rgba(40, 167, 69, 0.1);
+        border: 2px solid #28a745;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        color: #155724;
+        display: none;
+    }
+    
+    .error-message {
+        background: rgba(220, 53, 69, 0.1);
+        border: 2px solid #dc3545;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        color: #721c24;
+        display: none;
+    }
+    
+    .auto-redirect {
+        background: rgba(255, 193, 7, 0.1);
+        border: 2px solid #ffc107;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-top: 1rem;
+        color: #856404;
+        font-size: 0.9rem;
+    }
+    
+    .countdown {
+        font-weight: 600;
+        color: #205696;
+    }
+    
+    @media (max-width: 768px) {
+        .signup-card {
+            padding: 2rem 1.5rem;
+            margin: 1rem;
+        }
+        
+        .welcome-title {
+            font-size: 1.5rem;
+        }
+        
+        .welcome-subtitle {
+            font-size: 1rem;
+        }
+    }
+    
+    /* Стили для сообщений Django */
+    .messages-container .alert {
+        margin-bottom: 1rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .alert-success {
+        background: rgba(40, 167, 69, 0.1);
+        border: 2px solid #28a745;
+        color: #155724;
+    }
+    
+    .alert-error, .alert-danger {
+        background: rgba(220, 53, 69, 0.1);
+        border: 2px solid #dc3545;
+        color: #721c24;
+    }
+    
+    .alert-info {
+        background: rgba(23, 162, 184, 0.1);
+        border: 2px solid #17a2b8;
+        color: #0c5460;
+    }
+    
+    .alert-warning {
+        background: rgba(255, 193, 7, 0.1);
+        border: 2px solid #ffc107;
+        color: #856404;
+    }
+    
+    /* Анимация для сообщений */
+    .messages-container .alert {
+        transition: opacity 0.3s ease;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Django Messages -->
+{% if messages %}
+<div class="messages-container" style="position: fixed; top: 20px; right: 20px; z-index: 1000; max-width: 400px;">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="social-signup-container">
+    <div class="signup-card">
+        <div class="logo-section">
+            <img src="{% static 'images/SelexiaLogo.svg' %}" alt="SELEXIA Travel">
+            <h1 class="welcome-title">Добро пожаловать!</h1>
+            <p class="welcome-subtitle">
+                {% if email %}
+                    {% if user.is_authenticated %}
+                        Вход выполнен успешно! Перенаправление...
+                    {% else %}
+                        Завершите вход или создайте аккаунт для доступа к персональным экскурсиям
+                    {% endif %}
+                {% else %}
+                    Завершите регистрацию, чтобы получить доступ к персональным экскурсиям
+                {% endif %}
+            </p>
+        </div>
+        
+        <div class="provider-info">
+            <div class="provider-name">
+                <i class="fab fa-yandex me-2"></i>
+                {% if email %}
+                    {% if user.is_authenticated %}
+                        Вход через Яндекс выполнен
+                    {% else %}
+                        Авторизация через Яндекс
+                    {% endif %}
+                {% else %}
+                    Авторизация через Яндекс
+                {% endif %}
+            </div>
+            <div class="provider-email">{{ email|default:"tanRan.an@yandex.ru" }}</div>
+        </div>
+        
+        <!-- Сообщения об успехе/ошибке -->
+        <div class="success-message" id="successMessage">
+            <i class="fas fa-check-circle me-2"></i>
+            Регистрация завершена успешно! Перенаправление...
+        </div>
+        
+        <div class="error-message" id="errorMessage">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            Произошла ошибка. Попробуйте еще раз.
+        </div>
+        
+        <form method="post" id="socialSignupForm">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label class="form-label" for="id_email">Email:</label>
+                <input type="email" 
+                       class="form-control" 
+                       id="id_email" 
+                       name="email" 
+                       value="{{ email|default:'tanRan.an@yandex.ru' }}" 
+                       required>
+            </div>
+            
+            <button type="submit" class="btn-complete" id="submitBtn">
+                <span class="btn-text">
+                    {% if email %}
+                        {% if user.is_authenticated %}
+                            Перейти в личный кабинет
+                        {% else %}
+                            Войти в аккаунт
+                        {% endif %}
+                    {% else %}
+                        Завершить регистрацию
+                    {% endif %}
+                </span>
+                <span class="loading-spinner" style="display: none;"></span>
+            </button>
+        </form>
+        
+        <div class="auto-redirect">
+            <i class="fas fa-clock me-2"></i>
+            {% if user.is_authenticated %}
+                Перенаправление в личный кабинет через <span class="countdown" id="countdown">2</span> секунды
+            {% else %}
+                Автоматическое перенаправление через <span class="countdown" id="countdown">5</span> секунд
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('socialSignupForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = submitBtn.querySelector('.btn-text');
+    const loadingSpinner = submitBtn.querySelector('.loading-spinner');
+    const successMessage = document.getElementById('successMessage');
+    const errorMessage = document.getElementById('errorMessage');
+    const countdownElement = document.getElementById('countdown');
+    
+    let countdown = {% if user.is_authenticated %}2{% else %}5{% endif %};
+    let countdownInterval;
+    
+    // Автоматический countdown
+    function startCountdown() {
+        countdownInterval = setInterval(() => {
+            countdown--;
+            countdownElement.textContent = countdown;
+            
+            if (countdown <= 0) {
+                clearInterval(countdownInterval);
+                {% if user.is_authenticated %}
+                // Если пользователь уже авторизован, перенаправляем сразу
+                window.location.href = '/dashboard/';
+                {% else %}
+                // Автоматически отправляем форму
+                form.submit();
+                {% endif %}
+            }
+        }, 1000);
+    }
+    
+    // Запускаем countdown при загрузке страницы
+    startCountdown();
+    
+    // Обработка отправки формы
+    form.addEventListener('submit', function(e) {
+        // НЕ предотвращаем отправку формы - пусть она отправится на сервер
+        // Показываем загрузку
+        btnText.style.display = 'none';
+        loadingSpinner.style.display = 'inline-block';
+        submitBtn.disabled = true;
+        
+        // Останавливаем countdown
+        clearInterval(countdownInterval);
+        
+        // Форма отправится на сервер автоматически
+    });
+    
+    // Если пользователь уже авторизован, показываем сообщение об успехе
+    {% if user.is_authenticated %}
+    setTimeout(() => {
+        successMessage.style.display = 'block';
+        errorMessage.style.display = 'none';
+        
+        // Перенаправляем через 2 секунды
+        setTimeout(() => {
+            window.location.href = '/dashboard/';
+        }, 2000);
+    }, 1000);
+    {% endif %}
+    
+    // Обработка ошибок
+    window.addEventListener('error', function() {
+        errorMessage.style.display = 'block';
+        successMessage.style.display = 'none';
+        btnText.style.display = 'inline';
+        loadingSpinner.style.display = 'none';
+        submitBtn.disabled = false;
+    });
+    
+    // Автоматическое скрытие сообщений Django
+    const djangoMessages = document.querySelectorAll('.messages-container .alert');
+    djangoMessages.forEach(message => {
+        setTimeout(() => {
+            message.style.opacity = '0';
+            setTimeout(() => {
+                message.remove();
+            }, 300);
+        }, 5000); // Скрываем через 5 секунд
+    });
+});
+</script>
+{% endblock %}

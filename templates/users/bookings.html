@@ -1,0 +1,771 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}Мои бронирования - SELEXIA Travel{% endblock %}
+{% block description %}История и управление вашими бронированиями{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f9fafb;
+            color: #374151;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .profile-layout {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .sidebar {
+            width: 320px;
+            flex-shrink: 0;
+        }
+
+    
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            overflow: hidden;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar i {
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .profile-info h1 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-info p {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1f2937;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            width: 100%;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .nav-item:hover {
+            background-color: #f3f4f6;
+        }
+
+        .nav-item.active {
+            background-color: #eff6ff;
+            color: #2563eb;
+            border-left: 4px solid #2563eb;
+        }
+
+        .nav-item i {
+            margin-right: 0.75rem;
+            width: 20px;
+            height: 20px;
+        }
+
+        .nav-item.active i {
+            color: #2563eb;
+        }
+
+        .main-content {
+            flex: 1;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .booking-card {
+            display: flex;
+        }
+
+        .card-image {
+            width: 192px;
+            height: 128px;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .heart-icon {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            color: #ef4444;
+            z-index: 10;
+        }
+
+        .duration-badge {
+            position: absolute;
+            bottom: 0.5rem;
+            left: 0.5rem;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(4px);
+            padding: 0.25rem 0.5rem;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            z-index: 10;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-confirmed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-completed {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .card-content {
+            flex: 1;
+            padding: 1rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-title {
+            font-weight: 600;
+            font-size: 1.125rem;
+            color: #1f2937;
+            flex: 1;
+        }
+
+        .card-dates {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.25rem;
+        }
+
+        .card-date {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .card-created {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        .price-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.25rem;
+        }
+
+        .card-price {
+            font-size: 1.125rem;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .price-note {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        .card-location {
+            display: flex;
+            align-items: center;
+            color: #6b7280;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        .card-location i {
+            margin-right: 0.25rem;
+            width: 16px;
+            height: 16px;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .booking-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: flex-start;
+        }
+
+        .people-count {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .people-count i {
+            width: 16px;
+            height: 16px;
+        }
+
+        .cancel-booking-btn {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .cancel-booking-btn:hover {
+            background: #fecaca;
+            border-color: #fca5a5;
+        }
+
+        .cancel-booking-btn i {
+            width: 14px;
+            height: 14px;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stars {
+            display: flex;
+            gap: 0.125rem;
+        }
+
+        .star {
+            width: 16px;
+            height: 16px;
+            color: #fbbf24;
+            fill: #fbbf24;
+        }
+
+        .star.empty {
+            color: #d1d5db;
+            fill: none;
+        }
+
+        .rating-value {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .review-card {
+            padding: 1rem;
+        }
+
+        .review-header {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .review-image {
+            width: 64px;
+            height: 64px;
+            border-radius: 8px;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            overflow: hidden;
+        }
+
+        .review-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .review-content {
+            flex: 1;
+        }
+
+        .review-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .review-title {
+            font-weight: 600;
+            font-size: 1.125rem;
+            color: #1f2937;
+        }
+
+        .review-date {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .review-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .review-text {
+            color: #374151;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        .settings-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            margin-bottom: 1rem;
+        }
+
+        .settings-content {
+            padding: 1.5rem;
+        }
+
+        .settings-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .toggle-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .toggle {
+            position: relative;
+            width: 40px;
+            height: 24px;
+            background: #d1d5db;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .toggle.active {
+            background: #3b82f6;
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.2s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .toggle.active::after {
+            transform: translateX(16px);
+        }
+
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .settings-item:hover {
+            background-color: #f3f4f6;
+        }
+
+        .view-all-btn {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 0.75rem;
+            background: #eff6ff;
+            color: #2563eb;
+            border: none;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .view-all-btn:hover {
+            background-color: #dbeafe;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #6b7280;
+        }
+
+        .empty-state i {
+            width: 48px;
+            height: 48px;
+            color: #d1d5db;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+
+        .empty-state p {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        @media (max-width: 768px) {
+            .profile-layout {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+            
+            .booking-card {
+                flex-direction: column;
+            }
+            
+            .card-image {
+                width: 100%;
+                height: 160px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <div class="container">
+        <div class="profile-layout">
+                        <!-- Main Content -->
+            <div class="main-content">
+                <!-- Bookings Section -->
+                <div id="bookings" class="content-section active">
+                    <h2 class="section-title">Мои бронирования</h2>
+                    
+                    {% if bookings %}
+                        {% for booking in bookings %}
+                        <div class="card">
+                            
+                            <a href="{% url 'excursion_detail' slug=booking.excursion.slug %}" class="image-link">
+                            <div class="booking-card">
+                                <div class="card-image">
+                                    {% if booking.excursion.main_image %}
+                                        <img src="{{ booking.excursion.main_image.image.url }}" alt="{{ booking.excursion.title_ru }}">
+                                    {% else %}
+                                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: white; font-size: 2rem;">
+                                            🏔️
+                                        </div>
+                                    {% endif %}
+                                    <div class="duration-badge">
+                                        <i data-lucide="clock"></i>
+                                        {{ booking.excursion.duration_display|default:"2-3 часа" }}
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <div class="card-header">
+                                        <h3 class="card-title">{{ booking.excursion.title_ru }}</h3>
+                                        <div class="card-dates">
+                                            <span class="card-date">Дата экскурсии: {{ booking.date|date:"d.m.Y" }}</span>
+                                            <span class="card-created">Забронировано: {{ booking.created_at|date:"d.m.Y H:i" }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="card-location">
+                                        <i data-lucide="map-pin"></i>
+                                        {% if booking.excursion.city %}
+                                            {{ booking.excursion.city.name_ru }}{% if booking.excursion.country %}, {{ booking.excursion.country.name_ru }}{% endif %}
+                                        {% elif booking.excursion.country %}
+                                            {{ booking.excursion.country.name_ru }}
+                                        {% else %}
+                                            Место проведения уточняется
+                                        {% endif %}
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="booking-details">
+                                            <span class="people-count">
+                                                <i data-lucide="users"></i>
+                                                {{ booking.people_count }} чел.
+                                            </span>
+                                            <span class="status-badge status-{{ booking.status }}">
+                                                {% if booking.status == 'pending' %}Ожидание
+                                                {% elif booking.status == 'confirmed' %}Подтверждено
+                                                {% elif booking.status == 'completed' %}Завершено
+                                                {% elif booking.status == 'cancelled' %}Отменено
+                                                {% endif %}
+                                            </span>
+                                            {% if booking.status == 'pending' %}
+                                                <button class="cancel-booking-btn" onclick="cancelBooking({{ booking.id }})">
+                                                    <i data-lucide="x"></i>
+                                                    Отменить
+                                                </button>
+                                            {% endif %}
+                                        </div>
+                                        <div class="price-info">
+                                            <span class="card-price">{{ booking.total_price }} {{ booking.excursion.currency|default:"₽" }}</span>
+                                            <span class="price-note">за экскурсию</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </a>
+                        </div>
+                        {% endfor %}
+                        
+                        <a href="{% url 'catalog' %}" class="view-all-btn">Найти новые экскурсии</a>
+                    {% else %}
+                        <div class="empty-state">
+                            <i data-lucide="calendar"></i>
+                            <h3>У вас пока нет бронирований</h3>
+                            <p>Отправьтесь в путешествие и забронируйте свою первую экскурсию!</p>
+                            <a href="{% url 'catalog' %}" class="btn-primary">Найти экскурсии</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Функция отмены бронирования
+    function cancelBooking(bookingId) {
+        if (confirm('Вы уверены, что хотите отменить это бронирование?')) {
+            fetch(`/api/bookings/${bookingId}/cancel/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Перезагружаем страницу для отображения обновленного статуса
+                    window.location.reload();
+                } else {
+                    alert('Ошибка при отмене бронирования');
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                alert('Ошибка при отмене бронирования');
+            });
+        }
+    }
+
+    // Инициализация Lucide иконок
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    });
+</script>
+{% endblock %}

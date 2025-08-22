@@ -1,0 +1,269 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}Политика конфиденциальности - SELEXIA Travel{% endblock %}
+{% block description %}Политика конфиденциальности и защиты персональных данных{% endblock %}
+
+{% block extra_css %}
+<!-- CSRF Token -->
+<meta name="csrf-token" content="{{ csrf_token }}">
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Заголовок страницы -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h1 class="display-4 fw-bold text-primary">
+                <i class="fas fa-shield-alt me-3"></i>
+                Политика конфиденциальности
+            </h1>
+            <p class="lead text-muted">Как мы защищаем и используем ваши персональные данные</p>
+            <p class="text-muted">Последнее обновление: {{ "now"|date:"d.m.Y" }}</p>
+        </div>
+    </div>
+
+    <!-- Навигация по разделам -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="mb-3">
+                        <i class="fas fa-list me-2 text-primary"></i>
+                        Содержание
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <a href="#collection" class="text-decoration-none">
+                                        <i class="fas fa-angle-right me-2 text-primary"></i>
+                                        Сбор данных
+                                    </a>
+                                </li>
+                                <li class="mb-2">
+                                    <a href="#usage" class="text-decoration-none">
+                                        <i class="fas fa-angle-right me-2 text-primary"></i>
+                                        Использование данных
+                                    </a>
+                                </li>
+                                <li class="mb-2">
+                                    <a href="#sharing" class="text-decoration-none">
+                                        <i class="fas fa-angle-right me-2 text-primary"></i>
+                                        Передача данных
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <a href="#security" class="text-decoration-none">
+                                        <i class="fas fa-angle-right me-2 text-primary"></i>
+                                        Безопасность
+                                    </a>
+                                </li>
+                                <li class="mb-2">
+                                    <a href="#rights" class="text-decoration-none">
+                                        <i class="fas fa-angle-right me-2 text-primary"></i>
+                                        Ваши права
+                                    </a>
+                                </li>
+                                <li class="mb-2">
+                                    <a href="#cookies" class="text-decoration-none">
+                                        <i class="fas fa-angle-right me-2 text-primary"></i>
+                                        Файлы cookie
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Содержание политики -->
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <!-- Сбор данных -->
+            <div class="card shadow-sm mb-4" id="collection">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-database me-2"></i>
+                        1. Сбор персональных данных
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <p>Мы собираем только те данные, которые необходимы для предоставления наших услуг и улучшения пользовательского опыта.</p>
+                    
+                    <h6>1.1. Данные, которые мы собираем</h6>
+                    <ul>
+                        <li><strong>Контактная информация:</strong> имя, email, телефон</li>
+                        <li><strong>Профиль пользователя:</strong> предпочтения, история бронирований</li>
+                        <li><strong>Технические данные:</strong> IP-адрес, тип браузера, время посещения</li>
+                        <li><strong>Данные о поездках:</strong> даты, направления, количество человек</li>
+                    </ul>
+                    
+                    <h6>1.2. Автоматический сбор</h6>
+                    <p>Некоторые данные собираются автоматически при использовании нашего сайта для аналитики и улучшения сервиса.</p>
+                </div>
+            </div>
+
+            <!-- Использование данных -->
+            <div class="card shadow-sm mb-4" id="usage">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-cogs me-2"></i>
+                        2. Использование персональных данных
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <h6>2.1. Основные цели использования</h6>
+                    <ul>
+                        <li>Обработка и подтверждение бронирований</li>
+                        <li>Предоставление информации об экскурсиях</li>
+                        <li>Связь с клиентами по вопросам поездок</li>
+                        <li>Улучшение качества наших услуг</li>
+                        <li>Персонализация предложений и рекомендаций</li>
+                    </ul>
+                    
+                    <h6>2.2. Маркетинговые цели</h6>
+                    <p>С вашего согласия мы можем использовать ваши данные для отправки информации о новых экскурсиях и специальных предложениях.</p>
+                </div>
+            </div>
+
+            <!-- Передача данных -->
+            <div class="card shadow-sm mb-4" id="sharing">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0">
+                        <i class="fas fa-share-alt me-2"></i>
+                        3. Передача персональных данных
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <h6>3.1. Когда мы передаем данные</h6>
+                    <p>Мы не продаем, не обмениваем и не передаем ваши персональные данные третьим лицам, за исключением случаев, описанных ниже.</p>
+                    
+                    <h6>3.2. Случаи передачи данных</h6>
+                    <ul>
+                        <li><strong>Партнеры по экскурсиям:</strong> гиды, отели, транспортные компании</li>
+                        <li><strong>Платежные системы:</strong> для обработки платежей</li>
+                        <li><strong>Правоохранительные органы:</strong> по требованию закона</li>
+                        <li><strong>С вашего согласия:</strong> для дополнительных услуг</li>
+                    </ul>
+                    
+                    <h6>3.3. Защита при передаче</h6>
+                    <p>Все передачи данных осуществляются с использованием защищенных соединений и протоколов.</p>
+                </div>
+            </div>
+
+            <!-- Безопасность -->
+            <div class="card shadow-sm mb-4" id="security">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-lock me-2"></i>
+                        4. Безопасность данных
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <h6>4.1. Меры защиты</h6>
+                    <ul>
+                        <li>Шифрование данных при передаче (HTTPS/SSL)</li>
+                        <li>Защищенные серверы с ограниченным доступом</li>
+                        <li>Регулярные обновления систем безопасности</li>
+                        <li>Мониторинг и обнаружение угроз</li>
+                        <li>Резервное копирование данных</li>
+                    </ul>
+                    
+                    <h6>4.2. Обучение персонала</h6>
+                    <p>Наши сотрудники проходят регулярное обучение по вопросам защиты персональных данных.</p>
+                </div>
+            </div>
+
+            <!-- Права пользователей -->
+            <div class="card shadow-sm mb-4" id="rights">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-user-check me-2"></i>
+                        5. Ваши права
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <h6>5.1. Права на данные</h6>
+                    <ul>
+                        <li><strong>Право доступа:</strong> получить информацию о том, какие данные мы храним</li>
+                        <li><strong>Право исправления:</strong> исправить неточные данные</li>
+                        <li><strong>Право удаления:</strong> удалить ваши данные (с ограничениями)</li>
+                        <li><strong>Право ограничения:</strong> ограничить обработку данных</li>
+                        <li><strong>Право переноса:</strong> получить данные в структурированном виде</li>
+                    </ul>
+                    
+                    <h6>5.2. Как реализовать права</h6>
+                    <p>Для реализации ваших прав свяжитесь с нами через форму обратной связи или по email.</p>
+                </div>
+            </div>
+
+            <!-- Файлы cookie -->
+            <div class="card shadow-sm mb-4" id="cookies">
+                <div class="card-header bg-secondary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-cookie-bite me-2"></i>
+                        6. Файлы cookie
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <h6>6.1. Что такое cookie</h6>
+                    <p>Cookie - это небольшие текстовые файлы, которые сохраняются на вашем устройстве для улучшения работы сайта.</p>
+                    
+                    <h6>6.2. Типы cookie</h6>
+                    <ul>
+                        <li><strong>Необходимые:</strong> для базовой работы сайта</li>
+                        <li><strong>Функциональные:</strong> для запоминания ваших предпочтений</li>
+                        <li><strong>Аналитические:</strong> для анализа посещений и улучшения сервиса</li>
+                        <li><strong>Маркетинговые:</strong> для показа релевантной рекламы</li>
+                    </ul>
+                    
+                    <h6>6.3. Управление cookie</h6>
+                    <p>Вы можете управлять настройками cookie в вашем браузере или отказаться от их использования.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Контакты для вопросов -->
+    <div class="row mt-5">
+        <div class="col-12 text-center">
+            <div class="card bg-light border-0">
+                <div class="card-body py-4">
+                    <h5>Вопросы по защите данных?</h5>
+                    <p class="text-muted mb-3">Наш специалист по защите данных готов помочь</p>
+                    <a href="{% url 'contact' %}" class="btn btn-primary">
+                        <i class="fas fa-envelope me-2"></i>
+                        Связаться с нами
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Плавная прокрутка к разделам
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

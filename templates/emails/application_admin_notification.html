@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Новая заявка - SELEXIA Travel</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: #ffc107;
+            color: #333;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+        }
+        .content {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .application-details {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .detail-row {
+            margin: 10px 0;
+            padding: 5px 0;
+        }
+        .detail-label {
+            font-weight: bold;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>🆕 Новая заявка от {{ application.name }}</h2>
+    </div>
+    
+    <div class="content">
+        <h3>Детали заявки:</h3>
+        
+        <div class="application-details">
+            <div class="detail-row">
+                <span class="detail-label">Имя:</span> {{ application.name }}
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Email:</span> {{ application.email }}
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Телефон:</span> {{ application.phone }}
+            </div>
+            {% if application.destination %}
+            <div class="detail-row">
+                <span class="detail-label">Направление:</span> {{ application.destination }}
+            </div>
+            {% endif %}
+            {% if application.travel_dates %}
+            <div class="detail-row">
+                <span class="detail-label">Даты поездки:</span> {{ application.travel_dates }}
+            </div>
+            {% endif %}
+            {% if application.people_count %}
+            <div class="detail-row">
+                <span class="detail-label">Количество человек:</span> {{ application.people_count }}
+            </div>
+            {% endif %}
+            {% if application.budget %}
+            <div class="detail-row">
+                <span class="detail-label">Бюджет:</span> {{ application.budget }}
+            </div>
+            {% endif %}
+            <div class="detail-row">
+                <span class="detail-label">Сообщение:</span><br>
+                {{ application.message }}
+            </div>
+        </div>
+        
+        <p><strong>Время получения:</strong> {{ application.created_at }}</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,43 @@
+# Django Settings
+SECRET_KEY=django-insecure-your-secret-key-here
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+# Database
+DATABASE_URL=sqlite:///db.sqlite3
+
+# Email Settings
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=selexiatravelauth@gmail.com
+EMAIL_HOST_PASSWORD=afjs pirk rdtg tqyw
+DEFAULT_FROM_EMAIL=selexiatravelauth@gmail.com
+
+BOOKING_NOTIFICATION_EMAIL=selexiatravelauth@gmail.com
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+
+
+# Social Auth Providers
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+
+FACEBOOK_CLIENT_ID=your-facebook-client-id
+FACEBOOK_CLIENT_SECRET=your-facebook-client-secret
+
+VK_CLIENT_ID=your-vk-client-id
+VK_CLIENT_SECRET=your-vk-client-secret
+
+YANDEX_CLIENT_ID=your-yandex-client-id
+YANDEX_CLIENT_SECRET=your-yandex-client-secret
+
+APPLE_CLIENT_ID=your-apple-client-id
+APPLE_CLIENT_SECRET=your-apple-client-secret
+APPLE_KEY=your-apple-key
+
+# Security Settings
+CSRF_COOKIE_SECURE=False
+SESSION_COOKIE_SECURE=False
+
+# Site Settings
+SITE_ID=1

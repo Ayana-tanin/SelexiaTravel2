@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подтверждение бронирования - SELEXIA Travel</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+        }
+        .content {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .booking-details {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .detail-row {
+            margin: 10px 0;
+            padding: 5px 0;
+        }
+        .detail-label {
+            font-weight: bold;
+            color: #666;
+        }
+        .price {
+            color: #28a745;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .status {
+            display: inline-block;
+            background: #ffc107;
+            color: #212529;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>🎉 Бронирование подтверждено!</h2>
+        <p>{{ excursion.title_ru }}</p>
+    </div>
+    
+    <div class="content">
+        <h3>Детали бронирования:</h3>
+        
+        <div class="booking-details">
+            <div class="detail-row">
+                <span class="detail-label">Экскурсия:</span> {{ excursion.title_ru }}
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Дата:</span> {{ booking.date|date:"d.m.Y" }}
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Количество человек:</span> {{ booking.people_count }}
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Стоимость экскурсии:</span> 
+                <span class="price">{{ booking.total_price }} {{ excursion.currency }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Статус:</span> 
+                <span class="status">{{ booking.get_status_display }}</span>
+            </div>
+            {% if booking.special_requests %}
+            <div class="detail-row">
+                <span class="detail-label">Особые пожелания:</span><br>
+                {{ booking.special_requests }}
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="detail-row">
+            <span class="detail-label">Место проведения:</span> {{ excursion.city.name_ru }}, {{ excursion.country.name_ru }}
+        </div>
+        
+        <div class="detail-row">
+            <span class="detail-label">Длительность:</span> {{ excursion.duration }} {{ excursion.duration_unit }}
+        </div>
+        
+        <p><strong>Время создания:</strong> {{ booking.created_at|date:"d.m.Y H:i" }}</p>
+        
+        <p>Мы свяжемся с вами в ближайшее время для подтверждения деталей экскурсии.</p>
+        
+        <p>Если у вас есть вопросы, свяжитесь с нами:</p>
+        <ul>
+            <li>Email: info@selexiatravel.com</li>
+            <li>Телефон: +7 (999) 123-45-67</li>
+        </ul>
+    </div>
+</body>
+</html>

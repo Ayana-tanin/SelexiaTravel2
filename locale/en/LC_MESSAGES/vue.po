@@ -1,0 +1,378 @@
+# English translations for SELEXIA Travel Vue.js components.
+# Copyright (C) 2024 SELEXIA Travel
+# This file is distributed under the same license as the SELEXIA Travel project.
+msgid ""
+msgstr ""
+"Project-Id-Version: SELEXIA Travel 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-08-20 17:47+0000\n"
+"PO-Revision-Date: 2024-08-20 17:47+0000\n"
+"Last-Translator: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# Header Component
+msgid "SELEXIA Travel"
+msgstr "SELEXIA Travel"
+
+msgid "Discover amazing destinations"
+msgstr "Discover amazing destinations"
+
+msgid "Language"
+msgstr "Language"
+
+msgid "English"
+msgstr "English"
+
+msgid "Russian"
+msgstr "Russian"
+
+# Home Page
+msgid "Welcome to SELEXIA Travel"
+msgstr "Welcome to SELEXIA Travel"
+
+msgid "Your journey begins here"
+msgstr "Your journey begins here"
+
+msgid "Explore Destinations"
+msgstr "Explore Destinations"
+
+msgid "Popular Excursions"
+msgstr "Popular Excursions"
+
+msgid "Featured Tours"
+msgstr "Featured Tours"
+
+msgid "Why Choose Us"
+msgstr "Why Choose Us"
+
+msgid "Professional guides"
+msgstr "Professional guides"
+
+msgid "Best prices"
+msgstr "Best prices"
+
+msgid "24/7 support"
+msgstr "24/7 support"
+
+msgid "Safe travel"
+msgstr "Safe travel"
+
+# Catalog Page
+msgid "All Excursions"
+msgstr "All Excursions"
+
+msgid "Filter by Category"
+msgstr "Filter by Category"
+
+msgid "Filter by Price"
+msgstr "Filter by Price"
+
+msgid "Filter by Duration"
+msgstr "Filter by Duration"
+
+msgid "Sort by"
+msgstr "Sort by"
+
+msgid "Price: Low to High"
+msgstr "Price: Low to High"
+
+msgid "Price: High to Low"
+msgstr "Price: High to Low"
+
+msgid "Rating: High to Low"
+msgstr "Rating: High to Low"
+
+msgid "Duration: Short to Long"
+msgstr "Duration: Short to Long"
+
+msgid "No excursions found"
+msgstr "No excursions found"
+
+msgid "Try adjusting your filters"
+msgstr "Try adjusting your filters"
+
+# Excursion Card Component
+msgid "from"
+msgstr "from"
+
+msgid "per person"
+msgstr "per person"
+
+msgid "Duration:"
+msgstr "Duration:"
+
+msgid "Max people:"
+msgstr "Max people:"
+
+msgid "Rating:"
+msgstr "Rating:"
+
+msgid "reviews"
+msgstr "reviews"
+
+msgid "View Details"
+msgstr "View Details"
+
+msgid "Quick Book"
+msgstr "Quick Book"
+
+# Excursion Detail Page
+msgid "Excursion Details"
+msgstr "Excursion Details"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Program"
+msgstr "Program"
+
+msgid "What's Included"
+msgstr "What's Included"
+
+msgid "Important Information"
+msgstr "Important Information"
+
+msgid "Meeting Point"
+msgstr "Meeting Point"
+
+msgid "Reviews"
+msgstr "Reviews"
+
+msgid "Write a Review"
+msgstr "Write a Review"
+
+msgid "Book This Excursion"
+msgstr "Book This Excursion"
+
+msgid "Similar Excursions"
+msgstr "Similar Excursions"
+
+# Booking Form
+msgid "Booking Form"
+msgstr "Booking Form"
+
+msgid "Select Date"
+msgstr "Select Date"
+
+msgid "Number of People"
+msgstr "Number of People"
+
+msgid "Special Requirements"
+msgstr "Special Requirements"
+
+msgid "Contact Information"
+msgstr "Contact Information"
+
+msgid "Full Name"
+msgstr "Full Name"
+
+msgid "Email Address"
+msgstr "Email Address"
+
+msgid "Phone Number"
+msgstr "Phone Number"
+
+msgid "Additional Notes"
+msgstr "Additional Notes"
+
+msgid "Total Price"
+msgstr "Total Price"
+
+msgid "Confirm Booking"
+msgstr "Confirm Booking"
+
+# Application Form
+msgid "Application Form"
+msgstr "Application Form"
+
+msgid "Interested in this excursion?"
+msgstr "Interested in this excursion?"
+
+msgid "Send us your application"
+msgstr "Send us your application"
+
+msgid "Preferred Date"
+msgstr "Preferred Date"
+
+msgid "Group Size"
+msgstr "Group Size"
+
+msgid "Your Message"
+msgstr "Your Message"
+
+msgid "Send Application"
+msgstr "Send Application"
+
+# Review Form
+msgid "Review Form"
+msgstr "Review Form"
+
+msgid "Rate your experience"
+msgstr "Rate your experience"
+
+msgid "Excellent"
+msgstr "Excellent"
+
+msgid "Good"
+msgstr "Good"
+
+msgid "Average"
+msgstr "Average"
+
+msgid "Poor"
+msgstr "Poor"
+
+msgid "Very Poor"
+msgstr "Very Poor"
+
+msgid "Your Review Title"
+msgstr "Your Review Title"
+
+msgid "Share your experience"
+msgstr "Share your experience"
+
+msgid "Submit Review"
+msgstr "Submit Review"
+
+# User Dashboard
+msgid "My Dashboard"
+msgstr "My Dashboard"
+
+msgid "My Bookings"
+msgstr "My Bookings"
+
+msgid "My Reviews"
+msgstr "My Reviews"
+
+msgid "My Favorites"
+msgstr "My Favorites"
+
+msgid "Profile Settings"
+msgstr "Profile Settings"
+
+msgid "Account Information"
+msgstr "Account Information"
+
+msgid "Change Password"
+msgstr "Change Password"
+
+msgid "Update Profile"
+msgstr "Update Profile"
+
+# Footer Component
+msgid "About SELEXIA Travel"
+msgstr "About SELEXIA Travel"
+
+msgid "We provide unforgettable travel experiences"
+msgstr "We provide unforgettable travel experiences"
+
+msgid "Quick Links"
+msgstr "Quick Links"
+
+msgid "Contact Info"
+msgstr "Contact Info"
+
+msgid "Address"
+msgstr "Address"
+
+msgid "Phone"
+msgstr "Phone"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Working Hours"
+msgstr "Working Hours"
+
+msgid "Monday - Friday: 9:00 AM - 6:00 PM"
+msgstr "Monday - Friday: 9:00 AM - 6:00 PM"
+
+msgid "Saturday: 10:00 AM - 4:00 PM"
+msgstr "Saturday: 10:00 AM - 4:00 PM"
+
+msgid "Sunday: Closed"
+msgstr "Sunday: Closed"
+
+msgid "All rights reserved"
+msgstr "All rights reserved"
+
+# Search Component
+msgid "Search Excursions"
+msgstr "Search Excursions"
+
+msgid "Enter destination, category, or keywords"
+msgstr "Enter destination, category, or keywords"
+
+msgid "Search Results"
+msgstr "Search Results"
+
+msgid "results found"
+msgstr "results found"
+
+# Newsletter Component
+msgid "Stay Updated"
+msgstr "Stay Updated"
+
+msgid "Subscribe to our newsletter for the latest offers"
+msgstr "Subscribe to our newsletter for the latest offers"
+
+msgid "Enter your email"
+msgstr "Enter your email"
+
+msgid "Subscribe"
+msgstr "Subscribe"
+
+msgid "Thank you for subscribing!"
+msgstr "Thank you for subscribing!"
+
+# Error Messages
+msgid "Something went wrong"
+msgstr "Something went wrong"
+
+msgid "Please try again"
+msgstr "Please try again"
+
+msgid "Network error"
+msgstr "Network error"
+
+msgid "Page not found"
+msgstr "Page not found"
+
+msgid "Access denied"
+msgstr "Access denied"
+
+# Loading States
+msgid "Loading..."
+msgstr "Loading..."
+
+msgid "Please wait"
+msgstr "Please wait"
+
+msgid "Processing..."
+msgstr "Processing..."
+
+# Success Messages
+msgid "Operation completed successfully"
+msgstr "Operation completed successfully"
+
+msgid "Changes saved"
+msgstr "Changes saved"
+
+msgid "Item added to favorites"
+msgstr "Item added to favorites"
+
+msgid "Item removed from favorites"
+msgstr "Item removed from favorites"
+
+msgid "Review submitted successfully"
+msgstr "Review submitted successfully"
+
+msgid "Booking confirmed"
+msgstr "Booking confirmed"
+
+msgid "Application sent"
+msgstr "Application sent"

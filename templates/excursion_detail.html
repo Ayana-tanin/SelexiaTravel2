@@ -1,0 +1,3605 @@
+{% extends 'base.html' %}
+    {% load static %}
+    {% load i18n %}
+
+    {% block title %}{{ excursion.title_ru }} - SELEXIA Travel{% endblock %}
+
+    {% block extra_css %}
+    <style>
+        /* Информационный блок с названием, типом и местоположением */
+        .excursion-header-info {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 30px rgba(32, 86, 150, 0.08);
+            border: 2px solid rgba(32, 86, 150, 0.05);
+            margin-bottom: 2rem;
+        }
+        
+        .excursion-header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 2rem;
+        }
+        
+        .excursion-main-info {
+            flex: 1;
+        }
+        
+        .excursion-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #1a202c;
+            margin: 0 0 1rem 0;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #205696, #1a4a7a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .excursion-meta {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .excursion-type,
+        .excursion-location {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(32, 86, 150, 0.1);
+            font-weight: 600;
+            color: #4a5568;
+            transition: all 0.3s ease;
+        }
+        
+        .excursion-type:hover,
+        .excursion-location:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(32, 86, 150, 0.15);
+            border-color: #205696;
+        }
+        
+        .excursion-type i {
+            color: #205696;
+            font-size: 1rem;
+        }
+        
+        .excursion-location i {
+            color: #28a745;
+            font-size: 1rem;
+        }
+        
+        .excursion-rating-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(32, 86, 150, 0.1);
+            min-width: 120px;
+        }
+        
+        .rating-stars {
+            color: #fbbf24;
+            font-size: 1.25rem;
+        }
+        
+        .rating-stars i {
+            margin-right: 2px;
+        }
+        
+        .rating-value {
+            font-weight: 700;
+            color: #1a202c;
+            font-size: 1.1rem;
+        }
+        
+        .excursion-hero {
+            background: white;
+            color: #333;
+            padding: 4rem 0;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid #e9ecef;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .excursion-hero .container {
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* НОВАЯ КАРУСЕЛЬ ГАЛЕРЕИ КАК НА ФОТО */
+        .excursion-gallery {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            padding: 1rem;
+        }
+        
+        .gallery-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 0.5rem;
+            height: 400px;
+        }
+        
+        .gallery-main {
+            position: relative;
+            border-radius: 1rem 0 0 1rem;
+            overflow: hidden;
+            height: 100%;
+            background: #000;
+        }
+        
+        .main-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .main-image:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Overlay на главном изображении */
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(0, 0, 0, 0.6) 0%,
+                rgba(0, 0, 0, 0.3) 50%,
+                rgba(0, 0, 0, 0.7) 100%
+            );
+            display: flex;
+            align-items: flex-end;
+            padding: 2rem;
+            color: white;
+            pointer-events: none;
+        }
+
+        .overlay-content {
+            width: 100%;
+            pointer-events: none;
+        }
+
+        .location-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            opacity: 0.9;
+            pointer-events: none;
+        }
+
+        .gallery-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+        }
+        
+        .gallery-controls {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 1rem;
+            z-index: 10;
+        }
+        
+        .gallery-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            color: #333;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            pointer-events: auto;
+        }
+        
+        .gallery-btn:hover {
+            background: white;
+            transform: scale(1.1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        
+        .gallery-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .gallery-counter {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 10;
+        }
+        
+        /* Кнопка избранного и рейтинг в левом верхнем углу */
+        .gallery-top-controls {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            z-index: 15;
+            pointer-events: auto;
+        }
+        
+        .gallery-rating {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 0.375rem 0.625rem;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .gallery-rating-value {
+            font-weight: 600;
+            color: #1a202c;
+            font-size: 0.8rem;
+        }
+        
+        .gallery-rating-stars {
+            color: #fbbf24;
+            font-size: 0.7rem;
+        }
+        
+        .gallery-favorite-btn {
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            color: #dc3545;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .gallery-favorite-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+            background: white;
+        }
+        
+        .gallery-favorite-btn.active {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .gallery-favorite-btn.active:hover {
+            background: #c82333;
+        }
+        
+        /* МОДАЛЬНАЯ ГАЛЕРЕЯ */
+        .modal-gallery {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal-gallery.show {
+            display: block;
+        }
+        
+        .modal-gallery-content {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .modal-gallery-image {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-gallery-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 10001;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal-gallery-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+        
+        .modal-gallery-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 10001;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal-gallery-nav:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .modal-gallery-prev {
+            left: 30px;
+        }
+        
+        .modal-gallery-next {
+            right: 30px;
+        }
+        
+        .modal-gallery-counter {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            z-index: 10001;
+        }
+        
+        .modal-gallery-thumbnails {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            max-width: 80%;
+            overflow-x: auto;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            z-index: 10001;
+        }
+        
+        .modal-gallery-thumb {
+            width: 80px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            flex-shrink: 0;
+        }
+        
+        .modal-gallery-thumb:hover {
+            opacity: 0.9;
+            transform: scale(1.05);
+        }
+        
+        .modal-gallery-thumb.active {
+            opacity: 1;
+            border-color: #205696;
+            transform: scale(1.05);
+        }
+        
+        /* СЕТКА 2x2 СПРАВА КАК НА ФОТО */
+        .gallery-sidebar {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 0.5rem;
+            height: 100%;
+        }
+        
+        .sidebar-image-container {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            background: #ddd;
+            min-height: 120px;
+        }
+        
+        /* Скругления углов для сетки справа */
+        .sidebar-image-container:first-child {
+            border-radius: 0 1rem 0 0;
+        }
+        
+        .sidebar-image-container:nth-child(2) {
+            border-radius: 0 0 0 0;
+        }
+        
+        .sidebar-image-container:nth-child(3) {
+            border-radius: 0 0 0 0;
+        }
+        
+        .sidebar-image-container:last-child {
+            border-radius: 0 0 1rem 0;
+        }
+        
+        .sidebar-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            pointer-events: none;
+        }
+        
+        .sidebar-image-container:hover .sidebar-image {
+            border-color: #205696;
+            transform: scale(1.05);
+        }
+        
+        .sidebar-image.active {
+            border-color: #205696;
+        }
+        
+        .sidebar-image-overlay {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            display: flex;
+            gap: 0.25rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .sidebar-image-container:hover .sidebar-image-overlay {
+            opacity: 1;
+        }
+        
+        .sidebar-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: #333;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+        }
+        
+        .sidebar-btn:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+        
+        /* Overlay "+N more photos" на последнем изображении */
+        .more-images-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            backdrop-filter: blur(2px);
+            pointer-events: none;
+        }
+
+        .more-count {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            pointer-events: none;
+        }
+
+        .more-text {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            pointer-events: none;
+        }
+        
+        .gallery-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .gallery-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ddd;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .gallery-indicator.active {
+            background: #205696;
+            transform: scale(1.2);
+        }
+        
+        /* Счетчик просмотров под галереей */
+        .gallery-views-counter {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+            padding: 0.75rem 1rem;
+        }
+        
+        .views-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+        
+        .views-info i {
+            color: #205696;
+            font-size: 1rem;
+        }
+        
+        .views-count {
+            font-weight: 700;
+            color: #1a202c;
+        }
+        
+        .views-label {
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+        
+        .thumbnail-grid {
+            display: none; /* Скрываем старую сетку миниатюр */
+        }
+        
+        .thumbnail {
+            display: none; /* Скрываем старые миниатюры */
+        }
+        
+        .excursion-info {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.05);
+            position: sticky;
+            top: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .excursion-info:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        /* Карточка цены */
+        .price-card {
+            background: #205696;
+            color: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .price-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+        }
+        
+        .price-card:hover::before {
+            opacity: 0.2;
+        }
+        
+        .price-main {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .price-amount {
+            font-size: 2.2rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+        
+        .price-currency {
+            font-size: 1.2rem;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+        
+        .price-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 0.75rem;
+        }
+        
+        .price-note {
+            font-size: 0.85rem;
+            background: rgba(255,255,255,0.15);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            display: inline-flex;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Быстрая информация */
+        .excursion-quick-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid rgba(32, 86, 150, 0.1);
+        }
+        
+        .quick-info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #4a5568;
+        }
+        
+        .quick-info-item i {
+            width: 16px;
+            font-size: 0.9rem;
+        }
+        
+        /* Форма бронирования */
+        .booking-form {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(32, 86, 150, 0.08);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #2d3748;
+            font-size: 0.9rem;
+        }
+        
+        .form-label i {
+            color: #205696;
+            font-size: 0.8rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #205696;
+            box-shadow: 0 0 0 3px rgba(32, 86, 150, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .form-control:hover {
+            border-color: #cbd5e0;
+        }
+        
+        /* Кнопка бронирования */
+        .btn-book {
+            width: 100%;
+            background: #205696;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(32, 86, 150, 0.3);
+        }
+        
+        .btn-book:hover {
+            background: #1a4a7a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(32, 86, 150, 0.4);
+        }
+        
+        .btn-book:active {
+            transform: translateY(0);
+        }
+        
+        /* Гарантия бронирования */
+        .booking-guarantee {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            color: #38a169;
+            font-weight: 500;
+            background: rgba(72, 187, 120, 0.1);
+            padding: 0.5rem;
+            border-radius: 8px;
+            border: 1px solid rgba(72, 187, 120, 0.2);
+        }
+        
+        .excursion-details {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .excursion-details h3 {
+            color: #2c3e50;
+            font-weight: 700;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .excursion-details h4 {
+            color: #34495e;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            padding-left: 0.5rem;
+        }
+        
+        .excursion-details h4:first-of-type {
+            margin-top: 1rem;
+        }
+        
+        .excursion-details p {
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+        
+        .info-cards-header {
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .info-cards-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a202c;
+            margin: 0 0 0.75rem 0;
+        }
+        
+        .info-cards-badges {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .location-badge {
+            background: #205696;
+            color: white;
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+        
+        .confirmation-badge {
+            background: #fbbf24;
+            color: #1f2937;
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+        
+        .info-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+        }
+        
+        .info-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1.25rem;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        
+        .info-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: #205696;
+        }
+        
+        .info-card-icon {
+            width: 40px;
+            height: 40px;
+            background: #205696;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.75rem;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .info-card:hover .info-card-icon {
+            background: #1a4a7a;
+        }
+        
+        .info-card-content {
+            text-align: center;
+        }
+        
+        .info-card-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 0.375rem;
+            line-height: 1.2;
+        }
+        
+        .info-card-label {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        
+        .stars-display {
+            display: inline-block;
+            margin-left: 0.375rem;
+        }
+        
+        .stars-display i {
+            color: #fbbf24;
+            font-size: 0.8rem;
+            margin-right: 1px;
+        }
+        
+        .excursion-details .text-muted {
+            color: #6c757d !important;
+            font-size: 1.05rem;
+        }
+        
+        .program-timeline {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 0.5rem;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+        
+        .included-list {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 0.5rem;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+        
+        .important-info {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 0.5rem;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+        
+        .excursion-details ul {
+            margin-top: 0.5rem;
+        }
+        
+        .excursion-details li {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+            font-size: 1.05rem;
+        }
+        
+        .excursion-details .fas {
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* КАРУСЕЛЬ ОТЗЫВОВ */
+        .reviews-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(32, 86, 150, 0.05);
+        }
+        
+        .reviews-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2.5rem;
+            gap: 2rem;
+        }
+        
+        .reviews-title-section {
+            flex: 1;
+        }
+        
+        .reviews-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin: 0 0 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .reviews-title i {
+            color: #205696;
+            font-size: 1.8rem;
+        }
+        
+        .reviews-count {
+            background: linear-gradient(135deg, #205696, #1a4a7a);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+        
+        .reviews-subtitle {
+            color: #64748b;
+            font-size: 1rem;
+            margin: 0;
+            font-weight: 500;
+        }
+        
+        .reviews-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+        
+        .btn-write-review {
+            background: linear-gradient(135deg, #205696, #1a4a7a);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 0.875rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(32, 86, 150, 0.3);
+        }
+        
+        .btn-write-review:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(32, 86, 150, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .btn-write-review i {
+            font-size: 0.8rem;
+        }
+        
+        .review-status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-align: center;
+            min-width: 200px;
+            justify-content: center;
+        }
+        
+        .review-status-badge.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+        
+        .review-status-badge.info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #3b82f6;
+        }
+        
+        .review-status-badge.warning {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fbbf24;
+        }
+        
+        .btn-login-review {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            padding: 0.875rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-login-review:hover {
+            background: #e5e7eb;
+            color: #1f2937;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+        }
+        
+        /* КАРУСЕЛЬ ОТЗЫВОВ */
+        .reviews-carousel-container {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .reviews-carousel {
+            display: flex;
+            transition: transform 0.5s ease;
+            gap: 1.5rem;
+        }
+        
+        .review-card {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            flex: 0 0 auto;
+            width: calc(100% - 1.5rem);
+            max-width: 600px;
+        }
+        
+        .review-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border-color: #205696;
+        }
+        
+        .review-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+        }
+        
+        .review-user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .review-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .review-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .review-avatar i {
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .review-user-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .review-user-name {
+            font-weight: 600;
+            color: #1a202c;
+            font-size: 1rem;
+        }
+        
+        .review-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .review-rating i {
+            color: #fbbf24;
+            font-size: 0.9rem;
+        }
+        
+        .review-rating i.filled {
+            color: #fbbf24;
+        }
+        
+        .rating-value {
+            color: #64748b;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .review-date {
+            color: #64748b;
+            font-size: 0.85rem;
+            font-weight: 500;
+            background: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            flex-shrink: 0;
+        }
+        
+        .review-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .review-text {
+            color: #374151;
+            line-height: 1.7;
+            font-size: 0.95rem;
+            background: white;
+            padding: 1.25rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .review-photos {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .review-photos-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #374151;
+            margin: 0 0 0.75rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .review-photos-title i {
+            color: #205696;
+            font-size: 0.8rem;
+        }
+        
+        .review-photos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 0.5rem;
+            max-width: 300px;
+        }
+        
+        .review-photo-item {
+            position: relative;
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            aspect-ratio: 1;
+        }
+        
+        .review-photo-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .review-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .review-photo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(32, 86, 150, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .review-photo-item:hover .review-photo-overlay {
+            opacity: 1;
+        }
+        
+        /* Кнопки управления каруселью отзывов */
+        .reviews-carousel-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .reviews-carousel-btn {
+            background: #205696;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(32, 86, 150, 0.3);
+        }
+        
+        .reviews-carousel-btn:hover {
+            background: #1a4a7a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(32, 86, 150, 0.4);
+        }
+        
+        .reviews-carousel-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .reviews-carousel-indicators {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .reviews-carousel-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #cbd5e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .reviews-carousel-indicator.active {
+            background: #205696;
+            transform: scale(1.2);
+        }
+        
+        .reviews-empty {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #64748b;
+        }
+        
+        .reviews-empty-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #e2e8f0, #cbd5e0);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: #94a3b8;
+            font-size: 2rem;
+        }
+        
+        .reviews-empty h4 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #374151;
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .reviews-empty p {
+            font-size: 1rem;
+            margin: 0 0 1.5rem 0;
+            line-height: 1.6;
+        }
+        
+        .btn-write-review-empty {
+            background: linear-gradient(135deg, #205696, #1a4a7a);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 4px 15px rgba(32, 86, 150, 0.3);
+        }
+        
+        .btn-write-review-empty:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(32, 86, 150, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
+        /* КАРУСЕЛЬ ПОХОЖИХ ЭКСКУРСИЙ */
+        .similar-excursions {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            margin-top: 3rem;
+            border: 1px solid rgba(32, 86, 150, 0.05);
+        }
+        
+        .similar-excursions h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin: 0 0 2rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .similar-excursions h3 i {
+            color: #205696;
+            font-size: 1.8rem;
+        }
+        
+        .similar-carousel-container {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .similar-carousel {
+            display: flex;
+            transition: transform 0.5s ease;
+            gap: 1.5rem;
+        }
+        
+        .similar-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            flex: 0 0 auto;
+            width: 300px;
+            border: 1px solid rgba(32, 86, 150, 0.1);
+        }
+        
+        .similar-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            border-color: #205696;
+        }
+        
+        .similar-image-container {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .similar-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .similar-card:hover .similar-image {
+            transform: scale(1.1);
+        }
+        
+        .similar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(0, 0, 0, 0.4) 0%,
+                rgba(0, 0, 0, 0.1) 50%,
+                rgba(0, 0, 0, 0.6) 100%
+            );
+            display: flex;
+            align-items: flex-end;
+            padding: 1rem;
+            color: white;
+        }
+        
+        .similar-location {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .similar-content {
+            padding: 1.5rem;
+        }
+        
+        .similar-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: #1a202c;
+            line-height: 1.3;
+            height: 2.6em;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        
+        .similar-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .similar-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+        
+        .similar-rating-stars {
+            color: #fbbf24;
+            font-size: 0.8rem;
+        }
+        
+        .similar-price {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #205696;
+        }
+        
+        .similar-duration {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+        
+        .btn-similar {
+            width: 100%;
+            background: linear-gradient(135deg, #205696, #1a4a7a);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            display: block;
+        }
+        
+        .btn-similar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(32, 86, 150, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
+        /* Кнопки управления каруселью похожих экскурсий */
+        .similar-carousel-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .similar-carousel-btn {
+            background: #205696;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(32, 86, 150, 0.3);
+        }
+        
+        .similar-carousel-btn:hover {
+            background: #1a4a7a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(32, 86, 150, 0.4);
+        }
+        
+        .similar-carousel-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .similar-carousel-indicators {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .similar-carousel-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #cbd5e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .similar-carousel-indicator.active {
+            background: #205696;
+            transform: scale(1.2);
+        }
+        
+        .breadcrumb {
+            background: white;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .breadcrumb-item {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .breadcrumb-item a {
+            color: #205696;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .breadcrumb-item a:hover {
+            color: #1a4a7a;
+            text-decoration: underline;
+        }
+        
+        .breadcrumb-item.active {
+            color: #6c757d;
+            font-weight: 600;
+        }
+        
+        .breadcrumb-item + .breadcrumb-item::before {
+            content: "›";
+            color: #dee2e6;
+            font-weight: bold;
+            margin: 0 0.5rem;
+        }
+        
+        .badge {
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .badge-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+        
+        .badge-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .badge-info {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .rating-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .stars {
+            color: #ffc107;
+        }
+        
+        .favorite-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            color: #dc3545;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .favorite-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        
+        .favorite-btn.active {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .favorite-btn.active:hover {
+            background: #c82333;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 1200px) {
+            .similar-card {
+                width: 280px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .info-cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            
+            .similar-card {
+                width: 260px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .excursion-header-info {
+                padding: 1.5rem;
+                border-radius: 15px;
+            }
+            
+            .excursion-header-content {
+                flex-direction: column;
+                gap: 1.5rem;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .excursion-title {
+                font-size: 2rem;
+                text-align: center;
+            }
+            
+            .excursion-meta {
+                justify-content: center;
+                gap: 1rem;
+            }
+            
+            .excursion-type,
+            .excursion-location {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .excursion-rating-display {
+                padding: 0.75rem 1.25rem;
+                min-width: 100px;
+            }
+            
+            .rating-stars {
+                font-size: 1.1rem;
+            }
+            
+            .rating-value {
+                font-size: 1rem;
+            }
+            
+            .excursion-hero {
+                padding: 2rem 0;
+                box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+            }
+            
+            .gallery-layout {
+                grid-template-columns: 1fr;
+                height: auto;
+                gap: 0.5rem;
+            }
+            
+            .gallery-main {
+                height: 250px;
+                border-radius: 1rem 1rem 0 0;
+            }
+            
+            .gallery-sidebar {
+                display: none;
+            }
+            
+            .gallery-controls {
+                padding: 0 0.5rem;
+            }
+            
+            .gallery-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            
+            .excursion-info {
+                position: static;
+                margin-top: 2rem;
+            }
+            
+            .info-cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.875rem;
+            }
+            
+            .info-card {
+                padding: 1rem;
+            }
+            
+            .info-card-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 0.9rem;
+            }
+            
+            .info-card-value {
+                font-size: 0.9rem;
+            }
+            
+            .info-card-label {
+                font-size: 0.65rem;
+            }
+            
+            .gallery-counter {
+                bottom: 0.5rem;
+                right: 0.5rem;
+                padding: 0.25rem 0.75rem;
+                font-size: 0.8rem;
+            }
+            
+            .gallery-top-controls {
+                top: 0.5rem;
+                left: 0.5rem;
+                gap: 0.5rem;
+            }
+            
+            .gallery-rating {
+                padding: 0.375rem 0.625rem;
+                font-size: 0.8rem;
+            }
+            
+            .gallery-rating-value {
+                font-size: 0.8rem;
+            }
+            
+            .gallery-rating-stars {
+                font-size: 0.7rem;
+            }
+            
+            .gallery-favorite-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            
+            .gallery-title {
+                font-size: 1.8rem;
+            }
+            
+            .reviews-section {
+                padding: 1.5rem;
+                border-radius: 15px;
+            }
+            
+            .reviews-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1.5rem;
+            }
+            
+            .reviews-title {
+                font-size: 1.5rem;
+            }
+            
+            .reviews-actions {
+                align-items: flex-start;
+                width: 100%;
+            }
+            
+            .review-status-badge {
+                min-width: auto;
+                width: 100%;
+            }
+            
+            .review-card {
+                padding: 1.25rem;
+                width: calc(100% - 1.5rem);
+            }
+            
+            .review-card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .review-user-info {
+                width: 100%;
+            }
+            
+            .review-date {
+                align-self: flex-start;
+            }
+            
+            .review-photos-grid {
+                grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+                gap: 0.375rem;
+                max-width: 250px;
+            }
+            
+            .similar-excursions {
+                padding: 1.5rem;
+            }
+            
+            .similar-excursions h3 {
+                font-size: 1.5rem;
+            }
+            
+            .similar-card {
+                width: 250px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .excursion-header-info {
+                padding: 1.25rem;
+                border-radius: 12px;
+            }
+            
+            .excursion-title {
+                font-size: 1.75rem;
+            }
+            
+            .excursion-meta {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .excursion-type,
+            .excursion-location {
+                padding: 0.5rem 0.875rem;
+                font-size: 0.85rem;
+                justify-content: center;
+            }
+            
+            .excursion-rating-display {
+                padding: 0.625rem 1rem;
+                min-width: 90px;
+            }
+            
+            .rating-stars {
+                font-size: 1rem;
+            }
+            
+            .rating-value {
+                font-size: 0.9rem;
+            }
+            
+            .gallery-main {
+                height: 200px;
+            }
+            
+            .gallery-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+            
+            .gallery-top-controls {
+                gap: 0.375rem;
+            }
+            
+            .gallery-rating {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.7rem;
+            }
+            
+            .gallery-rating-value {
+                font-size: 0.7rem;
+            }
+            
+            .gallery-rating-stars {
+                font-size: 0.6rem;
+            }
+            
+            .gallery-favorite-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+            
+            .gallery-views-counter {
+                margin-top: 0.75rem;
+                padding: 0.5rem 0.75rem;
+            }
+            
+            .views-info {
+                padding: 0.375rem 0.75rem;
+                font-size: 0.8rem;
+            }
+            
+            .views-info i {
+                font-size: 0.9rem;
+            }
+            
+            .views-label {
+                font-size: 0.75rem;
+            }
+            
+            .modal-gallery-close,
+            .modal-gallery-nav {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+            
+            .modal-gallery-counter {
+                font-size: 1rem;
+                padding: 0.75rem 1.5rem;
+            }
+            
+            .modal-gallery-thumbnails {
+                bottom: 15px;
+                max-width: 95%;
+                padding: 5px;
+            }
+            
+            .modal-gallery-thumb {
+                width: 60px;
+                height: 45px;
+            }
+            
+            .info-cards-grid {
+                grid-template-columns: 1fr;
+                gap: 0.875rem;
+            }
+            
+            .info-cards-badges {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .location-badge,
+            .confirmation-badge {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .reviews-section {
+                padding: 1.25rem;
+                border-radius: 12px;
+            }
+            
+            .reviews-title {
+                font-size: 1.25rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .reviews-count {
+                margin-left: 0;
+                margin-top: 0.5rem;
+            }
+            
+            .review-card {
+                padding: 1rem;
+                width: calc(100% - 1rem);
+            }
+            
+            .review-user-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+            
+            .review-avatar {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .review-photos-grid {
+                grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+                gap: 0.25rem;
+                max-width: 200px;
+            }
+            
+            .similar-excursions {
+                padding: 1.25rem;
+            }
+            
+            .similar-excursions h3 {
+                font-size: 1.25rem;
+            }
+            
+            .similar-card {
+                width: 220px;
+            }
+            
+            .similar-image-container {
+                height: 150px;
+            }
+            
+            .similar-content {
+                padding: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .gallery-top-controls {
+                top: 0.25rem;
+                left: 0.25rem;
+                gap: 0.25rem;
+            }
+            
+            .gallery-rating {
+                padding: 0.2rem 0.4rem;
+                font-size: 0.65rem;
+            }
+            
+            .gallery-rating-value {
+                font-size: 0.65rem;
+            }
+            
+            .gallery-rating-stars {
+                font-size: 0.55rem;
+            }
+            
+            .gallery-favorite-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 0.8rem;
+            }
+            
+            .gallery-views-counter {
+                margin-top: 0.5rem;
+                padding: 0.375rem 0.5rem;
+            }
+            
+            .views-info {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.7rem;
+            }
+            
+            .views-info i {
+                font-size: 0.8rem;
+            }
+            
+            .views-label {
+                font-size: 0.65rem;
+            }
+            
+            .similar-card {
+                width: 200px;
+            }
+            
+            .review-card {
+                width: calc(100% - 0.5rem);
+            }
+        }
+    </style>
+    {% endblock %}
+
+    {% block content %}
+    {% csrf_token %}
+    <!-- Hero секция с основной информацией -->
+
+    <!-- Основной контент -->
+    <section class="py-5">
+        <div class="container">
+            <!-- Хлебные крошки -->
+                          
+            <!-- Информационный блок с названием, типом и местоположением -->
+            <div class="excursion-header-info mb-4">
+                <div class="container">
+                    <div class="excursion-header-content">
+                        <div class="excursion-main-info">
+                            <h1 class="excursion-title">{{ excursion.title_ru }}</h1>
+                            <div class="excursion-meta">
+                                <span class="excursion-location">
+                                    <i class="fas fa-map-marker-alt me-2"></i>
+                                    {{ excursion.city.name_ru }}, {{ excursion.country.name_ru }}
+                                </span>
+
+                                <div class="excursion-quick-info">
+                                    <div class="quick-info-item">
+                                        <i class="fas fa-clock text-primary"></i>
+                                        <span>{{ excursion.duration }} {% if excursion.duration_unit == 'hours' %}ч{% else %}дн{% endif %}</span>
+                                    </div>
+                                    <div class="quick-info-item">
+                                        <i class="fas fa-users text-primary"></i>
+                                        <span>до {{ excursion.max_people }} чел</span>
+                                    </div>
+                                    <div class="quick-info-item">                                        
+                                    <i class="fas fa-tag me-2"></i>
+                                        <span>{{ excursion.category.name_ru }} </span>
+                                    </div>
+                                    <div class="quick-info-item">
+                                        <i class="fas fa-shield-alt text-success"></i>
+                                        <span>{% trans "Бесплатная отмена" %}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="excursion-gallery">
+                    <div class="gallery-layout">
+                        <!-- Главное изображение слева -->
+                        <div class="gallery-main" onclick="openModalGallery(0)">
+                            {% if excursion.images.first %}
+                            <img src="{{ excursion.images.first.image.url }}" alt="{{ excursion.title_ru }}" 
+                                class="main-image" id="main-image">
+                            {% else %}
+                            <img src="{% static 'images/placeholder.jpg' %}" alt="{{ excursion.title_ru }}" 
+                                class="main-image" id="main-image">
+                            {% endif %}
+                            
+                            <!-- Overlay с названием и локацией -->
+                            <div class="image-overlay">
+                                <div class="overlay-content">
+                                    <div class="location-info">
+                                        <i class="fas fa-map-marker-alt me-2"></i>
+                                        <span>{{ excursion.city.name_ru }}, {{ excursion.country.name_ru }}</span>
+                                    </div>
+                                    <h1 class="gallery-title">{{ excursion.title_ru }}</h1>
+                                </div>
+                            </div>
+                            
+                            <!-- Кнопки управления каруселью -->
+                            <div class="gallery-controls">
+                                <button class="gallery-btn" id="prev-btn" onclick="previousImage(event)">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <button class="gallery-btn" id="next-btn" onclick="nextImage(event)">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                            
+                            <!-- Счетчик изображений -->
+                            <div class="gallery-counter">
+                                <i class="fas fa-camera me-2"></i>
+                                <span id="current-image">1</span> / <span id="total-images">{{ excursion.images.count|default:1 }}</span>
+                            </div>
+                            
+                            <!-- Кнопка избранного и рейтинг в левом верхнем углу -->
+                            <div class="gallery-top-controls">
+                                <!-- Рейтинг -->
+                                <div class="gallery-rating" onclick="event.stopPropagation();">
+                                    <span class="gallery-rating-value">{{ excursion.rating|floatformat:1 }}</span>
+                                    <div class="gallery-rating-stars">
+                                        {% for i in "12345" %}
+                                            {% if forloop.counter <= excursion.rating %}
+                                                <i class="fas fa-star"></i>
+                                            {% else %}
+                                                <i class="far fa-star"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                
+                                <!-- Кнопка избранного -->
+                                <div class="gallery-favorite-btn {% if is_favorite %}active{% endif %}" onclick="event.stopPropagation(); toggleFavorite({{ excursion.id }}, this)" data-excursion-id="{{ excursion.id }}">
+                                    <i class="{% if is_favorite %}fas{% else %}far{% endif %} fa-heart"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- СЕТКА 2x2 СПРАВА КАК НА ФОТО -->
+                        {% if excursion.images.count > 1 %}
+                        <div class="gallery-sidebar">
+                            {% for image in excursion.images.all|slice:"1:5" %}
+                            <div class="sidebar-image-container" onclick="changeMainImage(this, '{{ image.image.url }}', {{ forloop.counter0 }})">
+                                <img src="{{ image.image.url }}" alt="{{ excursion.title_ru }}" 
+                                    class="sidebar-image {% if forloop.first and excursion.images.count == 1 %}active{% endif %}">
+                                
+                                <!-- Показываем "+N more photos" на последнем изображении если их больше 5 -->
+                                {% if forloop.last and excursion.images.count > 5 %}
+                                <div class="more-images-overlay">
+                                    <span class="more-count">+{{ excursion.images.count|add:"-5" }}</span>
+                                    <span class="more-text">еще фото</span>
+                                </div>
+                                {% endif %}
+                                
+                                <div class="sidebar-image-overlay">
+                                    <button class="sidebar-btn" title="Поделиться" onclick="event.stopPropagation();">
+                                        <i class="fas fa-share-alt"></i>
+                                    </button>
+                                    <button class="sidebar-btn" title="Сохранить" onclick="event.stopPropagation();">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Индикаторы -->
+                    {% if excursion.images.count > 1 %}
+                    <div class="gallery-indicators" id="gallery-indicators">
+                        {% for image in excursion.images.all %}
+                        <div class="gallery-indicator {% if forloop.first %}active{% endif %}" 
+                            onclick="goToImage({{ forloop.counter0 }})"></div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Счетчик просмотров под галереей -->
+                    <div class="gallery-views-counter">
+                        <div class="views-info">
+                            <i class="fas fa-eye"></i>
+                            <span class="views-count">{{ excursion.views_count|default:"0" }}</span>
+                            <span class="views-label">{% trans "просмотров" %}</span>
+                        </div>
+                    </div>
+                </div>
+                                
+                <div class="row">
+                    <!-- Левая колонка - галерея и описание -->
+                    <div class="col-lg-8">
+                        <!-- НОВАЯ КАРУСЕЛЬ ГАЛЕРЕИ КАК НА ФОТО -->
+                                          
+                            <!-- Описание экскурсии -->
+                            <div class="excursion-details">
+                                <h3 class="mb-4">
+                                    <img src="{% static 'images/icon-small.svg' %}" alt="info" class="info-icon">
+                                    {% trans "Краткое описание" %}
+                                </h3>
+                                <p class="text-muted mb-4">{{ excursion.description_ru}}</p>
+                                
+                                <h4 class="mb-3">
+                                    <img src="{% static 'images/icon-small.svg' %}" alt="info" class="info-icon">
+                                    {% trans "Полное описание" %}
+                                </h4>
+                                <p class="text-muted mb-4">{{ excursion.description_ru|linebreaks }}</p>
+                                
+                                {% if excursion.program_ru %}
+                                <h4 class="mb-3">
+                                    <img src="{% static 'images/free-icon-program.svg' %}" alt="info" class="info-icon">
+                                    {% trans "Программа" %}
+                                </h4>
+                                <div class="program-timeline">
+                                    {{ excursion.program_ru|linebreaks }}
+                                </div>
+                                {% endif %}
+                                
+                                {% if excursion.included_ru %}
+                                <h4 class="mb-3">
+                                    <img src="{% static 'images/free-icon-check.svg' %}" alt="info" class="info-icon">
+                                    {% trans "Что включено" %}
+                                </h4>
+                                <div class="included-list">
+                                    {{ excursion.included_ru|linebreaks }}
+                                </div>
+                                {% endif %}
+                                
+                                {% if excursion.important_info_ru %}
+                                <h4 class="mb-3">
+                                    <img src="{% static 'images/free-icon-pin.svg' %}" alt="info" class="info-icon">
+                                    {% trans "Важно знать" %}
+                                </h4>
+                                <div class="important-info">
+                                    {{ excursion.important_info_ru|linebreaks }}
+                                </div>
+                                {% endif %}                                
+                               
+                            </div>
+                            
+                            <!-- КАРУСЕЛЬ ОТЗЫВОВ -->
+                            <div class="reviews-section">
+                                <div class="reviews-header">
+                                    <div class="reviews-title-section">
+                                        <h3 class="reviews-title">
+                                            <i class="fas fa-comments"></i>
+                                            {% trans "Отзывы" %} 
+                                            {% if reviews_count %}
+                                                <span class="reviews-count">{{ reviews_count }}</span>
+                                            {% endif %}
+                                        </h3>
+                                        <p class="reviews-subtitle">{% trans "Мнения наших путешественников" %}</p>
+                                    </div>
+                                    
+                                    <!-- Кнопка написания отзыва с проверкой прав -->
+                                    <div class="reviews-actions">
+                                        {% if user.is_authenticated %}
+                                            {% if user_can_review %}
+                                                <button class="btn-write-review" data-bs-toggle="modal" data-bs-target="#reviewModal">
+                                                    <i class="fas fa-pen"></i>
+                                                    {% trans "Написать отзыв" %}
+                                                </button>
+                                            {% elif user_has_reviewed %}
+                                                <div class="review-status-badge success">
+                                                    <i class="fas fa-check"></i>
+                                                    {% trans "Отзыв оставлен" %}
+                                                </div>
+                                            {% elif not user_has_booking %}
+                                                <div class="review-status-badge info">
+                                                    <i class="fas fa-info-circle"></i>
+                                                    {% trans "Для написания отзыва необходимо забронировать экскурсию" %}
+                                                </div>
+                                            {% else %}
+                                                <div class="review-status-badge warning">
+                                                    <i class="fas fa-clock"></i>
+                                                    {% trans "Отзыв можно оставить после подтверждения бронирования" %}
+                                                </div>
+                                            {% endif %}
+                                        {% else %}
+                                            <a href="/accounts/login/" class="btn-login-review">
+                                                <i class="fas fa-sign-in-alt"></i>
+                                                {% trans "Войти, чтобы оставить отзыв" %}
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                {% if reviews %}
+                                    <div class="reviews-carousel-container">
+                                        <div class="reviews-carousel" id="reviews-carousel">
+                                            {% for review in reviews %}
+                                            <div class="review-card">
+                                                <div class="review-card-header">
+                                                    <div class="review-user-info">
+                                                        <div class="review-avatar">
+                                                            {% if review.user.avatar %}
+                                                                <img src="{{ review.user.avatar.url }}" alt="{{ review.user.get_full_name|default:review.user.username }}">
+                                                            {% else %}
+                                                                <i class="fas fa-user"></i>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="review-user-details">
+                                                            <span class="review-user-name">{{ review.user.get_full_name|default:review.user.username }}</span>
+                                                            <div class="review-rating">
+                                                                {% for i in "12345" %}
+                                                                    {% if forloop.counter <= review.rating %}
+                                                                        <i class="fas fa-star filled"></i>
+                                                                    {% else %}
+                                                                        <i class="far fa-star"></i>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                                <span class="rating-value">{{ review.rating }}/5</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <span class="review-date">{{ review.created_at|date:"d.m.Y" }}</span>
+                                                </div>
+                                                
+                                                <div class="review-content">
+                                                    <div class="review-text">
+                                                        {{ review.text|linebreaks }}
+                                                    </div>
+                                                    
+                                                    <!-- Фотографии отзыва -->
+                                                    {% if review.images.exists %}
+                                                    <div class="review-photos">
+                                                        <h5 class="review-photos-title">
+                                                            <i class="fas fa-camera"></i>
+                                                            {% trans "Фотографии" %}
+                                                        </h5>
+                                                        <div class="review-photos-grid">
+                                                            {% for photo in review.images.all %}
+                                                            <div class="review-photo-item" onclick="addReviewPhotoToGallery('{{ photo.image.url }}', '{{ review.user.get_full_name|default:review.user.username }}')">
+                                                                <img src="{{ photo.image.url }}" alt="Фото отзыва" class="review-photo">
+                                                                <div class="review-photo-overlay">
+                                                                    <i class="fas fa-plus"></i>
+                                                                </div>
+                                                            </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Управление каруселью отзывов -->
+                                    <div class="reviews-carousel-controls">
+                                        <button class="reviews-carousel-btn" id="reviews-prev" onclick="moveReviewsCarousel(-1)">
+                                            <i class="fas fa-chevron-left"></i>
+                                        </button>
+                                        
+                                        <div class="reviews-carousel-indicators" id="reviews-indicators">
+                                            <!-- Индикаторы будут созданы через JavaScript -->
+                                        </div>
+                                        
+                                        <button class="reviews-carousel-btn" id="reviews-next" onclick="moveReviewsCarousel(1)">
+                                            <i class="fas fa-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                {% else %}
+                                    <div class="reviews-empty">
+                                        <div class="reviews-empty-icon">
+                                            <i class="fas fa-comments"></i>
+                                        </div>
+                                        <h4>{% trans "Пока нет отзывов" %}</h4>
+                                        <p>{% trans "Будьте первым, кто поделится своими впечатлениями!" %}</p>
+                                        {% if user.is_authenticated and user_can_review %}
+                                            <button class="btn-write-review-empty" data-bs-toggle="modal" data-bs-target="#reviewModal">
+                                                <i class="fas fa-pen"></i>
+                                                {% trans "Написать первый отзыв" %}
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- КАРУСЕЛЬ ПОХОЖИХ ЭКСКУРСИЙ -->
+                            <div class="similar-excursions">
+                                <h3>
+                                    <i class="fas fa-compass"></i>
+                                    {% trans "Похожие экскурсии в" %} {{ excursion.country.name_ru }}
+                                </h3>
+                                
+                                <div class="similar-carousel-container">
+                                    <div class="similar-carousel" id="similar-carousel">
+                                        <!-- Похожие экскурсии будут загружены через AJAX -->
+                                    </div>
+                                </div>
+                                
+                                <!-- Управление каруселью похожих экскурсий -->
+                                <div class="similar-carousel-controls">
+                                    <button class="similar-carousel-btn" id="similar-prev" onclick="moveSimilarCarousel(-1)">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    
+                                    <div class="similar-carousel-indicators" id="similar-indicators">
+                                        <!-- Индикаторы будут созданы через JavaScript -->
+                                    </div>
+                                    
+                                    <button class="similar-carousel-btn" id="similar-next" onclick="moveSimilarCarousel(1)">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Правая колонка - бронирование и информация -->
+                        <div class="col-lg-4">
+                            <div class="excursion-info">
+                                <!-- Цена -->
+                                <div class="price-card">
+                                    <div class="price-main">
+                                        <span class="price-amount">{{ excursion.price }}</span>
+                                        <span class="price-currency">{{ excursion.currency }}</span>
+                                    </div>
+                                    <div class="price-note">
+                                        <i class="fas fa-clock me-1"></i>
+                                        {% trans "Бронируй сейчас — плати потом" %}
+                                    </div>
+                                </div>                                
+                                                           
+                                <!-- Форма бронирования -->
+                                <div class="booking-form">
+                                    <form method="POST" action="{% url 'submit_booking' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="excursion" value="{{ excursion.id }}">
+                                        
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label class="form-label">
+                                                    <i class="fas fa-calendar-alt me-1"></i>
+                                                    {% trans "Дата" %}
+                                                </label>
+                                                <input type="date" 
+                                                    name="date" 
+                                                    required 
+                                                    class="form-control"
+                                                    min="{{ today|date:'Y-m-d' }}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">
+                                                    <i class="fas fa-user-friends me-1"></i>
+                                                    {% trans "Гости" %}
+                                                </label>
+                                                <input type="number" 
+                                                    name="people_count" 
+                                                    min="1" 
+                                                    max="{{ excursion.max_people }}" 
+                                                    value="2"
+                                                    required 
+                                                    class="form-control">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                <i class="fas fa-phone me-1"></i>
+                                                {% trans "Телефон" %}
+                                            </label>
+                                            <input type="tel" 
+                                                name="contact_phone" 
+                                                class="form-control" 
+                                                placeholder="+7 (999) 123-45-67"
+                                                {% if user.phone %}value="{{ user.phone }}"{% endif %}
+                                                required>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                <i class="fas fa-envelope me-1"></i>
+                                                Email
+                                            </label>
+                                            <input type="email" 
+                                                name="contact_email" 
+                                                class="form-control" 
+                                                placeholder="your@email.com"
+                                                {% if user.email %}value="{{ user.email }}"{% endif %}
+                                                required>
+                                        </div>
+                                        
+                                        <button type="submit" class="btn-book">
+                                            <i class="fas fa-check me-2"></i>
+                                            {% trans "Забронировать сейчас" %}
+                                        </button>
+                                    </form>
+                                    
+                                    <div class="booking-guarantee">
+                                        <i class="fas fa-shield-check text-success me-2"></i>
+                                        <span>{% trans "Мгновенное подтверждение" %}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    
+        <!-- МОДАЛЬНАЯ ГАЛЕРЕЯ -->
+        <div class="modal-gallery" id="modal-gallery">
+            <div class="modal-gallery-content">
+                <!-- Закрыть -->
+                <button class="modal-gallery-close" onclick="closeModalGallery()">
+                    <i class="fas fa-times"></i>
+                </button>
+                
+                <!-- Навигация -->
+                <button class="modal-gallery-nav modal-gallery-prev" onclick="modalPrevImage()">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="modal-gallery-nav modal-gallery-next" onclick="modalNextImage()">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                
+                <!-- Счетчик -->
+                <div class="modal-gallery-counter">
+                    <span id="modal-current">1</span> из <span id="modal-total">1</span>
+                </div>
+                
+                <!-- Изображение -->
+                <img id="modal-gallery-image" src="" alt="" class="modal-gallery-image">
+                
+                <!-- Миниатюры -->
+                <div class="modal-gallery-thumbnails" id="modal-thumbnails">
+                    <!-- Динамически генерируемые миниатюры -->
+                </div>
+            </div>
+        </div>
+    
+        <!-- Модальное окно для отзыва -->
+        {% if user.is_authenticated %}
+        <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="reviewModalLabel">{% trans "Написать отзыв" %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form id="review-form">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="review-rating" class="form-label">{% trans "Оценка" %}</label>
+                                <div class="rating-input">
+                                    {% for i in "12345" %}
+                                    <i class="far fa-star" data-rating="{{ forloop.counter }}" style="cursor: pointer; font-size: 1.5rem; color: #ffc107;"></i>
+                                    {% endfor %}
+                                </div>
+                                <input type="hidden" id="review-rating" name="rating" value="5">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="review-text" class="form-label">{% trans "Комментарий" %}</label>
+                                <textarea class="form-control" 
+                                        id="review-text" 
+                                        name="text" 
+                                        rows="4" 
+                                        placeholder="{% trans 'Поделитесь своими впечатлениями...' %}"
+                                        required></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="review-photos" class="form-label">{% trans "Фотографии" %} (необязательно)</label>
+                                <input type="file" 
+                                    class="form-control" 
+                                    id="review-photos" 
+                                    name="photos" 
+                                    multiple 
+                                    accept="image/*">
+                                <div class="form-text">{% trans "Вы можете добавить до 5 фотографий" %}</div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Отмена" %}</button>
+                            <button type="button" class="btn btn-primary" id="submit-review">{% trans "Отправить" %}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endblock %}
+
+    {% block extra_js %}
+    <script>
+    // Глобальные переменные
+    let currentImageIndex = 0;
+    let modalCurrentIndex = 0;
+    let images = [];
+    let reviewsCurrentIndex = 0;
+    let reviewsPerPage = 1;
+    let totalReviews = 0;
+    let similarCurrentIndex = 0;
+    let similarPerPage = 3;
+    let totalSimilar = 0;
+    let similarExcursions = [];
+
+    // МОДАЛЬНАЯ ГАЛЕРЕЯ
+    function openModalGallery(index) {
+        modalCurrentIndex = index;
+        const modal = document.getElementById('modal-gallery');
+        if (modal) {
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+            updateModalImage();
+            createModalThumbnails();
+        }
+    }
+
+    function closeModalGallery() {
+        const modal = document.getElementById('modal-gallery');
+        if (modal) {
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+    }
+
+    function modalNextImage() {
+        if (modalCurrentIndex < images.length - 1) {
+            modalCurrentIndex++;
+            updateModalImage();
+        }
+    }
+
+    function modalPrevImage() {
+        if (modalCurrentIndex > 0) {
+            modalCurrentIndex--;
+            updateModalImage();
+        }
+    }
+
+    function goToModalImage(index) {
+        modalCurrentIndex = index;
+        updateModalImage();
+    }
+
+    function updateModalImage() {
+        const modalImage = document.getElementById('modal-gallery-image');
+        const modalCurrent = document.getElementById('modal-current');
+        const modalTotal = document.getElementById('modal-total');
+        
+        if (images[modalCurrentIndex] && modalImage) {
+            modalImage.src = images[modalCurrentIndex];
+            modalImage.alt = '{{ excursion.title_ru }}';
+        }
+        
+        if (modalCurrent) modalCurrent.textContent = modalCurrentIndex + 1;
+        if (modalTotal) modalTotal.textContent = images.length;
+        
+        updateModalThumbnails();
+    }
+
+    function createModalThumbnails() {
+        const container = document.getElementById('modal-thumbnails');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        images.forEach((src, index) => {
+            const thumb = document.createElement('img');
+            thumb.src = src;
+            thumb.alt = '{{ excursion.title_ru }}';
+            thumb.className = 'modal-gallery-thumb';
+            if (index === modalCurrentIndex) {
+                thumb.classList.add('active');
+            }
+            thumb.onclick = () => goToModalImage(index);
+            container.appendChild(thumb);
+        });
+    }
+
+    function updateModalThumbnails() {
+        const thumbs = document.querySelectorAll('.modal-gallery-thumb');
+        thumbs.forEach((thumb, index) => {
+            thumb.classList.toggle('active', index === modalCurrentIndex);
+        });
+    }
+
+    // ОСНОВНАЯ ГАЛЕРЕЯ ЭКСКУРСИИ
+    function changeMainImage(thumbnail, imageUrl, index) {
+        const mainImage = document.getElementById('main-image');
+        if (mainImage) {
+            mainImage.src = imageUrl;
+            currentImageIndex = index;
+            
+            document.querySelectorAll('.sidebar-image').forEach(thumb => {
+                thumb.classList.remove('active');
+            });
+            
+            if (thumbnail) {
+                const img = thumbnail.querySelector('.sidebar-image');
+                if (img) {
+                    img.classList.add('active');
+                }
+            }
+            
+            updateIndicators();
+            updateCounter();
+            updateNavigationButtons();
+        }
+    }
+
+    function nextImage(event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        
+        if (currentImageIndex < images.length - 1) {
+            currentImageIndex++;
+            updateMainImage();
+        }
+    }
+
+    function previousImage(event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        
+        if (currentImageIndex > 0) {
+            currentImageIndex--;
+            updateMainImage();
+        }
+    }
+
+    function goToImage(index) {
+        currentImageIndex = index;
+        updateMainImage();
+    }
+
+    function updateMainImage() {
+        const mainImage = document.getElementById('main-image');
+        if (mainImage && images[currentImageIndex]) {
+            mainImage.src = images[currentImageIndex];
+            
+            document.querySelectorAll('.sidebar-image').forEach((thumb, index) => {
+                if (index === currentImageIndex - 1) {
+                    thumb.classList.add('active');
+                } else {
+                    thumb.classList.remove('active');
+                }
+            });
+            
+            updateIndicators();
+            updateCounter();
+            updateNavigationButtons();
+        }
+    }
+
+    function updateIndicators() {
+        document.querySelectorAll('.gallery-indicator').forEach((indicator, index) => {
+            if (index === currentImageIndex) {
+                indicator.classList.add('active');
+            } else {
+                indicator.classList.remove('active');
+            }
+        });
+    }
+
+    function updateCounter() {
+        const currentImage = document.getElementById('current-image');
+        const totalImages = document.getElementById('total-images');
+        
+        if (currentImage) currentImage.textContent = currentImageIndex + 1;
+        if (totalImages) totalImages.textContent = images.length;
+    }
+
+    function updateNavigationButtons() {
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        
+        if (prevBtn) prevBtn.disabled = currentImageIndex === 0;
+        if (nextBtn) nextBtn.disabled = currentImageIndex === images.length - 1;
+    }
+
+    function openGallery(index) {
+        openModalGallery(index);
+    }
+
+    // КАРУСЕЛЬ ОТЗЫВОВ
+    function moveReviewsCarousel(direction) {
+        const carousel = document.getElementById('reviews-carousel');
+        if (!carousel) return;
+
+        const cards = carousel.querySelectorAll('.review-card');
+        if (cards.length === 0) return;
+
+        reviewsCurrentIndex += direction;
+
+        if (reviewsCurrentIndex < 0) {
+            reviewsCurrentIndex = Math.max(0, cards.length - reviewsPerPage);
+        } else if (reviewsCurrentIndex >= cards.length) {
+            reviewsCurrentIndex = 0;
+        }
+
+        updateReviewsCarousel();
+    }
+
+    function updateReviewsCarousel() {
+        const carousel = document.getElementById('reviews-carousel');
+        if (!carousel) return;
+
+        const cards = carousel.querySelectorAll('.review-card');
+        const cardWidth = cards[0]?.offsetWidth || 0;
+        const gap = 24; // 1.5rem = 24px
+        const offset = reviewsCurrentIndex * (cardWidth + gap);
+
+        carousel.style.transform = `translateX(-${offset}px)`;
+
+        // Обновляем индикаторы
+        updateReviewsIndicators();
+
+        // Обновляем кнопки
+        const prevBtn = document.getElementById('reviews-prev');
+        const nextBtn = document.getElementById('reviews-next');
+
+        if (prevBtn) prevBtn.disabled = reviewsCurrentIndex === 0;
+        if (nextBtn) nextBtn.disabled = reviewsCurrentIndex >= cards.length - reviewsPerPage;
+    }
+
+    function updateReviewsIndicators() {
+        const carousel = document.getElementById('reviews-carousel');
+        const indicatorsContainer = document.getElementById('reviews-indicators');
+        
+        if (!carousel || !indicatorsContainer) return;
+
+        const cards = carousel.querySelectorAll('.review-card');
+        const totalIndicators = Math.ceil(cards.length / reviewsPerPage);
+
+        indicatorsContainer.innerHTML = '';
+
+        for (let i = 0; i < totalIndicators; i++) {
+            const indicator = document.createElement('div');
+            indicator.className = `reviews-carousel-indicator ${i === Math.floor(reviewsCurrentIndex / reviewsPerPage) ? 'active' : ''}`;
+            indicator.onclick = () => goToReviewSlide(i);
+            indicatorsContainer.appendChild(indicator);
+        }
+    }
+
+    function goToReviewSlide(slideIndex) {
+        reviewsCurrentIndex = slideIndex * reviewsPerPage;
+        updateReviewsCarousel();
+    }
+
+    // КАРУСЕЛЬ ПОХОЖИХ ЭКСКУРСИЙ
+    function loadSimilarExcursions() {
+        fetch(`/api/similar-excursions/{{ excursion.id }}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    similarExcursions = data.excursions;
+                    renderSimilarExcursions();
+                    updateSimilarCarousel();
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка загрузки похожих экскурсий:', error);
+            });
+    }
+
+    function renderSimilarExcursions() {
+        const carousel = document.getElementById('similar-carousel');
+        if (!carousel || similarExcursions.length === 0) return;
+
+        carousel.innerHTML = '';
+
+        similarExcursions.forEach(excursion => {
+            const card = document.createElement('div');
+            card.className = 'similar-card';
+            card.innerHTML = `
+                <div class="similar-image-container">
+                    <img src="${excursion.image || '/static/images/placeholder.jpg'}" 
+                         alt="${excursion.title}" class="similar-image">
+                    <div class="similar-overlay">
+                        <div class="similar-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            ${excursion.location}
+                        </div>
+                    </div>
+                </div>
+                <div class="similar-content">
+                    <h4 class="similar-title">${excursion.title}</h4>
+                    <div class="similar-meta">
+                        <div class="similar-rating">
+                            <div class="similar-rating-stars">
+                                ${'<i class="fas fa-star"></i>'.repeat(Math.floor(excursion.rating))}
+                                ${excursion.rating % 1 !== 0 ? '<i class="fas fa-star-half-alt"></i>' : ''}
+                                ${'<i class="far fa-star"></i>'.repeat(5 - Math.ceil(excursion.rating))}
+                            </div>
+                            <span>${excursion.rating}</span>
+                        </div>
+                        <div class="similar-price">${excursion.price}</div>
+                    </div>
+                    <div class="similar-duration">
+                        <i class="fas fa-clock"></i>
+                        ${excursion.duration} ${excursion.duration_unit === 'hours' ? 'ч' : 'дн'}
+                    </div>
+                    <a href="${excursion.url}" class="btn-similar">
+                        {% trans "Подробнее" %}
+                    </a>
+                </div>
+            `;
+            carousel.appendChild(card);
+        });
+    }
+
+    function moveSimilarCarousel(direction) {
+        const carousel = document.getElementById('similar-carousel');
+        if (!carousel) return;
+
+        const cards = carousel.querySelectorAll('.similar-card');
+        if (cards.length === 0) return;
+
+        similarCurrentIndex += direction;
+
+        if (similarCurrentIndex < 0) {
+            similarCurrentIndex = Math.max(0, cards.length - similarPerPage);
+        } else if (similarCurrentIndex >= cards.length) {
+            similarCurrentIndex = 0;
+        }
+
+        updateSimilarCarousel();
+    }
+
+    function updateSimilarCarousel() {
+        const carousel = document.getElementById('similar-carousel');
+        if (!carousel) return;
+
+        const cards = carousel.querySelectorAll('.similar-card');
+        if (cards.length === 0) return;
+
+        const cardWidth = cards[0]?.offsetWidth || 300;
+        const gap = 24; // 1.5rem = 24px
+        const offset = similarCurrentIndex * (cardWidth + gap);
+
+        carousel.style.transform = `translateX(-${offset}px)`;
+
+        // Обновляем индикаторы
+        updateSimilarIndicators();
+
+        // Обновляем кнопки
+        const prevBtn = document.getElementById('similar-prev');
+        const nextBtn = document.getElementById('similar-next');
+
+        if (prevBtn) prevBtn.disabled = similarCurrentIndex === 0;
+        if (nextBtn) nextBtn.disabled = similarCurrentIndex >= cards.length - similarPerPage;
+    }
+
+    function updateSimilarIndicators() {
+        const carousel = document.getElementById('similar-carousel');
+        const indicatorsContainer = document.getElementById('similar-indicators');
+        
+        if (!carousel || !indicatorsContainer) return;
+
+        const cards = carousel.querySelectorAll('.similar-card');
+        const totalIndicators = Math.max(1, Math.ceil(cards.length / similarPerPage));
+
+        indicatorsContainer.innerHTML = '';
+
+        for (let i = 0; i < totalIndicators; i++) {
+            const indicator = document.createElement('div');
+            indicator.className = `similar-carousel-indicator ${i === Math.floor(similarCurrentIndex / similarPerPage) ? 'active' : ''}`;
+            indicator.onclick = () => goToSimilarSlide(i);
+            indicatorsContainer.appendChild(indicator);
+        }
+    }
+
+    function goToSimilarSlide(slideIndex) {
+        similarCurrentIndex = slideIndex * similarPerPage;
+        updateSimilarCarousel();
+    }
+
+    // ИЗБРАННОЕ
+    function toggleFavorite(excursionId, button) {
+        fetch('/api/favorites/toggle/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            },
+            body: JSON.stringify({
+                item_id: excursionId,
+                item_type: 'excursion'
+            })
+        })
+        .then(response => {
+            if (response.status === 401) {
+                showLoginModal();
+                return;
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data && data.success) {
+                if (data.is_favorite) {
+                    button.classList.add('active');
+                    button.innerHTML = '<i class="fas fa-heart"></i>';
+                } else {
+                    button.classList.remove('active');
+                    button.innerHTML = '<i class="far fa-heart"></i>';
+                }
+                
+                if (typeof window.updateFavoritesCount === 'function') {
+                    window.updateFavoritesCount();
+                }
+            } else if (data && !data.success) {
+                console.error('Ошибка переключения избранного:', data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка:', error);
+        });
+    }
+
+    function showLoginModal() {
+        alert('Для добавления в избранное необходимо войти в систему');
+    }
+
+    // ДОБАВЛЕНИЕ ФОТО ОТЗЫВА В ГАЛЕРЕЮ
+    function addReviewPhotoToGallery(photoUrl, userName) {
+        if (!images.includes(photoUrl)) {
+            images.push(photoUrl);
+            
+            const totalImages = document.getElementById('total-images');
+            if (totalImages) {
+                totalImages.textContent = images.length;
+            }
+            
+            showToast(`Фотография отзыва ${userName} добавлена в галерею экскурсии!`, 'success');
+            
+            updateGalleryIndicators();
+            
+            if (document.getElementById('modal-gallery').classList.contains('show')) {
+                createModalThumbnails();
+            }
+        } else {
+            showToast('Эта фотография уже есть в галерее экскурсии', 'info');
+        }
+    }
+
+    function updateGalleryIndicators() {
+        const indicatorsContainer = document.getElementById('gallery-indicators');
+        if (indicatorsContainer) {
+            indicatorsContainer.innerHTML = '';
+            
+            images.forEach((_, index) => {
+                const indicator = document.createElement('div');
+                indicator.className = `gallery-indicator ${index === currentImageIndex ? 'active' : ''}`;
+                indicator.onclick = () => goToImage(index);
+                indicatorsContainer.appendChild(indicator);
+            });
+        }
+    }
+
+    function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 10000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            max-width: calc(100vw - 40px);
+            word-wrap: break-word;
+            font-weight: 500;
+        `;
+        toast.textContent = message;
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.transform = 'translateX(0)';
+        }, 100);
+        
+        setTimeout(() => {
+            toast.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                if (document.body.contains(toast)) {
+                    document.body.removeChild(toast);
+                }
+            }, 300);
+        }, 3000);
+    }
+
+    // ИНИЦИАЛИЗАЦИЯ
+    document.addEventListener('DOMContentLoaded', function() {
+        // Инициализация массива изображений
+        images = [
+            {% if excursion.images.all %}
+                {% for image in excursion.images.all %}
+                    '{{ image.image.url }}',
+                {% endfor %}
+            {% else %}
+                '{% static "images/placeholder.jpg" %}'
+            {% endif %}
+        ];
+        
+        // Инициализация каруселей
+        updateReviewsIndicators();
+        loadSimilarExcursions();
+        
+        // Адаптивность для каруселей
+        function updateCarouselResponsiveness() {
+            const width = window.innerWidth;
+            
+            // Количество видимых карточек в зависимости от ширины экрана
+            if (width <= 576) {
+                reviewsPerPage = 1;
+                similarPerPage = 1;
+            } else if (width <= 768) {
+                reviewsPerPage = 1;
+                similarPerPage = 2;
+            } else if (width <= 992) {
+                reviewsPerPage = 1;
+                similarPerPage = 2;
+            } else {
+                reviewsPerPage = 1;
+                similarPerPage = 3;
+            }
+            
+            // Обновляем карусели
+            updateReviewsCarousel();
+            updateSimilarCarousel();
+        }
+        
+        updateCarouselResponsiveness();
+        window.addEventListener('resize', updateCarouselResponsiveness);
+        
+        // Клавиатурное управление для модальной галереи
+        document.addEventListener('keydown', function(e) {
+            const modal = document.getElementById('modal-gallery');
+            if (modal && modal.classList.contains('show')) {
+                switch(e.key) {
+                    case 'Escape':
+                        closeModalGallery();
+                        break;
+                    case 'ArrowLeft':
+                        modalPrevImage();
+                        break;
+                    case 'ArrowRight':
+                        modalNextImage();
+                        break;
+                }
+            }
+        });
+        
+        // Закрытие модального окна при клике на фон
+        const modalGallery = document.getElementById('modal-gallery');
+        if (modalGallery) {
+            modalGallery.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModalGallery();
+                }
+            });
+        }
+        
+        // Обработчики для кнопок избранного
+        const favoriteBtn = document.getElementById('favorite-btn');
+        if (favoriteBtn) {
+            favoriteBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const excursionId = this.dataset.excursionId;
+                toggleFavorite(excursionId, this);
+            });
+        }
+        
+        // Обработка рейтинга в модальном окне
+        const ratingStars = document.querySelectorAll('.rating-input i');
+        const ratingInput = document.getElementById('review-rating');
+        
+        ratingStars.forEach(star => {
+            star.addEventListener('click', function() {
+                const rating = this.dataset.rating;
+                if (ratingInput) ratingInput.value = rating;
+                
+                ratingStars.forEach((s, index) => {
+                    if (index < rating) {
+                        s.className = 'fas fa-star text-warning';
+                    } else {
+                        s.className = 'far fa-star';
+                    }
+                });
+            });
+        });
+        
+        // Обработка отправки отзыва
+        const submitReviewBtn = document.getElementById('submit-review');
+        if (submitReviewBtn) {
+            submitReviewBtn.addEventListener('click', function() {
+                const rating = document.getElementById('review-rating').value;
+                const text = document.getElementById('review-text').value;
+                const photos = document.getElementById('review-photos').files;
+                
+                if (!rating || !text.trim()) {
+                    alert('Пожалуйста, заполните все обязательные поля');
+                    return;
+                }
+                
+                if (text.trim().length < 10) {
+                    alert('Отзыв должен содержать не менее 10 символов');
+                    return;
+                }
+                
+                const formData = new FormData();
+                formData.append('excursion', '{{ excursion.id }}');
+                formData.append('rating', rating);
+                formData.append('text', text.trim());
+                
+                for (let i = 0; i < photos.length && i < 5; i++) {
+                    formData.append('photos', photos[i]);
+                }
+                
+                submitReviewBtn.disabled = true;
+                submitReviewBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Отправка...';
+                
+                fetch('{% url "submit_review_new" %}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const modalEl = document.getElementById('reviewModal');
+                        const modal = bootstrap.Modal.getInstance(modalEl);
+                        if (modal) {
+                            modal.hide();
+                        }
+                        
+                        alert('Спасибо за ваш отзыв! Он был успешно отправлен.');
+                        location.reload();
+                    } else {
+                        alert('Ошибка: ' + (data.error || 'Неизвестная ошибка'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Произошла ошибка при отправке отзыва. Попробуйте еще раз.');
+                })
+                .finally(() => {
+                    submitReviewBtn.disabled = false;
+                    submitReviewBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Отправить';
+                });
+            });
+        }
+        
+        // Обработчик формы бронирования
+        const bookingForm = document.querySelector('.booking-form form');
+        if (bookingForm) {
+            bookingForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                const submitBtn = this.querySelector('button[type="submit"]');
+                
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Отправка...';
+                
+                fetch('{% url "submit_booking" %}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    },
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    const contentType = response.headers.get('content-type');
+                    if (!contentType || !contentType.includes('application/json')) {
+                        throw new Error('Ответ сервера не является JSON');
+                    }
+                    
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert('Бронирование успешно отправлено! Мы свяжемся с вами для подтверждения.');
+                        if (data.redirect) {
+                            window.location.href = data.redirect;
+                        }
+                    } else {
+                        alert('Ошибка: ' + (data.error || 'Неизвестная ошибка'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    if (error.message.includes('HTTP 500')) {
+                        alert('Ошибка сервера (500). Проверьте логи сервера Django.');
+                    } else if (error.message.includes('не является JSON')) {
+                        alert('Сервер вернул неверный формат ответа. Возможно, произошла ошибка в коде.');
+                    } else {
+                        alert('Произошла ошибка при отправке бронирования: ' + error.message);
+                    }
+                })
+                .finally(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-check me-2"></i>{% trans "Забронировать сейчас" %}';
+                });
+            });
+        }
+        
+        // Устанавливаем минимальную дату для бронирования
+        const dateInput = document.querySelector('input[name="date"]');
+        if (dateInput) {
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            dateInput.min = tomorrow.toISOString().split('T')[0];
+            dateInput.value = tomorrow.toISOString().split('T')[0];
+        }
+        
+        // Инициализация карусели
+        updateNavigationButtons();
+        
+        // Логгирование для отладки
+        console.log('Gallery functions initialized:', {
+            openModalGallery: typeof openModalGallery,
+            changeMainImage: typeof changeMainImage,
+            toggleFavorite: typeof toggleFavorite,
+            addReviewPhotoToGallery: typeof addReviewPhotoToGallery,
+            totalImages: images.length,
+            moveReviewsCarousel: typeof moveReviewsCarousel,
+            moveSimilarCarousel: typeof moveSimilarCarousel
+        });
+    });
+    </script>
+    {% endblock %}

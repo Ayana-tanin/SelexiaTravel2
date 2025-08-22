@@ -1,0 +1,278 @@
+# English translations for SELEXIA Travel UI.
+# Copyright (C) 2024 SELEXIA Travel
+# This file is distributed under the same license as the SELEXIA Travel project.
+msgid ""
+msgstr ""
+"Project-Id-Version: SELEXIA Travel 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-08-20 17:47+0000\n"
+"PO-Revision-Date: 2024-08-20 17:47+0000\n"
+"Last-Translator: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# Navigation
+msgid "Home"
+msgstr "Home"
+
+msgid "Catalog"
+msgstr "Catalog"
+
+msgid "About"
+msgstr "About"
+
+msgid "Contact"
+msgstr "Contact"
+
+msgid "Login"
+msgstr "Login"
+
+msgid "Sign Up"
+msgstr "Sign Up"
+
+msgid "Profile"
+msgstr "Profile"
+
+msgid "Logout"
+msgstr "Logout"
+
+# Common Actions
+msgid "Search"
+msgstr "Search"
+
+msgid "Filter"
+msgstr "Filter"
+
+msgid "Sort"
+msgstr "Sort"
+
+msgid "View"
+msgstr "View"
+
+msgid "Edit"
+msgstr "Edit"
+
+msgid "Delete"
+msgstr "Delete"
+
+msgid "Save"
+msgstr "Save"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Submit"
+msgstr "Submit"
+
+msgid "Back"
+msgstr "Back"
+
+msgid "Next"
+msgstr "Next"
+
+msgid "Previous"
+msgstr "Previous"
+
+# Status Messages
+msgid "Loading..."
+msgstr "Loading..."
+
+msgid "Success"
+msgstr "Success"
+
+msgid "Error"
+msgstr "Error"
+
+msgid "Warning"
+msgstr "Warning"
+
+msgid "Info"
+msgstr "Info"
+
+# Form Labels
+msgid "Name"
+msgstr "Name"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Password"
+msgstr "Password"
+
+msgid "Confirm Password"
+msgstr "Confirm Password"
+
+msgid "Phone"
+msgstr "Phone"
+
+msgid "Message"
+msgstr "Message"
+
+msgid "Subject"
+msgstr "Subject"
+
+# Buttons
+msgid "Book Now"
+msgstr "Book Now"
+
+msgid "Apply Now"
+msgstr "Apply Now"
+
+msgid "Add to Favorites"
+msgstr "Add to Favorites"
+
+msgid "Remove from Favorites"
+msgstr "Remove from Favorites"
+
+msgid "Write Review"
+msgstr "Write Review"
+
+msgid "Read More"
+msgstr "Read More"
+
+msgid "Show Less"
+msgstr "Show Less"
+
+# Time and Duration
+msgid "Duration"
+msgstr "Duration"
+
+msgid "Start Time"
+msgstr "Start Time"
+
+msgid "End Time"
+msgstr "End Time"
+
+msgid "Date"
+msgstr "Date"
+
+msgid "Time"
+msgstr "Time"
+
+# Pricing
+msgid "Price"
+msgstr "Price"
+
+msgid "Currency"
+msgstr "Currency"
+
+msgid "Per Person"
+msgstr "Per Excursion"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Discount"
+msgstr "Discount"
+
+# Location
+msgid "Location"
+msgstr "Location"
+
+msgid "Address"
+msgstr "Address"
+
+msgid "Meeting Point"
+msgstr "Meeting Point"
+
+msgid "Pickup Location"
+msgstr "Pickup Location"
+
+# Reviews and Ratings
+msgid "Rating"
+msgstr "Rating"
+
+msgid "Reviews"
+msgstr "Reviews"
+
+msgid "Write a Review"
+msgstr "Write a Review"
+
+msgid "Your Rating"
+msgstr "Your Rating"
+
+msgid "Your Review"
+msgstr "Your Review"
+
+# Booking and Application
+msgid "Booking"
+msgstr "Booking"
+
+msgid "Application"
+msgstr "Application"
+
+msgid "Number of People"
+msgstr "Number of People"
+
+msgid "Special Requirements"
+msgstr "Special Requirements"
+
+msgid "Additional Notes"
+msgstr "Additional Notes"
+
+# Categories and Tags
+msgid "Category"
+msgstr "Category"
+
+msgid "Categories"
+msgstr "Categories"
+
+msgid "Popular"
+msgstr "Popular"
+
+msgid "Featured"
+msgstr "Featured"
+
+msgid "New"
+msgstr "New"
+
+msgid "Best Seller"
+msgstr "Best Seller"
+
+# Footer
+msgid "Follow Us"
+msgstr "Follow Us"
+
+msgid "Newsletter"
+msgstr "Newsletter"
+
+msgid "Subscribe"
+msgstr "Subscribe"
+
+msgid "Privacy Policy"
+msgstr "Privacy Policy"
+
+msgid "Terms of Service"
+msgstr "Terms of Service"
+
+msgid "Cookie Policy"
+msgstr "Cookie Policy"
+
+# Error Messages
+msgid "Page Not Found"
+msgstr "Page Not Found"
+
+msgid "Access Denied"
+msgstr "Access Denied"
+
+msgid "Something went wrong"
+msgstr "Something went wrong"
+
+msgid "Please try again later"
+msgstr "Please try again later"
+
+# Success Messages
+msgid "Operation completed successfully"
+msgstr "Operation completed successfully"
+
+msgid "Changes saved"
+msgstr "Changes saved"
+
+msgid "Item added to favorites"
+msgstr "Item added to favorites"
+
+msgid "Item removed from favorites"
+msgstr "Item removed from favorites"
